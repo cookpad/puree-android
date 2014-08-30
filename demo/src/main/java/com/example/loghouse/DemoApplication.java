@@ -7,6 +7,7 @@ import com.cookpad.android.loghouse.AroundShipFilter;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
 import com.cookpad.android.loghouse.LogHouseManager;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class DemoApplication extends Application {
@@ -28,6 +29,7 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this)
+                .shipInterval(3, Calendar.SECOND)
                 .aroundShipFilter(aroundShipFilter)
                 .build();
         LogHouseManager.initialize(conf);
