@@ -1,7 +1,5 @@
 package com.cookpad.android.loghouse;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 
 public class LogHouseManager {
@@ -9,8 +7,8 @@ public class LogHouseManager {
     private static final Gson GSON = new Gson();
     private static LogHouseDbHelper logHouseStorage;
 
-    public static void initialize(Context applicationContext) {
-        logHouseStorage = new LogHouseDbHelper(applicationContext);
+    public static void initialize(LogHouseConfiguration conf) {
+        logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
     }
 
     public static void ask(Log log) {
