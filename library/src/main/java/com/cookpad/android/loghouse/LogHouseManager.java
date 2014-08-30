@@ -8,7 +8,9 @@ import java.util.List;
 
 public class LogHouseManager {
     private static final String TAG = LogHouseManager.class.getSimpleName();
+
     private static Context applicationContext;
+    private static DeliveryPerson deliveryPerson;
     private static Gson gson;
     private static AroundShipFilter aroundShipFilter;
     private static LogHouseDbHelper logHouseStorage;
@@ -21,6 +23,7 @@ public class LogHouseManager {
 
     public static void initialize(LogHouseConfiguration conf) {
         applicationContext = conf.getApplicationContext();
+        deliveryPerson = conf.getDeliveryPerson();
         gson = conf.getGson();
         CuckooClock.setup(onAlarmListener, conf.getShipIntervalTime(), conf.getShipIntervalTimeUnit());
         aroundShipFilter = conf.getAroundShipFilter();
@@ -37,7 +40,7 @@ public class LogHouseManager {
         List<String> serializedLogs = logHouseStorage.select();
         serializedLogs = aroundShipFilter.beforeShip(serializedLogs);
         // validate
-        // ship
+        deliveryPerson.onShip(serializedLogs);
         aroundShipFilter.afterShip(serializedLogs);
         logHouseStorage.delete();
     }

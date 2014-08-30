@@ -11,6 +11,7 @@ import java.util.Calendar;
 public class CuckooClock extends BroadcastReceiver {
     private static final String TAG = CuckooClock.class.getSimpleName();
 
+    private static boolean hasAlreadySet;
     private static OnAlarmListener onAlarmListener;
     private static int callMeAfter;
     private static int timeUnit;
@@ -19,13 +20,18 @@ public class CuckooClock extends BroadcastReceiver {
         CuckooClock.onAlarmListener = onAlarmListener;
         CuckooClock.callMeAfter = callMeAfter;
         CuckooClock.timeUnit = timeUnit;
+        hasAlreadySet = false;
     }
 
     public interface OnAlarmListener {
         public void onAlarm();
     }
 
-    public static void setAlarm(Context context) {
+    public static synchronized void setAlarm(Context context) {
+        if (hasAlreadySet) {
+            return;
+        }
+
         Intent intent = new Intent(context, CuckooClock.class);
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
 
@@ -35,10 +41,13 @@ public class CuckooClock extends BroadcastReceiver {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+
+        hasAlreadySet = true;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        hasAlreadySet = false;
         android.util.Log.d(TAG, "onReceive is called");
         onAlarmListener.onAlarm();
     }

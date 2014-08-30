@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.cookpad.android.loghouse.AroundShipFilter;
+import com.cookpad.android.loghouse.DeliveryPerson;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
 import com.cookpad.android.loghouse.LogHouseManager;
 
@@ -12,6 +13,15 @@ import java.util.List;
 
 public class DemoApplication extends Application {
     public static final String TAG = DemoApplication.class.getSimpleName();
+
+    private DeliveryPerson deliveryPerson = new DeliveryPerson() {
+        @Override
+        public void onShip(List<String> serializedLogs) {
+            for (String serializedLog : serializedLogs) {
+                Log.d(TAG, serializedLog);
+            }
+        }
+    };
 
     private AroundShipFilter aroundShipFilter = new AroundShipFilter() {
         @Override
@@ -28,7 +38,7 @@ public class DemoApplication extends Application {
 
     @Override
     public void onCreate() {
-        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this)
+        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this, deliveryPerson)
                 .shipInterval(3, Calendar.SECOND)
                 .aroundShipFilter(aroundShipFilter)
                 .build();
