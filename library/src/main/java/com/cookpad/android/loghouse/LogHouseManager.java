@@ -32,6 +32,10 @@ public class LogHouseManager {
 
     public static void ask(Log log) {
         String serializedLog = gson.toJson(log);
+        new IntertAsyncTask(serializedLog).execute();
+    }
+
+    static void insertSync(String serializedLog) {
         logHouseStorage.insert(serializedLog);
         CuckooClock.setAlarm(applicationContext);
     }
