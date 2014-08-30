@@ -1,4 +1,4 @@
-package com.example.warehouse;
+package com.example.loghouse;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.cookpad.android.warehouse.WareHouseManager;
+import com.cookpad.android.loghouse.LogHouseManager;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void trackClickEvent() {
-        WareHouseManager.ask();
+        LogHouseManager.ask();
     }
 
     @Override

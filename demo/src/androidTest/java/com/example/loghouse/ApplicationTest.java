@@ -1,4 +1,4 @@
-package com.example.warehouse;
+package com.example.loghouse;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
