@@ -11,7 +11,6 @@ import com.example.loghouse.logs.ClickLog;
 
 
 public class MainActivity extends ActionBarActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void trackClickEvent() {
-        LogHouseManager.ask(new ClickLog());
+        LogHouseManager.ask(new ClickLog("MainActivity", "track"));
     }
 
     @Override
