@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorage {
     private static final String TAG = LogHouseDbHelper.class.getSimpleName();
     private static final String DATABASE_NAME = "log_house";
@@ -26,15 +29,17 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
         db.insert(TABLE_NAME, null, contentValues);
     }
 
-    public void select() {
+    public List<String> select() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        List<String> serializedLogs = new ArrayList<String>();
         try {
             while (cursor.moveToNext()) {
-                android.util.Log.d(TAG, cursor.getString(1));
+                serializedLogs.add(cursor.getString(1));
             }
         } finally {
             cursor.close();
         }
+        return serializedLogs;
     }
 
     public void delete() {
