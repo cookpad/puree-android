@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.cookpad.android.loghouse.LogHouseManager;
+import com.example.loghouse.logs.ClickLog;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -28,7 +29,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void trackClickEvent() {
-        LogHouseManager.ask();
+        LogHouseManager.ask(new ClickLog());
     }
 
     @Override
