@@ -2,6 +2,8 @@ package com.cookpad.android.loghouse;
 
 import android.content.Context;
 
+import com.cookpad.android.loghouse.handlers.AroundShipFilter;
+import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.google.gson.Gson;
 
 import java.util.Calendar;

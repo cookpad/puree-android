@@ -3,8 +3,8 @@ package com.example.loghouse;
 import android.app.Application;
 import android.util.Log;
 
-import com.cookpad.android.loghouse.AroundShipFilter;
-import com.cookpad.android.loghouse.DeliveryPerson;
+import com.cookpad.android.loghouse.handlers.AroundShipFilter;
+import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
 import com.cookpad.android.loghouse.LogHouseManager;
 

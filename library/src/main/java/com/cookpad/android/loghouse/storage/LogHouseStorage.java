@@ -1,4 +1,4 @@
-package com.cookpad.android.loghouse;
+package com.cookpad.android.loghouse.storage;
 
 import java.util.List;
 
