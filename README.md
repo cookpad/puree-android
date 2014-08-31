@@ -3,7 +3,7 @@ LogHouse
 
 ![](http://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Pfarr_Log_House.jpg/800px-Pfarr_Log_House.jpg)
 
-LogHouse is accommodations that have buffering, retrying... and more functions
+LogHouse is accommodation that have buffering, retrying... and more functions
 
 ## Description
 

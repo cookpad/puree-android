@@ -27,14 +27,6 @@ public class DemoApplication extends Application {
         }
     };
 
-    private BeforeInsertFilter beforeInsertFilter = new BeforeInsertFilter() {
-        @Override
-        public JSONObject beforeInsert(JSONObject serializedLog) {
-            Log.d(TAG, "beforeInsert is called");
-            return serializedLog;
-        }
-    };
-
     private BeforeShipFilter beforeShipFilter = new BeforeShipFilter() {
         @Override
         public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
@@ -48,7 +40,7 @@ public class DemoApplication extends Application {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this, deliveryPerson)
                 .logsPerRequest(3)
                 .shipInterval(3, Calendar.SECOND)
-                .beforeInsertFilter(beforeInsertFilter)
+                .beforeInsertFilter(new AddRequiredParamsFilter())
                 .beforeShipFilter(beforeShipFilter)
                 .build();
         LogHouseManager.initialize(conf);

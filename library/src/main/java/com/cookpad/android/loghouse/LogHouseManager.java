@@ -11,6 +11,7 @@ import com.cookpad.android.loghouse.tasks.IntertAsyncTask;
 import com.cookpad.android.loghouse.tasks.ShipAsyncTask;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -54,7 +55,12 @@ public class LogHouseManager {
 
     public static void insertSync(JSONObject serializedLog) {
         if (beforeInsertFilter != null) {
-            serializedLog = beforeInsertFilter.beforeInsert(serializedLog);
+            try {
+                serializedLog = beforeInsertFilter.beforeInsert(serializedLog);
+            } catch (JSONException e) {
+                // TODO: notify error
+                return;
+            }
         }
         logHouseStorage.insert(serializedLog);
     }
