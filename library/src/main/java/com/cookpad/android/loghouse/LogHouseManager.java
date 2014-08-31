@@ -6,6 +6,8 @@ import com.cookpad.android.loghouse.handlers.AroundShipFilter;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.cookpad.android.loghouse.storage.Records;
+import com.cookpad.android.loghouse.tasks.IntertAsyncTask;
+import com.cookpad.android.loghouse.tasks.ShipAsyncTask;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -46,7 +48,7 @@ public class LogHouseManager {
         new IntertAsyncTask(serializedLog).execute();
     }
 
-    static void insertSync(JSONObject serializedLog) {
+    public static void insertSync(JSONObject serializedLog) {
         logHouseStorage.insert(serializedLog);
         CuckooClock.setAlarm(applicationContext);
     }
@@ -56,6 +58,10 @@ public class LogHouseManager {
     }
 
     public static void ship(int logsPerRequest) {
+        new ShipAsyncTask(logsPerRequest).execute();
+    }
+
+    public static void shipSync(int logsPerRequest) {
         Records records = logHouseStorage.select(logsPerRequest);
         if (records.isEmpty()) {
             return;
