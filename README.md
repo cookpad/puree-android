@@ -50,7 +50,7 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this, deliveryPerson)
-                .shipInterval(3, Calendar.SECOND)
+                .shipInterval(5, Calendar.MINUTE)
                 .aroundShipFilter(aroundShipFilter)
                 .build();
         LogHouseManager.initialize(conf);
@@ -92,7 +92,3 @@ include ':app', ':..:LogHouse:library'
 // app/build.gradle
 compile project(':..:LogHouse:library')
 ```
-
-## Author
-
-[rejasupotaro](https://github.com/rejasupotaro)
