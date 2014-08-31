@@ -2,6 +2,7 @@ package com.cookpad.android.loghouse;
 
 import android.content.Context;
 
+import com.cookpad.android.loghouse.handlers.BeforeInsertFilter;
 import com.cookpad.android.loghouse.handlers.BeforeShipFilter;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.google.gson.Gson;
@@ -15,6 +16,7 @@ public class LogHouseConfiguration {
     private int logsPerRequest;
     private int shipIntervalTime;
     private int shipIntervalTimeUnit;
+    private BeforeInsertFilter beforeInsertFilter;
     private BeforeShipFilter beforeShipFilter;
 
     public Context getApplicationContext() {
@@ -41,19 +43,29 @@ public class LogHouseConfiguration {
         return shipIntervalTimeUnit;
     }
 
+    public BeforeInsertFilter getBeforeInsertFilter() {
+        return beforeInsertFilter;
+    }
+
     public BeforeShipFilter getBeforeShipFilter() {
         return beforeShipFilter;
     }
 
-    public LogHouseConfiguration(Context applicationContext, DeliveryPerson deliveryPerson,
-                                 Gson gson, int logsPerRequest, BeforeShipFilter beforeShipFilter,
-                                 int shipIntervalTime, int shipIntervalTimeUnit) {
+    public LogHouseConfiguration(Context applicationContext,
+                                 DeliveryPerson deliveryPerson,
+                                 Gson gson,
+                                 int logsPerRequest,
+                                 int shipIntervalTime,
+                                 int shipIntervalTimeUnit,
+                                 BeforeInsertFilter beforeInsertFilter,
+                                 BeforeShipFilter beforeShipFilter) {
         this.applicationContext = applicationContext;
         this.deliveryPerson = deliveryPerson;
         this.gson = gson;
         this.logsPerRequest = logsPerRequest;
         this.shipIntervalTime = shipIntervalTime;
         this.shipIntervalTimeUnit = shipIntervalTimeUnit;
+        this.beforeInsertFilter = beforeInsertFilter;
         this.beforeShipFilter = beforeShipFilter;
     }
 
@@ -62,7 +74,8 @@ public class LogHouseConfiguration {
         private DeliveryPerson deliveryPerson;
         private Gson gson = new Gson();
         private int logsPerRequest = 1000;
-        private BeforeShipFilter beforeShipFilter = new BeforeShipFilter();
+        private BeforeInsertFilter beforeInsertFilter;
+        private BeforeShipFilter beforeShipFilter;
         private int shipIntervalTime = 5;
         private int shipIntervalTimeUnit = Calendar.MINUTE;
 
@@ -81,14 +94,19 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder beforeShipFilter(BeforeShipFilter beforeShipFilter) {
-            this.beforeShipFilter = beforeShipFilter;
-            return this;
-        }
-
         public Builder shipInterval(int shipIntervalTime, int shipIntervalTimeUnit) {
             this.shipIntervalTime = shipIntervalTime;
             this.shipIntervalTimeUnit = shipIntervalTimeUnit;
+            return this;
+        }
+
+        public Builder beforeInsertFilter(BeforeInsertFilter beforeInsertFilter) {
+            this.beforeInsertFilter = beforeInsertFilter;
+            return this;
+        }
+
+        public Builder beforeShipFilter(BeforeShipFilter beforeShipFilter) {
+            this.beforeShipFilter = beforeShipFilter;
             return this;
         }
 
@@ -98,9 +116,10 @@ public class LogHouseConfiguration {
                     deliveryPerson,
                     gson,
                     logsPerRequest,
-                    beforeShipFilter,
                     shipIntervalTime,
-                    shipIntervalTimeUnit);
+                    shipIntervalTimeUnit,
+                    beforeInsertFilter,
+                    beforeShipFilter);
         }
     }
 }

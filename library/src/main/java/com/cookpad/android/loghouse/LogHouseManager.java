@@ -2,6 +2,7 @@ package com.cookpad.android.loghouse;
 
 import android.content.Context;
 
+import com.cookpad.android.loghouse.handlers.BeforeInsertFilter;
 import com.cookpad.android.loghouse.handlers.BeforeShipFilter;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
@@ -21,6 +22,7 @@ public class LogHouseManager {
     private static DeliveryPerson deliveryPerson;
     private static Gson gson;
     private static int logsPerRequest;
+    private static BeforeInsertFilter beforeInsertFilter;
     private static BeforeShipFilter beforeShipFilter;
     private static LogHouseDbHelper logHouseStorage;
     private static CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
@@ -36,6 +38,7 @@ public class LogHouseManager {
         gson = conf.getGson();
         logsPerRequest = conf.getLogsPerRequest();
         CuckooClock.setup(onAlarmListener, conf.getShipIntervalTime(), conf.getShipIntervalTimeUnit());
+        beforeInsertFilter = conf.getBeforeInsertFilter();
         beforeShipFilter = conf.getBeforeShipFilter();
         logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
     }
@@ -46,11 +49,14 @@ public class LogHouseManager {
 
     public static void ask(JSONObject serializedLog) {
         new IntertAsyncTask(serializedLog).execute();
+        CuckooClock.setAlarm(applicationContext);
     }
 
     public static void insertSync(JSONObject serializedLog) {
+        if (beforeInsertFilter != null) {
+            serializedLog = beforeInsertFilter.beforeInsert(serializedLog);
+        }
         logHouseStorage.insert(serializedLog);
-        CuckooClock.setAlarm(applicationContext);
     }
 
     public static void ship() {
@@ -69,7 +75,11 @@ public class LogHouseManager {
 
         while (!records.isEmpty()) {
             List<JSONObject> serializedLogs = records.getSerializedLogs();
-            serializedLogs = beforeShipFilter.beforeShip(serializedLogs);
+
+            if (beforeShipFilter != null) {
+                serializedLogs = beforeShipFilter.beforeShip(serializedLogs);
+            }
+
             // TODO: validate logs
 
             boolean isShipSucceeded = deliveryPerson.onShip(serializedLogs);

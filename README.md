@@ -25,37 +25,30 @@ Initialize LogHouse on application created.
 
 ```java
 public class DemoApplication extends Application {
-    public static final String TAG = DemoApplication.class.getSimpleName();
-
     private DeliveryPerson deliveryPerson = new DeliveryPerson() {
         @Override
-        public boolean onShip(List<String> serializedLogs) {
+        public boolean onShip(List<JSONObject> serializedLogs) {
             // send logs to your server
             return true;
         }
     };
 
-    private AroundShipFilter aroundShipFilter = new AroundShipFilter() {
+    private BeforeInsertFilter beforeInsertFilter = new BeforeInsertFilter() {
         @Override
-        public List<String> beforeShip(List<String> serializedLogs) {
+        public JSONObject beforeInsert(JSONObject serializedLog) {
             // set common params, filtering, etc...
-            return serializedLogs;
-        }
-
-        @Override
-        public void afterShip(List<String> serializedLogs) {
-            // you can see sent logs
+            return serializedLog;
         }
     };
 
     @Override
     public void onCreate() {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this, deliveryPerson)
-                .shipInterval(5, Calendar.MINUTE)
-                .aroundShipFilter(aroundShipFilter)
+                .logsPerRequest(3)
+                .shipInterval(3, Calendar.SECOND)
+                .beforeInsertFilter(beforeInsertFilter)
                 .build();
         LogHouseManager.initialize(conf);
-    }
 }
 ```
 

@@ -3,6 +3,7 @@ package com.example.loghouse;
 import android.app.Application;
 import android.util.Log;
 
+import com.cookpad.android.loghouse.handlers.BeforeInsertFilter;
 import com.cookpad.android.loghouse.handlers.BeforeShipFilter;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
@@ -26,6 +27,14 @@ public class DemoApplication extends Application {
         }
     };
 
+    private BeforeInsertFilter beforeInsertFilter = new BeforeInsertFilter() {
+        @Override
+        public JSONObject beforeInsert(JSONObject serializedLog) {
+            Log.d(TAG, "beforeInsert is called");
+            return serializedLog;
+        }
+    };
+
     private BeforeShipFilter beforeShipFilter = new BeforeShipFilter() {
         @Override
         public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
@@ -39,6 +48,7 @@ public class DemoApplication extends Application {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this, deliveryPerson)
                 .logsPerRequest(3)
                 .shipInterval(3, Calendar.SECOND)
+                .beforeInsertFilter(beforeInsertFilter)
                 .beforeShipFilter(beforeShipFilter)
                 .build();
         LogHouseManager.initialize(conf);
