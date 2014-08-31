@@ -5,6 +5,7 @@ import android.content.Context;
 import com.cookpad.android.loghouse.handlers.AroundShipFilter;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
+import com.cookpad.android.loghouse.storage.Records;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -17,6 +18,7 @@ public class LogHouseManager {
     private static Context applicationContext;
     private static DeliveryPerson deliveryPerson;
     private static Gson gson;
+    private static int logsPerRequest;
     private static AroundShipFilter aroundShipFilter;
     private static LogHouseDbHelper logHouseStorage;
     private static CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
@@ -30,6 +32,7 @@ public class LogHouseManager {
         applicationContext = conf.getApplicationContext();
         deliveryPerson = conf.getDeliveryPerson();
         gson = conf.getGson();
+        logsPerRequest = conf.getLogsPerRequest();
         CuckooClock.setup(onAlarmListener, conf.getShipIntervalTime(), conf.getShipIntervalTimeUnit());
         aroundShipFilter = conf.getAroundShipFilter();
         logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
@@ -49,11 +52,24 @@ public class LogHouseManager {
     }
 
     public static void ship() {
-        List<JSONObject> serializedLogs = logHouseStorage.select();
-        serializedLogs = aroundShipFilter.beforeShip(serializedLogs);
-        // validate
-        deliveryPerson.onShip(serializedLogs);
-        aroundShipFilter.afterShip(serializedLogs);
-        logHouseStorage.delete();
+        ship(logsPerRequest);
+    }
+
+    public static void ship(int logsPerRequest) {
+        Records records = logHouseStorage.select(logsPerRequest);
+        if (records.isEmpty()) {
+            return;
+        }
+
+        while (!records.isEmpty()) {
+            List<JSONObject> serializedLogs = records.getSerializedLogs();
+            serializedLogs = aroundShipFilter.beforeShip(serializedLogs);
+            // TODO: validate logs
+            deliveryPerson.onShip(serializedLogs);
+            aroundShipFilter.afterShip(serializedLogs);
+
+            logHouseStorage.delete(records);
+            records = logHouseStorage.select(logsPerRequest);
+        }
     }
 }

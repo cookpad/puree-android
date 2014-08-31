@@ -9,9 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorage {
     private static final String TAG = LogHouseDbHelper.class.getSimpleName();
     private static final String DATABASE_NAME = "log_house";
@@ -32,14 +29,18 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
         db.insert(TABLE_NAME, null, contentValues);
     }
 
-    public List<JSONObject> select() {
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-        List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
+    public Records select(int logsPerRequest) {
+        String query = "SELECT * FROM " + TABLE_NAME +
+                " ORDER BY id ASC" +
+                " LIMIT " + logsPerRequest;
+        Cursor cursor = db.rawQuery(query, null);
+
+        Records records = new Records();
         try {
             while (cursor.moveToNext()) {
                 try {
-                    JSONObject serializedLog = new JSONObject(cursor.getString(1));
-                    serializedLogs.add(serializedLog);
+                    Record record = new Record(cursor);
+                    records.add(record);
                 } catch (JSONException e) {
                     // continue
                 }
@@ -47,19 +48,23 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
         } finally {
             cursor.close();
         }
-        return serializedLogs;
+
+        return records;
     }
 
-    public void delete() {
-        db.delete(TABLE_NAME, null, null);
+    public void delete(Records records) {
+        String query = "DELETE FROM " + TABLE_NAME +
+                " WHERE id IN (" + records.getIdsAsString() + ")";
+        db.execSQL(query);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
+        String query = "CREATE TABLE " + TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_NAME_LOG + " TEXT" +
-                ")");
+                ")";
+        db.execSQL(query);
     }
 
     @Override

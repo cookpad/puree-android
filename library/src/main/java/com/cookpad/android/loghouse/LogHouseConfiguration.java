@@ -12,6 +12,7 @@ public class LogHouseConfiguration {
     private Context applicationContext;
     private DeliveryPerson deliveryPerson;
     private Gson gson;
+    private int logsPerRequest;
     private int shipIntervalTime;
     private int shipIntervalTimeUnit;
     private AroundShipFilter aroundShipFilter;
@@ -28,6 +29,10 @@ public class LogHouseConfiguration {
         return gson;
     }
 
+    public int getLogsPerRequest() {
+        return logsPerRequest;
+    }
+
     public int getShipIntervalTime() {
         return shipIntervalTime;
     }
@@ -41,11 +46,12 @@ public class LogHouseConfiguration {
     }
 
     public LogHouseConfiguration(Context applicationContext, DeliveryPerson deliveryPerson,
-                                 Gson gson, AroundShipFilter aroundShipFilter,
+                                 Gson gson, int logsPerRequest, AroundShipFilter aroundShipFilter,
                                  int shipIntervalTime, int shipIntervalTimeUnit) {
         this.applicationContext = applicationContext;
         this.deliveryPerson = deliveryPerson;
         this.gson = gson;
+        this.logsPerRequest = logsPerRequest;
         this.shipIntervalTime = shipIntervalTime;
         this.shipIntervalTimeUnit = shipIntervalTimeUnit;
         this.aroundShipFilter = aroundShipFilter;
@@ -55,6 +61,7 @@ public class LogHouseConfiguration {
         private Context applicationContext;
         private DeliveryPerson deliveryPerson;
         private Gson gson = new Gson();
+        private int logsPerRequest = 1000;
         private AroundShipFilter aroundShipFilter = new AroundShipFilter();
         private int shipIntervalTime = 5;
         private int shipIntervalTimeUnit = Calendar.MINUTE;
@@ -66,6 +73,11 @@ public class LogHouseConfiguration {
 
         public Builder gson(Gson gson) {
             this.gson = gson;
+            return this;
+        }
+
+        public Builder logsPerRequest(int logsPerRequest) {
+            this.logsPerRequest = logsPerRequest;
             return this;
         }
 
@@ -85,6 +97,7 @@ public class LogHouseConfiguration {
                     applicationContext,
                     deliveryPerson,
                     gson,
+                    logsPerRequest,
                     aroundShipFilter,
                     shipIntervalTime,
                     shipIntervalTimeUnit);

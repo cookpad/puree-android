@@ -41,6 +41,7 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this, deliveryPerson)
+                .logsPerRequest(3)
                 .shipInterval(3, Calendar.SECOND)
                 .aroundShipFilter(aroundShipFilter)
                 .build();
