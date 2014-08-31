@@ -18,10 +18,11 @@ public class DemoApplication extends Application {
 
     private DeliveryPerson deliveryPerson = new DeliveryPerson() {
         @Override
-        public void onShip(List<JSONObject> serializedLogs) {
+        public boolean onShip(List<JSONObject> serializedLogs) {
             for (JSONObject serializedLog : serializedLogs) {
                 Log.d(TAG, serializedLog.toString());
             }
+            return true;
         }
     };
 

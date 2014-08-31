@@ -14,8 +14,9 @@ public class LogHouseConfigurationTest extends AndroidTestCase {
     public void checkDefaultValues() {
         DeliveryPerson deliveryPerson = new DeliveryPerson() {
             @Override
-            public void onShip(List<JSONObject> serializedLogs) {
+            public boolean onShip(List<JSONObject> serializedLogs) {
                 // do nothing
+                return true;
             }
         };
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(getContext(), deliveryPerson)

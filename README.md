@@ -29,8 +29,9 @@ public class DemoApplication extends Application {
 
     private DeliveryPerson deliveryPerson = new DeliveryPerson() {
         @Override
-        public void onShip(List<String> serializedLogs) {
+        public boolean onShip(List<String> serializedLogs) {
             // send logs to your server
+            return true;
         }
     };
 

@@ -71,7 +71,13 @@ public class LogHouseManager {
             List<JSONObject> serializedLogs = records.getSerializedLogs();
             serializedLogs = aroundShipFilter.beforeShip(serializedLogs);
             // TODO: validate logs
-            deliveryPerson.onShip(serializedLogs);
+
+            boolean isShipSucceeded = deliveryPerson.onShip(serializedLogs);
+            if (!isShipSucceeded) {
+                // TODO: retry later
+                break;
+            }
+
             aroundShipFilter.afterShip(serializedLogs);
 
             logHouseStorage.delete(records);
