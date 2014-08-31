@@ -4,10 +4,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class AroundShipFilter {
+public class BeforeShipFilter {
     public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
         return serializedLogs;
     }
-
-    public void afterShip(List<JSONObject> serializedLogs) {}
 }

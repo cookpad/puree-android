@@ -2,7 +2,7 @@ package com.cookpad.android.loghouse;
 
 import android.content.Context;
 
-import com.cookpad.android.loghouse.handlers.AroundShipFilter;
+import com.cookpad.android.loghouse.handlers.BeforeShipFilter;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.cookpad.android.loghouse.storage.Records;
@@ -21,7 +21,7 @@ public class LogHouseManager {
     private static DeliveryPerson deliveryPerson;
     private static Gson gson;
     private static int logsPerRequest;
-    private static AroundShipFilter aroundShipFilter;
+    private static BeforeShipFilter beforeShipFilter;
     private static LogHouseDbHelper logHouseStorage;
     private static CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
         @Override
@@ -36,7 +36,7 @@ public class LogHouseManager {
         gson = conf.getGson();
         logsPerRequest = conf.getLogsPerRequest();
         CuckooClock.setup(onAlarmListener, conf.getShipIntervalTime(), conf.getShipIntervalTimeUnit());
-        aroundShipFilter = conf.getAroundShipFilter();
+        beforeShipFilter = conf.getBeforeShipFilter();
         logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
     }
 
@@ -69,7 +69,7 @@ public class LogHouseManager {
 
         while (!records.isEmpty()) {
             List<JSONObject> serializedLogs = records.getSerializedLogs();
-            serializedLogs = aroundShipFilter.beforeShip(serializedLogs);
+            serializedLogs = beforeShipFilter.beforeShip(serializedLogs);
             // TODO: validate logs
 
             boolean isShipSucceeded = deliveryPerson.onShip(serializedLogs);
@@ -77,8 +77,6 @@ public class LogHouseManager {
                 // TODO: retry later
                 break;
             }
-
-            aroundShipFilter.afterShip(serializedLogs);
 
             logHouseStorage.delete(records);
             records = logHouseStorage.select(logsPerRequest);

@@ -2,7 +2,7 @@ package com.cookpad.android.loghouse;
 
 import android.content.Context;
 
-import com.cookpad.android.loghouse.handlers.AroundShipFilter;
+import com.cookpad.android.loghouse.handlers.BeforeShipFilter;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.google.gson.Gson;
 
@@ -15,7 +15,7 @@ public class LogHouseConfiguration {
     private int logsPerRequest;
     private int shipIntervalTime;
     private int shipIntervalTimeUnit;
-    private AroundShipFilter aroundShipFilter;
+    private BeforeShipFilter beforeShipFilter;
 
     public Context getApplicationContext() {
         return applicationContext;
@@ -41,12 +41,12 @@ public class LogHouseConfiguration {
         return shipIntervalTimeUnit;
     }
 
-    public AroundShipFilter getAroundShipFilter() {
-        return aroundShipFilter;
+    public BeforeShipFilter getBeforeShipFilter() {
+        return beforeShipFilter;
     }
 
     public LogHouseConfiguration(Context applicationContext, DeliveryPerson deliveryPerson,
-                                 Gson gson, int logsPerRequest, AroundShipFilter aroundShipFilter,
+                                 Gson gson, int logsPerRequest, BeforeShipFilter beforeShipFilter,
                                  int shipIntervalTime, int shipIntervalTimeUnit) {
         this.applicationContext = applicationContext;
         this.deliveryPerson = deliveryPerson;
@@ -54,7 +54,7 @@ public class LogHouseConfiguration {
         this.logsPerRequest = logsPerRequest;
         this.shipIntervalTime = shipIntervalTime;
         this.shipIntervalTimeUnit = shipIntervalTimeUnit;
-        this.aroundShipFilter = aroundShipFilter;
+        this.beforeShipFilter = beforeShipFilter;
     }
 
     public static class Builder {
@@ -62,7 +62,7 @@ public class LogHouseConfiguration {
         private DeliveryPerson deliveryPerson;
         private Gson gson = new Gson();
         private int logsPerRequest = 1000;
-        private AroundShipFilter aroundShipFilter = new AroundShipFilter();
+        private BeforeShipFilter beforeShipFilter = new BeforeShipFilter();
         private int shipIntervalTime = 5;
         private int shipIntervalTimeUnit = Calendar.MINUTE;
 
@@ -81,8 +81,8 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder aroundShipFilter(AroundShipFilter aroundShipFilter) {
-            this.aroundShipFilter = aroundShipFilter;
+        public Builder beforeShipFilter(BeforeShipFilter beforeShipFilter) {
+            this.beforeShipFilter = beforeShipFilter;
             return this;
         }
 
@@ -98,7 +98,7 @@ public class LogHouseConfiguration {
                     deliveryPerson,
                     gson,
                     logsPerRequest,
-                    aroundShipFilter,
+                    beforeShipFilter,
                     shipIntervalTime,
                     shipIntervalTimeUnit);
         }

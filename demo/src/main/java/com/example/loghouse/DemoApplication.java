@@ -3,7 +3,7 @@ package com.example.loghouse;
 import android.app.Application;
 import android.util.Log;
 
-import com.cookpad.android.loghouse.handlers.AroundShipFilter;
+import com.cookpad.android.loghouse.handlers.BeforeShipFilter;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
 import com.cookpad.android.loghouse.LogHouseManager;
@@ -26,16 +26,11 @@ public class DemoApplication extends Application {
         }
     };
 
-    private AroundShipFilter aroundShipFilter = new AroundShipFilter() {
+    private BeforeShipFilter beforeShipFilter = new BeforeShipFilter() {
         @Override
         public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
             Log.d(TAG, "beforeShip is called");
             return serializedLogs;
-        }
-
-        @Override
-        public void afterShip(List<JSONObject> serializedLogs) {
-            Log.d(TAG, "afterShip is called");
         }
     };
 
@@ -44,7 +39,7 @@ public class DemoApplication extends Application {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this, deliveryPerson)
                 .logsPerRequest(3)
                 .shipInterval(3, Calendar.SECOND)
-                .aroundShipFilter(aroundShipFilter)
+                .beforeShipFilter(beforeShipFilter)
                 .build();
         LogHouseManager.initialize(conf);
     }
