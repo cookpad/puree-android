@@ -2,7 +2,7 @@ package com.example.loghouse.logs;
 
 import com.cookpad.android.loghouse.Log;
 
-public class ClickLog implements Log {
+public class ClickLog extends Log {
     private String page;
     private String label;
 

@@ -2,10 +2,12 @@ package com.cookpad.android.loghouse;
 
 import android.os.AsyncTask;
 
-class IntertAsyncTask extends AsyncTask<Void, Void, Void> {
-    private String serializedLog;
+import org.json.JSONObject;
 
-    public IntertAsyncTask(String serializedLog) {
+class IntertAsyncTask extends AsyncTask<Void, Void, Void> {
+    private JSONObject serializedLog;
+
+    public IntertAsyncTask(JSONObject serializedLog) {
         this.serializedLog = serializedLog;
     }
 

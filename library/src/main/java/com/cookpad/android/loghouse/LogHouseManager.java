@@ -7,6 +7,8 @@ import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class LogHouseManager {
@@ -34,17 +36,20 @@ public class LogHouseManager {
     }
 
     public static void ask(Log log) {
-        String serializedLog = gson.toJson(log);
+        ask(log.toJSON(gson));
+    }
+
+    public static void ask(JSONObject serializedLog) {
         new IntertAsyncTask(serializedLog).execute();
     }
 
-    static void insertSync(String serializedLog) {
+    static void insertSync(JSONObject serializedLog) {
         logHouseStorage.insert(serializedLog);
         CuckooClock.setAlarm(applicationContext);
     }
 
     public static void ship() {
-        List<String> serializedLogs = logHouseStorage.select();
+        List<JSONObject> serializedLogs = logHouseStorage.select();
         serializedLogs = aroundShipFilter.beforeShip(serializedLogs);
         // validate
         deliveryPerson.onShip(serializedLogs);

@@ -1,11 +1,13 @@
 package com.cookpad.android.loghouse.handlers;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class AroundShipFilter {
-    public List<String> beforeShip(List<String> serializedLogs) {
+    public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
         return serializedLogs;
     }
 
-    public void afterShip(List<String> serializedLogs) {}
+    public void afterShip(List<JSONObject> serializedLogs) {}
 }

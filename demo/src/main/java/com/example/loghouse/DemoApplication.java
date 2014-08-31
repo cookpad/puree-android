@@ -8,6 +8,8 @@ import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
 import com.cookpad.android.loghouse.LogHouseManager;
 
+import org.json.JSONObject;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -16,22 +18,22 @@ public class DemoApplication extends Application {
 
     private DeliveryPerson deliveryPerson = new DeliveryPerson() {
         @Override
-        public void onShip(List<String> serializedLogs) {
-            for (String serializedLog : serializedLogs) {
-                Log.d(TAG, serializedLog);
+        public void onShip(List<JSONObject> serializedLogs) {
+            for (JSONObject serializedLog : serializedLogs) {
+                Log.d(TAG, serializedLog.toString());
             }
         }
     };
 
     private AroundShipFilter aroundShipFilter = new AroundShipFilter() {
         @Override
-        public List<String> beforeShip(List<String> serializedLogs) {
+        public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
             Log.d(TAG, "beforeShip is called");
             return serializedLogs;
         }
 
         @Override
-        public void afterShip(List<String> serializedLogs) {
+        public void afterShip(List<JSONObject> serializedLogs) {
             Log.d(TAG, "afterShip is called");
         }
     };

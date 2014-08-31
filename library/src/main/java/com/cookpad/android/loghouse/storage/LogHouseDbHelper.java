@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,18 +26,23 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
         db = getWritableDatabase();
     }
 
-    public void insert(String serializedLog) {
+    public void insert(JSONObject serializedLog) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME_LOG, serializedLog);
+        contentValues.put(COLUMN_NAME_LOG, serializedLog.toString());
         db.insert(TABLE_NAME, null, contentValues);
     }
 
-    public List<String> select() {
+    public List<JSONObject> select() {
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-        List<String> serializedLogs = new ArrayList<String>();
+        List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
         try {
             while (cursor.moveToNext()) {
-                serializedLogs.add(cursor.getString(1));
+                try {
+                    JSONObject serializedLog = new JSONObject(cursor.getString(1));
+                    serializedLogs.add(serializedLog);
+                } catch (JSONException e) {
+                    // continue
+                }
             }
         } finally {
             cursor.close();

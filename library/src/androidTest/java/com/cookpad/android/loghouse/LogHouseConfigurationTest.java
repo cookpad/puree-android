@@ -4,6 +4,8 @@ import android.test.AndroidTestCase;
 
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 
+import org.json.JSONObject;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class LogHouseConfigurationTest extends AndroidTestCase {
     public void checkDefaultValues() {
         DeliveryPerson deliveryPerson = new DeliveryPerson() {
             @Override
-            public void onShip(List<String> serializedLogs) {
+            public void onShip(List<JSONObject> serializedLogs) {
                 // do nothing
             }
         };
