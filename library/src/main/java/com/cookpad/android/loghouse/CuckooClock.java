@@ -48,7 +48,6 @@ public class CuckooClock extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         hasAlreadySet = false;
-        android.util.Log.d(TAG, "onReceive is called");
         onAlarmListener.onAlarm();
     }
 }
