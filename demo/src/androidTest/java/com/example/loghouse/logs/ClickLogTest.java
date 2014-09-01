@@ -5,9 +5,9 @@ import android.test.AndroidTestCase;
 import com.cookpad.android.loghouse.Log;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
 import com.cookpad.android.loghouse.LogHouseManager;
-import com.cookpad.android.loghouse.handlers.BeforeShipFilter;
+import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
-import com.example.loghouse.AddRequiredParamsFilter;
+import com.example.loghouse.AddRequiredParamsAction;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -24,7 +24,7 @@ public class ClickLogTest extends AndroidTestCase {
     };
 
     public void testCheckFormat() {
-        BeforeShipFilter beforeShipFilter = new BeforeShipFilter() {
+        BeforeShipAction beforeShipAction = new BeforeShipAction() {
             @Override
             public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
                 assertEquals(1, serializedLogs.size());
@@ -37,8 +37,8 @@ public class ClickLogTest extends AndroidTestCase {
         };
 
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(getContext(), deliveryPerson)
-                .beforeInsertFilter(new AddRequiredParamsFilter())
-                .beforeShipFilter(beforeShipFilter)
+                .beforeInsertFilter(new AddRequiredParamsAction())
+                .beforeShipFilter(beforeShipAction)
                 .build();
         LogHouseManager.initialize(conf);
 

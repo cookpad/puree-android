@@ -2,8 +2,8 @@ package com.cookpad.android.loghouse;
 
 import android.content.Context;
 
-import com.cookpad.android.loghouse.handlers.BeforeInsertFilter;
-import com.cookpad.android.loghouse.handlers.BeforeShipFilter;
+import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
+import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.cookpad.android.loghouse.storage.Records;
@@ -23,8 +23,8 @@ public class LogHouseManager {
     private static DeliveryPerson deliveryPerson;
     private static Gson gson;
     private static int logsPerRequest;
-    private static BeforeInsertFilter beforeInsertFilter;
-    private static BeforeShipFilter beforeShipFilter;
+    private static BeforeInsertAction beforeInsertAction;
+    private static BeforeShipAction beforeShipAction;
     private static LogHouseDbHelper logHouseStorage;
     private static CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
         @Override
@@ -39,8 +39,8 @@ public class LogHouseManager {
         gson = conf.getGson();
         logsPerRequest = conf.getLogsPerRequest();
         CuckooClock.setup(onAlarmListener, conf.getShipIntervalTime(), conf.getShipIntervalTimeUnit());
-        beforeInsertFilter = conf.getBeforeInsertFilter();
-        beforeShipFilter = conf.getBeforeShipFilter();
+        beforeInsertAction = conf.getBeforeInsertAction();
+        beforeShipAction = conf.getBeforeShipAction();
         logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
     }
 
@@ -54,9 +54,9 @@ public class LogHouseManager {
     }
 
     public static void insertSync(JSONObject serializedLog) {
-        if (beforeInsertFilter != null) {
+        if (beforeInsertAction != null) {
             try {
-                serializedLog = beforeInsertFilter.beforeInsert(serializedLog);
+                serializedLog = beforeInsertAction.beforeInsert(serializedLog);
             } catch (JSONException e) {
                 // TODO: notify error
                 return;
@@ -82,8 +82,8 @@ public class LogHouseManager {
         while (!records.isEmpty()) {
             List<JSONObject> serializedLogs = records.getSerializedLogs();
 
-            if (beforeShipFilter != null) {
-                serializedLogs = beforeShipFilter.beforeShip(serializedLogs);
+            if (beforeShipAction != null) {
+                serializedLogs = beforeShipAction.beforeShip(serializedLogs);
             }
 
             // TODO: validate logs

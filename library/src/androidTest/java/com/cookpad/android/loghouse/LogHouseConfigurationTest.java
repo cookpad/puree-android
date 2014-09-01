@@ -27,7 +27,7 @@ public class LogHouseConfigurationTest extends AndroidTestCase {
         assertEquals(1000, conf.getLogsPerRequest());
         assertEquals(5, conf.getShipIntervalTime());
         assertEquals(Calendar.SECOND, conf.getShipIntervalTimeUnit());
-        assertNull(conf.getBeforeInsertFilter());
-        assertNull(conf.getBeforeShipFilter());
+        assertNull(conf.getBeforeInsertAction());
+        assertNull(conf.getBeforeShipAction());
     }
 }

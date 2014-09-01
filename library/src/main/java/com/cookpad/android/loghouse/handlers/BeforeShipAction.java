@@ -4,6 +4,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public interface BeforeShipFilter {
+public interface BeforeShipAction {
     public List<JSONObject> beforeShip(List<JSONObject> serializedLogs);
 }
