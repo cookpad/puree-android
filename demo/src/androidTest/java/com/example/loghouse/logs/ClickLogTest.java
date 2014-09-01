@@ -37,8 +37,8 @@ public class ClickLogTest extends AndroidTestCase {
         };
 
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(getContext(), deliveryPerson)
-                .beforeInsertFilter(new AddRequiredParamsAction())
-                .beforeShipFilter(beforeShipAction)
+                .beforeInsertAction(new AddRequiredParamsAction())
+                .beforeShipAction(beforeShipAction)
                 .build();
         LogHouseManager.initialize(conf);
 

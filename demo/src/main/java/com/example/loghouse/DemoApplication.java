@@ -39,8 +39,8 @@ public class DemoApplication extends Application {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this, deliveryPerson)
                 .logsPerRequest(3)
                 .shipInterval(3, Calendar.SECOND)
-                .beforeInsertFilter(new AddRequiredParamsAction())
-                .beforeShipFilter(beforeShipAction)
+                .beforeInsertAction(new AddRequiredParamsAction())
+                .beforeShipAction(beforeShipAction)
                 .build();
         LogHouseManager.initialize(conf);
     }

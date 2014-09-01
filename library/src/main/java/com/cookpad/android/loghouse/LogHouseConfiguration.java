@@ -101,12 +101,12 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder beforeInsertFilter(BeforeInsertAction beforeInsertAction) {
+        public Builder beforeInsertAction(BeforeInsertAction beforeInsertAction) {
             this.beforeInsertAction = beforeInsertAction;
             return this;
         }
 
-        public Builder beforeShipFilter(BeforeShipAction beforeShipAction) {
+        public Builder beforeShipAction(BeforeShipAction beforeShipAction) {
             this.beforeShipAction = beforeShipAction;
             return this;
         }
