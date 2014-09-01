@@ -5,7 +5,7 @@ import android.content.Context;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
 import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
-import com.cookpad.android.loghouse.tasks.ShipExecutor;
+import com.cookpad.android.loghouse.async.ShipExecutor;
 import com.google.gson.Gson;
 
 import java.util.Calendar;

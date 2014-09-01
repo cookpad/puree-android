@@ -7,8 +7,8 @@ import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.cookpad.android.loghouse.storage.Records;
-import com.cookpad.android.loghouse.tasks.InsertExecutor;
-import com.cookpad.android.loghouse.tasks.ShipExecutor;
+import com.cookpad.android.loghouse.async.InsertExecutor;
+import com.cookpad.android.loghouse.async.ShipExecutor;
 import com.google.gson.Gson;
 
 import org.json.JSONException;

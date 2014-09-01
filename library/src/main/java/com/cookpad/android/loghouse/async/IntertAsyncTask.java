@@ -1,4 +1,4 @@
-package com.cookpad.android.loghouse.tasks;
+package com.cookpad.android.loghouse.async;
 
 import android.os.AsyncTask;
 
