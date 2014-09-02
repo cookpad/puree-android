@@ -59,7 +59,7 @@ public class LogHouseManager {
 
     public static void insertSync(JSONObject serializedLog) {
         try {
-            serializedLog = beforeInsertAction.beforeInsert(serializedLog);
+            serializedLog = beforeInsertAction.call(serializedLog);
         } catch (JSONException e) {
             // TODO: notify error
             return;
@@ -83,10 +83,10 @@ public class LogHouseManager {
 
         while (!records.isEmpty()) {
             List<JSONObject> serializedLogs = records.getSerializedLogs();
-            serializedLogs = beforeShipAction.beforeShip(serializedLogs);
+            serializedLogs = beforeShipAction.call(serializedLogs);
             // TODO: validate logs
             boolean isShipSucceeded = deliveryPerson.onShip(serializedLogs);
-            afterShipAction.afterShip(serializedLogs);
+            afterShipAction.call(serializedLogs);
             if (!isShipSucceeded) {
                 // TODO: retry later
                 break;

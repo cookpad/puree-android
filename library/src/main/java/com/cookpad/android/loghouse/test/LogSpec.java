@@ -63,7 +63,7 @@ public class LogSpec {
     public void shouldBe(final Matcher matcher) {
         AfterShipAction afterShipAction = new AfterShipAction() {
             @Override
-            public void afterShip(List<JSONObject> serializedLogs) {
+            public void call(List<JSONObject> serializedLogs) {
                 try {
                     matcher.expect(serializedLogs);
                 } catch (JSONException e) {

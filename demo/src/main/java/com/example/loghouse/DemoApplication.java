@@ -28,8 +28,8 @@ public class DemoApplication extends Application {
 
     private BeforeShipAction beforeShipAction = new BeforeShipAction() {
         @Override
-        public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
-            Log.d(TAG, "beforeShip is called");
+        public List<JSONObject> call(List<JSONObject> serializedLogs) {
+            Log.d(TAG, "BeforeShipAction.call is called");
             return serializedLogs;
         }
     };

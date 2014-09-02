@@ -35,7 +35,7 @@ public class DemoApplication extends Application {
 
     private BeforeInsertAction beforeInsertAction = new BeforeInsertAction() {
         @Override
-        public JSONObject beforeInsert(JSONObject serializedLog) {
+        public JSONObject call(JSONObject serializedLog) {
             // set common params, filtering, etc...
             return serializedLog;
         }
