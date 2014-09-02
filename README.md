@@ -3,12 +3,13 @@ LogHouse
 
 ![](http://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Pfarr_Log_House.jpg/800px-Pfarr_Log_House.jpg)
 
-LogHouse is accommodation that have buffering, retrying... and more functions
-
 ## Description
 
-It is inefficient that send logs every time events are fired.
-LogHouse provides some functions like below
+**Sending logs from mobile app is difficult, isn't it?**
+
+It is inefficient that send logs every time events are fired. So you should implement buffering, retrying, validation, ... and more functions.
+
+LogHouse is a data collector for unified logging layer, which provides some functions like below
 
 - Buffering
  - Store logs on local storage until log was sent.
@@ -17,11 +18,11 @@ LogHouse provides some functions like below
 - Validation
  - Enable to receive broken logs.
 
-and more.
-
 ## Usage
 
-Initialize LogHouse on application created.
+### Initializing
+
+Configure LogHouse on application created.
 
 ```java
 public class DemoApplication extends Application {
@@ -52,7 +53,9 @@ public class DemoApplication extends Application {
 }
 ```
 
-Log should implements Log interface.
+### Sending logs
+
+Log class should implements Log interface.
 
 ```java
 public class ClickLog implements Log {
@@ -73,6 +76,30 @@ LogHouseManager.ask(new ClickLog("MainActivity", "Hello"));
 ```
 
 DeliveryPerson comes after a while.
+
+### Testing
+
+LogSpec provides utilities for tests.
+
+```java
+public class ClickLogTest extends AndroidTestCase {
+    public void testCheckFormat() {
+        new LogSpec(getContext())
+                .beforeInsertAction(new AddRequiredParamsAction())
+                .logs(new ClickLog("MainActivity", "Hello"), new ClickLog("MainActivity", "World"))
+                .shouldBe(new LogSpec.Matcher() {
+                    @Override
+                    public void expect(List<JSONObject> serializedLogs) throws JSONException {
+                        assertEquals(2, serializedLogs.size());
+                        JSONObject serializedLog = serializedLogs.get(0);
+                        assertEquals("MainActivity", serializedLog.getString("page"));
+                        assertEquals("Hello", serializedLog.getString("label"));
+                        assertTrue(serializedLog.has("event_time"));
+                    }
+                });
+    }
+}
+```
 
 ## Install
 
