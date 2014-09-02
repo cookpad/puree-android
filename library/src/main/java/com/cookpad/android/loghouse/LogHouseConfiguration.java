@@ -80,7 +80,7 @@ public class LogHouseConfiguration {
 
     public static class Builder {
         private Context applicationContext;
-        private DeliveryPerson deliveryPerson;
+        private DeliveryPerson deliveryPerson = DeliveryPerson.DEFAULT;
         private Gson gson = new Gson();
         private int logsPerRequest = ShipExecutor.DEFAULT_LOGS_PER_REQUEST;
         private int shipIntervalTime = 5;
