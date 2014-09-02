@@ -2,48 +2,28 @@ package com.example.loghouse.logs;
 
 import android.test.AndroidTestCase;
 
-import com.cookpad.android.loghouse.Log;
-import com.cookpad.android.loghouse.LogHouseConfiguration;
-import com.cookpad.android.loghouse.LogHouseManager;
-import com.cookpad.android.loghouse.handlers.BeforeShipAction;
-import com.cookpad.android.loghouse.handlers.DeliveryPerson;
+import com.cookpad.android.loghouse.test.LogSpec;
 import com.example.loghouse.AddRequiredParamsAction;
-import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
 public class ClickLogTest extends AndroidTestCase {
-
-    private DeliveryPerson deliveryPerson = new DeliveryPerson() {
-        @Override
-        public boolean onShip(List<JSONObject> serializedLogs) {
-            return true;
-        }
-    };
-
     public void testCheckFormat() {
-        BeforeShipAction beforeShipAction = new BeforeShipAction() {
-            @Override
-            public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
-                assertEquals(1, serializedLogs.size());
-                JSONObject serializedLog = serializedLogs.get(0);
-                assertTrue(serializedLog.has("page"));
-                assertTrue(serializedLog.has("label"));
-                assertTrue(serializedLog.has("event_time"));
-                return serializedLogs;
-            }
-        };
-
-        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(getContext(), deliveryPerson)
-                .beforeInsertAction(new AddRequiredParamsAction())
-                .beforeShipAction(beforeShipAction)
-                .build();
-        LogHouseManager.initialize(conf);
-
-        Log log = new ClickLog("MainActivity", "Hello");
-        LogHouseManager.insertSync(log.toJSON(new Gson()));
-        LogHouseManager.shipSync(1);
+        new LogSpec(getContext())
+                .action(new AddRequiredParamsAction())
+                .logs(new ClickLog("MainActivity", "Hello"), new ClickLog("MainActivity", "World"))
+                .shouldBe(new LogSpec.Matcher() {
+                    @Override
+                    public void expect(List<JSONObject> serializedLogs) throws JSONException {
+                        assertEquals(2, serializedLogs.size());
+                        JSONObject serializedLog = serializedLogs.get(0);
+                        assertEquals("MainActivity", serializedLog.getString("page"));
+                        assertEquals("Hello", serializedLog.getString("label"));
+                        assertTrue(serializedLog.has("event_time"));
+                    }
+                });
     }
 }
