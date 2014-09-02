@@ -6,6 +6,7 @@ import com.cookpad.android.loghouse.Log;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
 import com.cookpad.android.loghouse.LogHouseManager;
 import com.cookpad.android.loghouse.async.ShipExecutor;
+import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
 import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
@@ -21,6 +22,7 @@ public class LogSpec {
     private Context context;
     private Gson gson = new Gson();
     private BeforeInsertAction beforeInsertAction;
+    private BeforeShipAction beforeShipAction;
     private List<Log> logs;
 
     private static final DeliveryPerson DELIVERY_PERSON = new DeliveryPerson() {
@@ -39,8 +41,13 @@ public class LogSpec {
         return this;
     }
 
-    public LogSpec action(BeforeInsertAction beforeInsertAction) {
+    public LogSpec beforeInsertAction(BeforeInsertAction beforeInsertAction) {
         this.beforeInsertAction = beforeInsertAction;
+        return this;
+    }
+
+    public LogSpec beforeShipAction(BeforeShipAction beforeShipAction) {
+        this.beforeShipAction = beforeShipAction;
         return this;
     }
 
@@ -54,12 +61,11 @@ public class LogSpec {
     }
 
     public void shouldBe(final Matcher matcher) {
-        BeforeShipAction beforeShipAction = new BeforeShipAction() {
+        AfterShipAction afterShipAction = new AfterShipAction() {
             @Override
-            public List<JSONObject> beforeShip(List<JSONObject> serializedLogs) {
+            public void afterShip(List<JSONObject> serializedLogs) {
                 try {
                     matcher.expect(serializedLogs);
-                    return serializedLogs;
                 } catch (JSONException e) {
                     throw new RuntimeException(e.getMessage());
                 }
@@ -68,7 +74,7 @@ public class LogSpec {
 
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(context, DELIVERY_PERSON)
                 .beforeInsertAction(beforeInsertAction)
-                .beforeShipAction(beforeShipAction)
+                .afterShipAction(afterShipAction)
                 .build();
 
         LogHouseManager.initialize(conf);

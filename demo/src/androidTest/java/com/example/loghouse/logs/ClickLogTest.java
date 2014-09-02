@@ -13,7 +13,7 @@ import java.util.List;
 public class ClickLogTest extends AndroidTestCase {
     public void testCheckFormat() {
         new LogSpec(getContext())
-                .action(new AddRequiredParamsAction())
+                .beforeInsertAction(new AddRequiredParamsAction())
                 .logs(new ClickLog("MainActivity", "Hello"), new ClickLog("MainActivity", "World"))
                 .shouldBe(new LogSpec.Matcher() {
                     @Override

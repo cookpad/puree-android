@@ -2,6 +2,7 @@ package com.cookpad.android.loghouse;
 
 import android.content.Context;
 
+import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
 import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.cookpad.android.loghouse.handlers.DeliveryPerson;
@@ -25,6 +26,7 @@ public class LogHouseManager {
     private static int logsPerRequest;
     private static BeforeInsertAction beforeInsertAction;
     private static BeforeShipAction beforeShipAction;
+    private static AfterShipAction afterShipAction;
     private static LogHouseDbHelper logHouseStorage;
     private static CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
         @Override
@@ -41,6 +43,8 @@ public class LogHouseManager {
         CuckooClock.setup(onAlarmListener, conf.getShipIntervalTime(), conf.getShipIntervalTimeUnit());
         beforeInsertAction = conf.getBeforeInsertAction();
         beforeShipAction = conf.getBeforeShipAction();
+        afterShipAction = conf.getAfterShipAction();
+
         logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
     }
 
@@ -54,13 +58,11 @@ public class LogHouseManager {
     }
 
     public static void insertSync(JSONObject serializedLog) {
-        if (beforeInsertAction != null) {
-            try {
-                serializedLog = beforeInsertAction.beforeInsert(serializedLog);
-            } catch (JSONException e) {
-                // TODO: notify error
-                return;
-            }
+        try {
+            serializedLog = beforeInsertAction.beforeInsert(serializedLog);
+        } catch (JSONException e) {
+            // TODO: notify error
+            return;
         }
         logHouseStorage.insert(serializedLog);
     }
@@ -81,14 +83,10 @@ public class LogHouseManager {
 
         while (!records.isEmpty()) {
             List<JSONObject> serializedLogs = records.getSerializedLogs();
-
-            if (beforeShipAction != null) {
-                serializedLogs = beforeShipAction.beforeShip(serializedLogs);
-            }
-
+            serializedLogs = beforeShipAction.beforeShip(serializedLogs);
             // TODO: validate logs
-
             boolean isShipSucceeded = deliveryPerson.onShip(serializedLogs);
+            afterShipAction.afterShip(serializedLogs);
             if (!isShipSucceeded) {
                 // TODO: retry later
                 break;
