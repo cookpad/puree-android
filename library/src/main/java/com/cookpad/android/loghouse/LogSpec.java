@@ -41,8 +41,9 @@ public class LogSpec {
         AfterShipAction afterShipAction = new AfterShipAction() {
             @Override
             public void call(String type, List<JSONObject> serializedLogs) {
-                if (target.equals(type))
-                results.addAll(serializedLogs);
+                if (target.equals(type)) {
+                    results.addAll(serializedLogs);
+                }
                 latch.countDown();
             }
         };

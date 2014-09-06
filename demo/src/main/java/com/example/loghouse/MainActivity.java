@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.cookpad.android.loghouse.LogHouse;
 import com.example.loghouse.logs.ClickLog;
+import com.example.loghouse.logs.PvLog;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -15,6 +16,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        LogHouse.in(new PvLog(this));
         setupViews();
     }
 
