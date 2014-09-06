@@ -63,7 +63,7 @@ public class LogHouse {
                 serializedLog = beforeInsertAction.call(serializedLog);
                 serializedLogs.add(serializedLog);
                 emit(serializedLogs);
-                afterShipAction.call(serializedLogs);
+                afterShipAction.call(type(), serializedLogs);
             } catch (JSONException e) {
                 // do nothing
             }
@@ -122,7 +122,7 @@ public class LogHouse {
             while (!records.isEmpty()) {
                 List<JSONObject> serializedLogs = records.getSerializedLogs();
                 boolean isShipSucceeded = emit(serializedLogs);
-                afterShipAction.call(serializedLogs);
+                afterShipAction.call(type(), serializedLogs);
                 if (!isShipSucceeded) {
                     // TODO: retry later
                     break;

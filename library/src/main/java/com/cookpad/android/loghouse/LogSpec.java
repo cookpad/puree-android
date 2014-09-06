@@ -9,10 +9,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class LogSpec {
     private LogHouseConfiguration conf;
     private List<Log> logs;
+    private String target;
 
     public LogSpec(LogHouseConfiguration conf) {
         this.conf = conf;
@@ -27,13 +29,19 @@ public class LogSpec {
         return this;
     }
 
+    public LogSpec target(String type) {
+        this.target = type;
+        return this;
+    }
+
     public void shouldBe(Matcher matcher) {
         final CountDownLatch latch = new CountDownLatch(logs.size());
         final List<JSONObject> results = new ArrayList<JSONObject>();
 
         AfterShipAction afterShipAction = new AfterShipAction() {
             @Override
-            public void call(List<JSONObject> serializedLogs) {
+            public void call(String type, List<JSONObject> serializedLogs) {
+                if (target.equals(type))
                 results.addAll(serializedLogs);
                 latch.countDown();
             }
@@ -47,8 +55,11 @@ public class LogSpec {
         }
 
         try {
+            latch.await(30, TimeUnit.MILLISECONDS);
             matcher.expect(results);
         } catch (JSONException e) {
+            throw new RuntimeException(e.getMessage());
+        } catch (InterruptedException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
