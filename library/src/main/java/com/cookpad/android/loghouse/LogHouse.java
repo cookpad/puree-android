@@ -34,11 +34,11 @@ public class LogHouse {
         logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
     }
 
-    public static void ask(Log log) {
-        ask(log.type(), log.toJSON(gson));
+    public static void in(Log log) {
+        in(log.type(), log.toJSON(gson));
     }
 
-    private static void ask(String type, JSONObject serializedLog) {
+    private static void in(String type, JSONObject serializedLog) {
         for (Output output : outputs) {
             if (output.type().equals(type)) {
                 output.start(serializedLog);

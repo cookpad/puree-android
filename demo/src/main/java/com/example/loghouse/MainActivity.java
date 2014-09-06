@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void trackClickEvent() {
-        LogHouse.ask(new ClickLog("MainActivity", "track"));
+        LogHouse.in(new ClickLog("MainActivity", "track"));
     }
 
     @Override

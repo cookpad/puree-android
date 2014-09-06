@@ -51,7 +51,7 @@ public class LogSpec {
         LogHouse.initialize(conf);
 
         for (Log log : logs) {
-            LogHouse.ask(log);
+            LogHouse.in(log);
         }
 
         try {
