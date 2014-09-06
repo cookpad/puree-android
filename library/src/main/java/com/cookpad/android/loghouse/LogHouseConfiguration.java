@@ -10,19 +10,16 @@ import com.cookpad.android.loghouse.plugins.OutLogcat;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class LogHouseConfiguration {
     private Context applicationContext;
     private Gson gson;
     private int logsPerRequest;
-    private int shipIntervalTime;
-    private int shipIntervalTimeUnit;
     private BeforeInsertAction beforeInsertAction;
     private BeforeShipAction beforeShipAction;
     private AfterShipAction afterShipAction;
-    private List<LogHouseOutput> outputs = new ArrayList<LogHouseOutput>() {{
+    private List<LogHouse.Output> outputs = new ArrayList<LogHouse.Output>() {{
         add(new OutLogcat());
     }};
 
@@ -38,14 +35,6 @@ public class LogHouseConfiguration {
         return logsPerRequest;
     }
 
-    public int getShipIntervalTime() {
-        return shipIntervalTime;
-    }
-
-    public int getShipIntervalTimeUnit() {
-        return shipIntervalTimeUnit;
-    }
-
     public BeforeInsertAction getBeforeInsertAction() {
         return beforeInsertAction;
     }
@@ -58,23 +47,19 @@ public class LogHouseConfiguration {
         return afterShipAction;
     }
 
-    public List<LogHouseOutput> getOutputs() {
+    public List<LogHouse.Output> getOutputs() {
         return outputs;
     }
 
     public LogHouseConfiguration(Context applicationContext,
                                  Gson gson,
                                  int logsPerRequest,
-                                 int shipIntervalTime,
-                                 int shipIntervalTimeUnit,
                                  BeforeInsertAction beforeInsertAction,
                                  BeforeShipAction beforeShipAction,
                                  AfterShipAction afterShipAction) {
         this.applicationContext = applicationContext;
         this.gson = gson;
         this.logsPerRequest = logsPerRequest;
-        this.shipIntervalTime = shipIntervalTime;
-        this.shipIntervalTimeUnit = shipIntervalTimeUnit;
         this.beforeInsertAction = beforeInsertAction;
         this.beforeShipAction = beforeShipAction;
         this.afterShipAction = afterShipAction;
@@ -84,8 +69,6 @@ public class LogHouseConfiguration {
         private Context applicationContext;
         private Gson gson = new Gson();
         private int logsPerRequest = ShipExecutor.DEFAULT_LOGS_PER_REQUEST;
-        private int shipIntervalTime = 5;
-        private int shipIntervalTimeUnit = Calendar.MINUTE;
         private BeforeInsertAction beforeInsertAction = BeforeInsertAction.DEFAULT;
         private BeforeShipAction beforeShipAction = BeforeShipAction.DEFAULT;
         private AfterShipAction afterShipAction = AfterShipAction.DEFAULT;
@@ -101,12 +84,6 @@ public class LogHouseConfiguration {
 
         public Builder logsPerRequest(int logsPerRequest) {
             this.logsPerRequest = logsPerRequest;
-            return this;
-        }
-
-        public Builder shipInterval(int shipIntervalTime, int shipIntervalTimeUnit) {
-            this.shipIntervalTime = shipIntervalTime;
-            this.shipIntervalTimeUnit = shipIntervalTimeUnit;
             return this;
         }
 
@@ -130,8 +107,6 @@ public class LogHouseConfiguration {
                     applicationContext,
                     gson,
                     logsPerRequest,
-                    shipIntervalTime,
-                    shipIntervalTimeUnit,
                     beforeInsertAction,
                     beforeShipAction,
                     afterShipAction);

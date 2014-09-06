@@ -4,7 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
-import com.cookpad.android.loghouse.LogHouseManager;
+import com.cookpad.android.loghouse.LogHouse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +30,7 @@ public class InsertExecutor extends IntentService {
     protected void onHandleIntent(Intent intent) {
         try {
             JSONObject serializedLog = new JSONObject(intent.getStringExtra(EXTRA_SERIALIZED_LOG));
-            LogHouseManager.insertSync(serializedLog);
+//            LogHouse.insertSync(serializedLog);
         } catch (JSONException e) {
             // do nothing
         }

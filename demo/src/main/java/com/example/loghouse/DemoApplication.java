@@ -3,13 +3,12 @@ package com.example.loghouse;
 import android.app.Application;
 import android.util.Log;
 
+import com.cookpad.android.loghouse.LogHouse;
 import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
-import com.cookpad.android.loghouse.LogHouseManager;
 
 import org.json.JSONObject;
 
-import java.util.Calendar;
 import java.util.List;
 
 public class DemoApplication extends Application {
@@ -27,10 +26,9 @@ public class DemoApplication extends Application {
     public void onCreate() {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this)
                 .logsPerRequest(3)
-                .shipInterval(3, Calendar.SECOND)
                 .beforeInsertAction(new AddRequiredParamsAction())
                 .beforeShipAction(beforeShipAction)
                 .build();
-        LogHouseManager.initialize(conf);
+        LogHouse.initialize(conf);
     }
 }

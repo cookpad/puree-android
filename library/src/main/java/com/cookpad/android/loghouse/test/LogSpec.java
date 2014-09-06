@@ -3,8 +3,8 @@ package com.cookpad.android.loghouse.test;
 import android.content.Context;
 
 import com.cookpad.android.loghouse.Log;
+import com.cookpad.android.loghouse.LogHouse;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
-import com.cookpad.android.loghouse.LogHouseManager;
 import com.cookpad.android.loghouse.async.ShipExecutor;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
@@ -69,11 +69,12 @@ public class LogSpec {
                 .afterShipAction(afterShipAction)
                 .build();
 
-        LogHouseManager.initialize(conf);
-        for (Log log : logs) {
-            LogHouseManager.insertSync(log.toJSON(gson));
-        }
-        LogHouseManager.shipSync(ShipExecutor.DEFAULT_LOGS_PER_REQUEST);
+        LogHouse.initialize(conf);
+        // TODO: impl later
+//        for (Log log : logs) {
+//            LogHouse.insertSync(log.toJSON(gson));
+//        }
+//        LogHouse.shipSync(ShipExecutor.DEFAULT_LOGS_PER_REQUEST);
     }
 
     public static interface Matcher {

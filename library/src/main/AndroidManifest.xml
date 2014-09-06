@@ -7,8 +7,5 @@
 
         <receiver android:name=".CuckooClock" />
 
-        <service android:name=".async.InsertExecutor" />
-        <service android:name=".async.ShipExecutor" />
-
     </application>
 </manifest>

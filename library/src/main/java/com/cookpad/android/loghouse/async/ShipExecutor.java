@@ -4,7 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
-import com.cookpad.android.loghouse.LogHouseManager;
+import com.cookpad.android.loghouse.LogHouse;
 
 public class ShipExecutor extends IntentService {
     public static final int DEFAULT_LOGS_PER_REQUEST = 1000;
@@ -28,6 +28,6 @@ public class ShipExecutor extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         int logsPerRequest = intent.getIntExtra(EXTRA_LOGS_PER_REQUEST, DEFAULT_LOGS_PER_REQUEST);
-        LogHouseManager.shipSync(logsPerRequest);
+//        LogHouse.shipSync(logsPerRequest);
     }
 }
