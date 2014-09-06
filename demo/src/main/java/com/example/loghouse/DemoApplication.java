@@ -6,6 +6,7 @@ import android.util.Log;
 import com.cookpad.android.loghouse.LogHouse;
 import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
+import com.cookpad.android.loghouse.plugins.OutBufferedLogcat;
 
 import org.json.JSONObject;
 
@@ -25,9 +26,9 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this)
-                .logsPerRequest(3)
                 .beforeInsertAction(new AddRequiredParamsAction())
                 .beforeShipAction(beforeShipAction)
+                .addOutput(new OutBufferedLogcat())
                 .build();
         LogHouse.initialize(conf);
     }

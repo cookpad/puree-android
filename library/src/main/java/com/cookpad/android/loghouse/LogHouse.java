@@ -1,7 +1,5 @@
 package com.cookpad.android.loghouse;
 
-import android.content.Context;
-
 import com.cookpad.android.loghouse.async.IntertAsyncTask;
 import com.cookpad.android.loghouse.async.ShipAsyncTask;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
@@ -15,20 +13,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class LogHouse {
     private static final String TAG = LogHouse.class.getSimpleName();
 
-    private static Context applicationContext;
     private static Gson gson;
     private static BeforeInsertAction beforeInsertAction;
     private static BeforeShipAction beforeShipAction;
     private static List<Output> outputs;
     private static LogHouseDbHelper logHouseStorage;
     public static void initialize(LogHouseConfiguration conf) {
-        applicationContext = conf.getApplicationContext();
         gson = conf.getGson();
         beforeInsertAction = conf.getBeforeInsertAction();
         beforeShipAction = conf.getBeforeShipAction();
@@ -69,28 +64,26 @@ public class LogHouse {
     }
 
     public static abstract class BufferedOutput extends Output {
-        private int shipIntervalTime = 5;
-        private int shipIntervalTimeUnit = Calendar.MINUTE;
+        private int callMeAfter = 2000;
         private int logsPerRequest = 1000;
-
-        private CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
-            @Override
-            public void onAlarm() {
-                ship();
-            }
-        };
+        private CuckooClock cuckooClock;
 
         @Override
         public void configure(LogHouseConfiguration conf) {
             super.configure(conf);
-//            CuckooClock.setup(onAlarmListener, conf.getShipIntervalTime(), conf.getShipIntervalTimeUnit());
-            CuckooClock.setup(onAlarmListener, shipIntervalTime, shipIntervalTimeUnit);
+            CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
+                @Override
+                public void onAlarm() {
+                    ship(logsPerRequest);
+                }
+            };
+            cuckooClock = new CuckooClock(onAlarmListener, callMeAfter);
         }
 
         @Override
         public void start(JSONObject serializedLog) {
             new IntertAsyncTask(this, serializedLog).execute();
-            CuckooClock.setAlarm(applicationContext);
+            cuckooClock.setAlarm();
         }
 
         public void insertSync(JSONObject serializedLog) {
@@ -101,10 +94,6 @@ public class LogHouse {
                 return;
             }
             logHouseStorage.insert(serializedLog);
-        }
-
-        public void ship() {
-            ship(logsPerRequest);
         }
 
         public void ship(int logsPerRequest) {

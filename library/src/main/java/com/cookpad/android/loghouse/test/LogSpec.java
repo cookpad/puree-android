@@ -5,7 +5,6 @@ import android.content.Context;
 import com.cookpad.android.loghouse.Log;
 import com.cookpad.android.loghouse.LogHouse;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
-import com.cookpad.android.loghouse.async.ShipExecutor;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
 import com.cookpad.android.loghouse.handlers.BeforeShipAction;
