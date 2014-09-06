@@ -5,15 +5,16 @@ import android.content.Context;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
 import com.cookpad.android.loghouse.handlers.BeforeShipAction;
-import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.cookpad.android.loghouse.async.ShipExecutor;
+import com.cookpad.android.loghouse.plugins.OutLogcat;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class LogHouseConfiguration {
     private Context applicationContext;
-    private DeliveryPerson deliveryPerson;
     private Gson gson;
     private int logsPerRequest;
     private int shipIntervalTime;
@@ -21,13 +22,12 @@ public class LogHouseConfiguration {
     private BeforeInsertAction beforeInsertAction;
     private BeforeShipAction beforeShipAction;
     private AfterShipAction afterShipAction;
+    private List<LogHouseOutput> outputs = new ArrayList<LogHouseOutput>() {{
+        add(new OutLogcat());
+    }};
 
     public Context getApplicationContext() {
         return applicationContext;
-    }
-
-    public DeliveryPerson getDeliveryPerson() {
-        return deliveryPerson;
     }
 
     public Gson getGson() {
@@ -58,8 +58,11 @@ public class LogHouseConfiguration {
         return afterShipAction;
     }
 
+    public List<LogHouseOutput> getOutputs() {
+        return outputs;
+    }
+
     public LogHouseConfiguration(Context applicationContext,
-                                 DeliveryPerson deliveryPerson,
                                  Gson gson,
                                  int logsPerRequest,
                                  int shipIntervalTime,
@@ -68,7 +71,6 @@ public class LogHouseConfiguration {
                                  BeforeShipAction beforeShipAction,
                                  AfterShipAction afterShipAction) {
         this.applicationContext = applicationContext;
-        this.deliveryPerson = deliveryPerson;
         this.gson = gson;
         this.logsPerRequest = logsPerRequest;
         this.shipIntervalTime = shipIntervalTime;
@@ -80,7 +82,6 @@ public class LogHouseConfiguration {
 
     public static class Builder {
         private Context applicationContext;
-        private DeliveryPerson deliveryPerson = DeliveryPerson.DEFAULT;
         private Gson gson = new Gson();
         private int logsPerRequest = ShipExecutor.DEFAULT_LOGS_PER_REQUEST;
         private int shipIntervalTime = 5;
@@ -89,9 +90,8 @@ public class LogHouseConfiguration {
         private BeforeShipAction beforeShipAction = BeforeShipAction.DEFAULT;
         private AfterShipAction afterShipAction = AfterShipAction.DEFAULT;
 
-        public Builder(Context applicationContext, DeliveryPerson deliveryPerson) {
+        public Builder(Context applicationContext) {
             this.applicationContext = applicationContext;
-            this.deliveryPerson = deliveryPerson;
         }
 
         public Builder gson(Gson gson) {
@@ -128,7 +128,6 @@ public class LogHouseConfiguration {
         public LogHouseConfiguration build() {
             return new LogHouseConfiguration(
                     applicationContext,
-                    deliveryPerson,
                     gson,
                     logsPerRequest,
                     shipIntervalTime,

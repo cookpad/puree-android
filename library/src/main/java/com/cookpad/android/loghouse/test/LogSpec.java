@@ -9,7 +9,6 @@ import com.cookpad.android.loghouse.async.ShipExecutor;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
 import com.cookpad.android.loghouse.handlers.BeforeShipAction;
-import com.cookpad.android.loghouse.handlers.DeliveryPerson;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -24,13 +23,6 @@ public class LogSpec {
     private BeforeInsertAction beforeInsertAction;
     private BeforeShipAction beforeShipAction;
     private List<Log> logs;
-
-    private static final DeliveryPerson DELIVERY_PERSON = new DeliveryPerson() {
-        @Override
-        public boolean onShip(List<JSONObject> serializedLogs) {
-            return true;
-        }
-    };
 
     public LogSpec(Context context) {
         this.context = context;
@@ -72,7 +64,7 @@ public class LogSpec {
             }
         };
 
-        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(context, DELIVERY_PERSON)
+        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(context)
                 .beforeInsertAction(beforeInsertAction)
                 .afterShipAction(afterShipAction)
                 .build();
