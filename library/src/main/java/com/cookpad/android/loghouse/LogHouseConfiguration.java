@@ -88,7 +88,7 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder addOutput(LogHouse.Output output) {
+        public Builder registerOutput(LogHouse.Output output) {
             outputs.add(output);
             return this;
         }

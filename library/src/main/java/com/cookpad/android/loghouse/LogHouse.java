@@ -5,6 +5,7 @@ import com.cookpad.android.loghouse.async.ShipAsyncTask;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
 import com.cookpad.android.loghouse.handlers.BeforeShipAction;
+import com.cookpad.android.loghouse.plugins.OutLogcat;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.cookpad.android.loghouse.storage.Records;
 import com.google.gson.Gson;
@@ -37,16 +38,28 @@ public class LogHouse {
     }
 
     public static void ask(Log log) {
-        ask(log.toJSON(gson));
+        try {
+            JSONObject json = log.toJSON(gson);
+            json.put(OutLogcat.KEY_TYPE, log.type());
+            ask(log.type(), json);
+        } catch (JSONException e) {
+            // do nothing
+        }
     }
 
-    public static void ask(JSONObject serializedLog) {
-        LogHouse.Output output = outputs.get(0);
-        output.start(serializedLog);
+    private static void ask(String type, JSONObject serializedLog) {
+        for (Output output : outputs) {
+            if (output.type().equals(type)) {
+                output.start(serializedLog);
+            }
+        }
     }
 
     public static abstract class Output {
+        public static String KEY_TYPE = "_type";
         protected AfterShipAction afterShipAction;
+
+        public abstract String type();
 
         public void configure(LogHouseConfiguration conf) {
             this.afterShipAction = conf.getAfterShipAction();

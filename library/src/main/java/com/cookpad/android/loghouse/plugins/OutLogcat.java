@@ -10,6 +10,11 @@ import java.util.List;
 
 public class OutLogcat extends LogHouse.Output {
     private static final String TAG = OutLogcat.class.getSimpleName();
+    public static final String TYPE = "logcat";
+
+    public String type() {
+        return TYPE;
+    }
 
     @Override
     public boolean emit(List<JSONObject> serializedLogs) {

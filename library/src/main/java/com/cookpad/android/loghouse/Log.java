@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class Log {
+    public abstract String type();
+
     public JSONObject toJSON(Gson gson) {
         try {
             return new JSONObject(gson.toJson(this));
