@@ -4,7 +4,6 @@ import com.cookpad.android.loghouse.async.IntertAsyncTask;
 import com.cookpad.android.loghouse.async.ShipAsyncTask;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
-import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.cookpad.android.loghouse.plugins.OutLogcat;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.cookpad.android.loghouse.storage.Records;
@@ -21,13 +20,12 @@ public class LogHouse {
 
     private static Gson gson;
     private static BeforeInsertAction beforeInsertAction;
-    private static BeforeShipAction beforeShipAction;
     private static List<Output> outputs;
     private static LogHouseDbHelper logHouseStorage;
+
     public static void initialize(LogHouseConfiguration conf) {
         gson = conf.getGson();
         beforeInsertAction = conf.getBeforeInsertAction();
-        beforeShipAction = conf.getBeforeShipAction();
         outputs = conf.getOutputs();
 
         for (Output output : outputs) {
@@ -69,7 +67,6 @@ public class LogHouse {
             List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
             serializedLogs.add(serializedLog);
             emit(serializedLogs);
-
             afterShipAction.call(serializedLogs);
         }
 
@@ -102,11 +99,10 @@ public class LogHouse {
         public void insertSync(JSONObject serializedLog) {
             try {
                 serializedLog = beforeInsertAction.call(serializedLog);
+                logHouseStorage.insert(serializedLog);
             } catch (JSONException e) {
-                // TODO: notify error
                 return;
             }
-            logHouseStorage.insert(serializedLog);
         }
 
         public void ship(int logsPerRequest) {
@@ -121,15 +117,12 @@ public class LogHouse {
 
             while (!records.isEmpty()) {
                 List<JSONObject> serializedLogs = records.getSerializedLogs();
-                serializedLogs = beforeShipAction.call(serializedLogs);
-
                 boolean isShipSucceeded = emit(serializedLogs);
                 afterShipAction.call(serializedLogs);
                 if (!isShipSucceeded) {
                     // TODO: retry later
                     break;
                 }
-
 
                 logHouseStorage.delete(records);
                 records = logHouseStorage.select(logsPerRequest);

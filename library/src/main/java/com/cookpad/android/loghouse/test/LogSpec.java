@@ -7,7 +7,6 @@ import com.cookpad.android.loghouse.LogHouse;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
-import com.cookpad.android.loghouse.handlers.BeforeShipAction;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -20,7 +19,6 @@ public class LogSpec {
     private Context context;
     private Gson gson = new Gson();
     private BeforeInsertAction beforeInsertAction;
-    private BeforeShipAction beforeShipAction;
     private List<Log> logs;
 
     public LogSpec(Context context) {
@@ -34,11 +32,6 @@ public class LogSpec {
 
     public LogSpec beforeInsertAction(BeforeInsertAction beforeInsertAction) {
         this.beforeInsertAction = beforeInsertAction;
-        return this;
-    }
-
-    public LogSpec beforeShipAction(BeforeShipAction beforeShipAction) {
-        this.beforeShipAction = beforeShipAction;
         return this;
     }
 
