@@ -10,11 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LogHouseConfiguration {
+    private boolean isTest = false;
     private Context applicationContext;
     private Gson gson;
     private BeforeInsertAction beforeInsertAction;
-    private AfterShipAction afterShipAction;
+    private AfterShipAction afterShipAction = AfterShipAction.DEFAULT;
     private List<LogHouse.Output> outputs;
+
+    public boolean isTest() {
+        return isTest;
+    }
 
     public Context getApplicationContext() {
         return applicationContext;
@@ -28,8 +33,13 @@ public class LogHouseConfiguration {
         return beforeInsertAction;
     }
 
-    public AfterShipAction getAfterShipAction() {
+    AfterShipAction getAfterShipAction() {
         return afterShipAction;
+    }
+
+    void setAfterShipAction(AfterShipAction afterShipAction) {
+        this.isTest = true;
+        this.afterShipAction = afterShipAction;
     }
 
     public List<LogHouse.Output> getOutputs() {
@@ -39,12 +49,10 @@ public class LogHouseConfiguration {
     public LogHouseConfiguration(Context applicationContext,
                                  Gson gson,
                                  BeforeInsertAction beforeInsertAction,
-                                 AfterShipAction afterShipAction,
                                  List<LogHouse.Output> outputs) {
         this.applicationContext = applicationContext;
         this.gson = gson;
         this.beforeInsertAction = beforeInsertAction;
-        this.afterShipAction = afterShipAction;
         this.outputs = outputs;
     }
 
@@ -52,7 +60,6 @@ public class LogHouseConfiguration {
         private Context applicationContext;
         private Gson gson = new Gson();
         private BeforeInsertAction beforeInsertAction = BeforeInsertAction.DEFAULT;
-        private AfterShipAction afterShipAction = AfterShipAction.DEFAULT;
         private List<LogHouse.Output> outputs = new ArrayList<LogHouse.Output>();
 
         public Builder(Context applicationContext) {
@@ -69,11 +76,6 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder afterShipAction(AfterShipAction afterShipAction) {
-            this.afterShipAction = afterShipAction;
-            return this;
-        }
-
         public Builder registerOutput(LogHouse.Output output) {
             outputs.add(output);
             return this;
@@ -84,7 +86,6 @@ public class LogHouseConfiguration {
                     applicationContext,
                     gson,
                     beforeInsertAction,
-                    afterShipAction,
                     outputs);
         }
     }

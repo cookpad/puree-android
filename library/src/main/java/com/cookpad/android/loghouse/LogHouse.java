@@ -55,19 +55,27 @@ public class LogHouse {
 
     public static abstract class Output {
         public static String KEY_TYPE = "_type";
+
         protected AfterShipAction afterShipAction;
+        protected boolean isTest = false;
 
         public abstract String type();
 
         public void configure(LogHouseConfiguration conf) {
+            this.isTest = conf.isTest();
             this.afterShipAction = conf.getAfterShipAction();
         }
 
         public void start(JSONObject serializedLog) {
-            List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
-            serializedLogs.add(serializedLog);
-            emit(serializedLogs);
-            afterShipAction.call(serializedLogs);
+            try {
+                List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
+                serializedLog = beforeInsertAction.call(serializedLog);
+                serializedLogs.add(serializedLog);
+                emit(serializedLogs);
+                afterShipAction.call(serializedLogs);
+            } catch (JSONException e) {
+                // do nothing
+            }
         }
 
         public abstract boolean emit(List<JSONObject> serializedLogs);
@@ -92,8 +100,13 @@ public class LogHouse {
 
         @Override
         public void start(JSONObject serializedLog) {
-            new IntertAsyncTask(this, serializedLog).execute();
-            cuckooClock.setAlarm();
+            if (isTest) {
+                insertSync(serializedLog);
+                shipSync(logsPerRequest);
+            } else {
+                new IntertAsyncTask(this, serializedLog).execute();
+                cuckooClock.setAlarm();
+            }
         }
 
         public void insertSync(JSONObject serializedLog) {
@@ -101,7 +114,7 @@ public class LogHouse {
                 serializedLog = beforeInsertAction.call(serializedLog);
                 logHouseStorage.insert(serializedLog);
             } catch (JSONException e) {
-                return;
+                // do nothing
             }
         }
 

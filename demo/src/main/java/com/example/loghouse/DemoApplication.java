@@ -1,6 +1,7 @@
 package com.example.loghouse;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.cookpad.android.loghouse.LogHouse;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
@@ -12,11 +13,15 @@ public class DemoApplication extends Application {
 
     @Override
     public void onCreate() {
-        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(this)
+        LogHouse.initialize(buildConfiguration(this));
+    }
+
+    public static LogHouseConfiguration buildConfiguration(Context context) {
+        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(context)
                 .beforeInsertAction(new AddRequiredParamsAction())
                 .registerOutput(new OutBufferedLogcat())
                 .registerOutput(new OutLogcat())
                 .build();
-        LogHouse.initialize(conf);
+        return conf;
     }
 }

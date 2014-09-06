@@ -2,8 +2,8 @@ package com.example.loghouse.logs;
 
 import android.test.AndroidTestCase;
 
-import com.cookpad.android.loghouse.test.LogSpec;
-import com.example.loghouse.AddRequiredParamsAction;
+import com.cookpad.android.loghouse.LogSpec;
+import com.example.loghouse.DemoApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,8 +12,7 @@ import java.util.List;
 
 public class ClickLogTest extends AndroidTestCase {
     public void testCheckFormat() {
-        new LogSpec(getContext())
-                .beforeInsertAction(new AddRequiredParamsAction())
+        new LogSpec(DemoApplication.buildConfiguration(getContext()))
                 .logs(new ClickLog("MainActivity", "Hello"), new ClickLog("MainActivity", "World"))
                 .shouldBe(new LogSpec.Matcher() {
                     @Override

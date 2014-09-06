@@ -2,7 +2,6 @@ package com.example.loghouse.logs;
 
 import com.cookpad.android.loghouse.Log;
 import com.cookpad.android.loghouse.plugins.OutBufferedLogcat;
-import com.cookpad.android.loghouse.plugins.OutLogcat;
 
 public class ClickLog extends Log {
     private String page;
@@ -14,6 +13,6 @@ public class ClickLog extends Log {
     }
 
     public String type() {
-        return OutLogcat.TYPE;
+        return OutBufferedLogcat.TYPE;
     }
 }
