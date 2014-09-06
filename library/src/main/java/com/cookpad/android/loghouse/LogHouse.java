@@ -4,7 +4,6 @@ import com.cookpad.android.loghouse.async.IntertAsyncTask;
 import com.cookpad.android.loghouse.async.ShipAsyncTask;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
-import com.cookpad.android.loghouse.plugins.OutLogcat;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.cookpad.android.loghouse.storage.Records;
 import com.google.gson.Gson;
@@ -36,13 +35,7 @@ public class LogHouse {
     }
 
     public static void ask(Log log) {
-        try {
-            JSONObject json = log.toJSON(gson);
-            json.put(OutLogcat.KEY_TYPE, log.type());
-            ask(log.type(), json);
-        } catch (JSONException e) {
-            // do nothing
-        }
+        ask(log.type(), log.toJSON(gson));
     }
 
     private static void ask(String type, JSONObject serializedLog) {
@@ -54,8 +47,6 @@ public class LogHouse {
     }
 
     public static abstract class Output {
-        public static String KEY_TYPE = "_type";
-
         protected AfterShipAction afterShipAction;
         protected boolean isTest = false;
 
@@ -101,18 +92,18 @@ public class LogHouse {
         @Override
         public void start(JSONObject serializedLog) {
             if (isTest) {
-                insertSync(serializedLog);
+                insertSync(type(), serializedLog);
                 shipSync(logsPerRequest);
             } else {
-                new IntertAsyncTask(this, serializedLog).execute();
+                new IntertAsyncTask(this, type(), serializedLog).execute();
                 cuckooClock.setAlarm();
             }
         }
 
-        public void insertSync(JSONObject serializedLog) {
+        public void insertSync(String type, JSONObject serializedLog) {
             try {
                 serializedLog = beforeInsertAction.call(serializedLog);
-                logHouseStorage.insert(serializedLog);
+                logHouseStorage.insert(type, serializedLog);
             } catch (JSONException e) {
                 // do nothing
             }
@@ -123,7 +114,7 @@ public class LogHouse {
         }
 
         public void shipSync(int logsPerRequest) {
-            Records records = logHouseStorage.select(logsPerRequest);
+            Records records = logHouseStorage.select(type(), logsPerRequest);
             if (records.isEmpty()) {
                 return;
             }
@@ -138,7 +129,7 @@ public class LogHouse {
                 }
 
                 logHouseStorage.delete(records);
-                records = logHouseStorage.select(logsPerRequest);
+                records = logHouseStorage.select(type(), logsPerRequest);
             }
         }
     }

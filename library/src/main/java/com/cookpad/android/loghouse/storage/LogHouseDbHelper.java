@@ -13,6 +13,7 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
     private static final String TAG = LogHouseDbHelper.class.getSimpleName();
     private static final String DATABASE_NAME = "log_house";
     private static final String TABLE_NAME = "logs";
+    private static final String COLUMN_NAME_TYPE = "type";
     private static final String COLUMN_NAME_LOG = "log";
     private static final int DATABASE_VERSION = 1;
 
@@ -23,14 +24,16 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
         db = getWritableDatabase();
     }
 
-    public void insert(JSONObject serializedLog) {
+    public void insert(String type, JSONObject serializedLog) {
         ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME_TYPE, type);
         contentValues.put(COLUMN_NAME_LOG, serializedLog.toString());
         db.insert(TABLE_NAME, null, contentValues);
     }
 
-    public Records select(int logsPerRequest) {
+    public Records select(String type, int logsPerRequest) {
         String query = "SELECT * FROM " + TABLE_NAME +
+                " WHERE " + COLUMN_NAME_TYPE + " = '" + type + "'" +
                 " ORDER BY id ASC" +
                 " LIMIT " + logsPerRequest;
         Cursor cursor = db.rawQuery(query, null);
@@ -62,6 +65,7 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE " + TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_NAME_TYPE + " TEXT," +
                 COLUMN_NAME_LOG + " TEXT" +
                 ")";
         db.execSQL(query);
