@@ -3,7 +3,7 @@ package com.cookpad.android.loghouse;
 import com.cookpad.android.loghouse.async.IntertAsyncTask;
 import com.cookpad.android.loghouse.async.ShipAsyncTask;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
-import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
+import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.cookpad.android.loghouse.storage.Records;
 import com.google.gson.Gson;
@@ -18,13 +18,13 @@ public class LogHouse {
     private static final String TAG = LogHouse.class.getSimpleName();
 
     private static Gson gson;
-    private static BeforeInsertAction beforeInsertAction;
+    private static BeforeEmitAction beforeEmitAction;
     private static List<Output> outputs;
     private static LogHouseDbHelper logHouseStorage;
 
     public static void initialize(LogHouseConfiguration conf) {
         gson = conf.getGson();
-        beforeInsertAction = conf.getBeforeInsertAction();
+        beforeEmitAction = conf.getBeforeEmitAction();
         outputs = conf.getOutputs();
 
         for (Output output : outputs) {
@@ -60,7 +60,7 @@ public class LogHouse {
         public void start(JSONObject serializedLog) {
             try {
                 List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
-                serializedLog = beforeInsertAction.call(serializedLog);
+                serializedLog = beforeEmitAction.call(serializedLog);
                 serializedLogs.add(serializedLog);
                 emit(serializedLogs);
                 afterShipAction.call(type(), serializedLogs);
@@ -102,7 +102,7 @@ public class LogHouse {
 
         public void insertSync(String type, JSONObject serializedLog) {
             try {
-                serializedLog = beforeInsertAction.call(serializedLog);
+                serializedLog = beforeEmitAction.call(serializedLog);
                 logHouseStorage.insert(type, serializedLog);
             } catch (JSONException e) {
                 // do nothing

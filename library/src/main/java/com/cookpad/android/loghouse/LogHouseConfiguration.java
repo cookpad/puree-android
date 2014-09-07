@@ -3,7 +3,7 @@ package com.cookpad.android.loghouse;
 import android.content.Context;
 
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
-import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
+import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class LogHouseConfiguration {
     private boolean isTest = false;
     private Context applicationContext;
     private Gson gson;
-    private BeforeInsertAction beforeInsertAction;
+    private BeforeEmitAction beforeEmitAction;
     private AfterShipAction afterShipAction = AfterShipAction.DEFAULT;
     private List<LogHouse.Output> outputs;
 
@@ -29,8 +29,8 @@ public class LogHouseConfiguration {
         return gson;
     }
 
-    public BeforeInsertAction getBeforeInsertAction() {
-        return beforeInsertAction;
+    public BeforeEmitAction getBeforeEmitAction() {
+        return beforeEmitAction;
     }
 
     AfterShipAction getAfterShipAction() {
@@ -48,18 +48,18 @@ public class LogHouseConfiguration {
 
     public LogHouseConfiguration(Context applicationContext,
                                  Gson gson,
-                                 BeforeInsertAction beforeInsertAction,
+                                 BeforeEmitAction beforeEmitAction,
                                  List<LogHouse.Output> outputs) {
         this.applicationContext = applicationContext;
         this.gson = gson;
-        this.beforeInsertAction = beforeInsertAction;
+        this.beforeEmitAction = beforeEmitAction;
         this.outputs = outputs;
     }
 
     public static class Builder {
         private Context applicationContext;
         private Gson gson = new Gson();
-        private BeforeInsertAction beforeInsertAction = BeforeInsertAction.DEFAULT;
+        private BeforeEmitAction beforeEmitAction = BeforeEmitAction.DEFAULT;
         private List<LogHouse.Output> outputs = new ArrayList<LogHouse.Output>();
 
         public Builder(Context applicationContext) {
@@ -71,8 +71,8 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder beforeInsertAction(BeforeInsertAction beforeInsertAction) {
-            this.beforeInsertAction = beforeInsertAction;
+        public Builder beforeInsertAction(BeforeEmitAction beforeEmitAction) {
+            this.beforeEmitAction = beforeEmitAction;
             return this;
         }
 
@@ -85,7 +85,7 @@ public class LogHouseConfiguration {
             return new LogHouseConfiguration(
                     applicationContext,
                     gson,
-                    beforeInsertAction,
+                    beforeEmitAction,
                     outputs);
         }
     }

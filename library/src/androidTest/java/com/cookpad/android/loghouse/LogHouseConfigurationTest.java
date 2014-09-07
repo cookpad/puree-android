@@ -9,6 +9,6 @@ public class LogHouseConfigurationTest extends AndroidTestCase {
                 .build();
         assertNotNull(conf.getApplicationContext());
         assertNotNull(conf.getGson());
-        assertNotNull(conf.getBeforeInsertAction());
+        assertNotNull(conf.getBeforeEmitAction());
     }
 }
