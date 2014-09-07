@@ -9,8 +9,6 @@ import com.cookpad.android.loghouse.plugins.OutBufferedLogcat;
 import com.cookpad.android.loghouse.plugins.OutLogcat;
 
 public class DemoApplication extends Application {
-    public static final String TAG = DemoApplication.class.getSimpleName();
-
     @Override
     public void onCreate() {
         LogHouse.initialize(buildConfiguration(this));
