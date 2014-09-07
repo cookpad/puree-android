@@ -71,7 +71,7 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder beforeInsertAction(BeforeEmitAction beforeEmitAction) {
+        public Builder beforeEmitAction(BeforeEmitAction beforeEmitAction) {
             this.beforeEmitAction = beforeEmitAction;
             return this;
         }

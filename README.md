@@ -32,7 +32,7 @@ public class DemoApplication extends Application {
 
     public static LogHouseConfiguration buildConfiguration(Context context) {
         LogHouseConfiguration conf = new LogHouseConfiguration.Builder(context)
-                .beforeInsertAction(new AddRequiredParamsAction())
+                .beforeEmitAction(new AddRequiredParamsAction())
                 .registerOutput(new OutBufferedLogcat())
                 .registerOutput(new OutLogcat())
                 .build();
@@ -140,10 +140,6 @@ public class OutBufferedLogcat extends LogHouse.BufferedOutput {
     }
 }
 ```
-
-You can manage logs like put into the stream.
-
-![](http://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Jujikyo_in_Kurobe_Gorge.jpg/800px-Jujikyo_in_Kurobe_Gorge.jpg)
 
 ## Install
 
