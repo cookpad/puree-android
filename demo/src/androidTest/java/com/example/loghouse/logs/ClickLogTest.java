@@ -4,7 +4,6 @@ import android.test.AndroidTestCase;
 
 import com.cookpad.android.loghouse.LogSpec;
 import com.cookpad.android.loghouse.plugins.OutBufferedLogcat;
-import com.cookpad.android.loghouse.plugins.OutLogcat;
 import com.example.loghouse.DemoApplication;
 
 import org.json.JSONException;
