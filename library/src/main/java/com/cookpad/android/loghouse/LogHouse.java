@@ -1,6 +1,6 @@
 package com.cookpad.android.loghouse;
 
-import com.cookpad.android.loghouse.async.IntertAsyncTask;
+import com.cookpad.android.loghouse.async.AsyncInsertTask;
 import com.cookpad.android.loghouse.async.ShipAsyncTask;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
@@ -95,7 +95,7 @@ public class LogHouse {
                 insertSync(type(), serializedLog);
                 shipSync(logsPerRequest);
             } else {
-                new IntertAsyncTask(this, type(), serializedLog).execute();
+                new AsyncInsertTask(this, type(), serializedLog).execute();
                 cuckooClock.setAlarm();
             }
         }

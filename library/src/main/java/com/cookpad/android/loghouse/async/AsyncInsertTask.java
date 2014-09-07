@@ -6,12 +6,12 @@ import com.cookpad.android.loghouse.LogHouse;
 
 import org.json.JSONObject;
 
-public class IntertAsyncTask extends AsyncTask<Void, Void, Void> {
+public class AsyncInsertTask extends AsyncTask<Void, Void, Void> {
     private LogHouse.BufferedOutput output;
     private String type;
     private JSONObject serializedLog;
 
-    public IntertAsyncTask(LogHouse.BufferedOutput output, String type, JSONObject serializedLog) {
+    public AsyncInsertTask(LogHouse.BufferedOutput output, String type, JSONObject serializedLog) {
         this.output = output;
         this.type = type;
         this.serializedLog = serializedLog;
