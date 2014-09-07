@@ -32,6 +32,9 @@ public class LogHouse {
         }
 
         logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
+        if (conf.isTest()) {
+            logHouseStorage.clean();
+        }
     }
 
     public static void in(Log log) {

@@ -55,9 +55,16 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
         return records;
     }
 
+    @Override
     public void delete(Records records) {
         String query = "DELETE FROM " + TABLE_NAME +
                 " WHERE id IN (" + records.getIdsAsString() + ")";
+        db.execSQL(query);
+    }
+
+    @Override
+    public void clean() {
+        String query = "DELETE FROM " + TABLE_NAME;
         db.execSQL(query);
     }
 

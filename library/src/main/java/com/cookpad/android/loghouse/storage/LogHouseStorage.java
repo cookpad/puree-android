@@ -6,4 +6,5 @@ public interface LogHouseStorage {
     public void insert(String type, JSONObject serializedLog);
     public Records select(String type, int logsPerRequest);
     public void delete(Records records);
+    public void clean();
 }
