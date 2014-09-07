@@ -1,7 +1,7 @@
 package com.cookpad.android.loghouse;
 
 import com.cookpad.android.loghouse.async.AsyncInsertTask;
-import com.cookpad.android.loghouse.async.ShipAsyncTask;
+import com.cookpad.android.loghouse.async.AsyncShipTask;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
@@ -110,7 +110,7 @@ public class LogHouse {
         }
 
         public void ship(int logsPerRequest) {
-            new ShipAsyncTask(this, logsPerRequest).execute();
+            new AsyncShipTask(this, logsPerRequest).execute();
         }
 
         public void shipSync(int logsPerRequest) {
