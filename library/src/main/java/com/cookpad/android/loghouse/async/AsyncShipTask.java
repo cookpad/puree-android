@@ -6,16 +6,14 @@ import com.cookpad.android.loghouse.LogHouse;
 
 public class AsyncShipTask extends AsyncTask<Void, Void, Void> {
     private LogHouse.BufferedOutput output;
-    private int logsPerRequest;
 
-    public AsyncShipTask(LogHouse.BufferedOutput output, int logsPerRequest) {
+    public AsyncShipTask(LogHouse.BufferedOutput output) {
         this.output = output;
-        this.logsPerRequest = logsPerRequest;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
-        output.shipSync(logsPerRequest);
+        output.shipSync();
         return null;
     }
 }

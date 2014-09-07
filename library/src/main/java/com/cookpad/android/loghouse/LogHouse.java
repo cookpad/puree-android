@@ -73,9 +73,15 @@ public class LogHouse {
     }
 
     public static abstract class BufferedOutput extends Output {
-        private int callMeAfter = 2000;
-        private int logsPerRequest = 1000;
         private CuckooClock cuckooClock;
+
+        protected int callMeAfter() {
+            return 2000;
+        }
+
+        protected int logsPerRequest() {
+            return 1000;
+        }
 
         @Override
         public void configure(LogHouseConfiguration conf) {
@@ -83,17 +89,17 @@ public class LogHouse {
             CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
                 @Override
                 public void onAlarm() {
-                    ship(logsPerRequest);
+                    ship();
                 }
             };
-            cuckooClock = new CuckooClock(onAlarmListener, callMeAfter);
+            cuckooClock = new CuckooClock(onAlarmListener, callMeAfter());
         }
 
         @Override
         public void start(JSONObject serializedLog) {
             if (isTest) {
                 insertSync(type(), serializedLog);
-                shipSync(logsPerRequest);
+                shipSync();
             } else {
                 new AsyncInsertTask(this, type(), serializedLog).execute();
                 cuckooClock.setAlarm();
@@ -109,12 +115,12 @@ public class LogHouse {
             }
         }
 
-        public void ship(int logsPerRequest) {
-            new AsyncShipTask(this, logsPerRequest).execute();
+        public void ship() {
+            new AsyncShipTask(this).execute();
         }
 
-        public void shipSync(int logsPerRequest) {
-            Records records = logHouseStorage.select(type(), logsPerRequest);
+        public void shipSync() {
+            Records records = logHouseStorage.select(type(), logsPerRequest());
             if (records.isEmpty()) {
                 return;
             }
@@ -129,7 +135,7 @@ public class LogHouse {
                 }
 
                 logHouseStorage.delete(records);
-                records = logHouseStorage.select(type(), logsPerRequest);
+                records = logHouseStorage.select(type(), logsPerRequest());
             }
         }
     }
