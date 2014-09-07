@@ -13,13 +13,13 @@ public class RecordsTest extends AndroidTestCase {
         }
         {
             Records records = new Records();
-            records.add(new Record(0, new JSONObject()));
+            records.add(new Record(0, "logcat", new JSONObject()));
             assertEquals("0", records.getIdsAsString());
         }
         {
             Records records = new Records();
             for (int i = 0; i < 3; i++) {
-                records.add(new Record(i, new JSONObject()));
+                records.add(new Record(i, "logcat", new JSONObject()));
             }
             assertEquals("0,1,2", records.getIdsAsString());
         }
@@ -33,7 +33,7 @@ public class RecordsTest extends AndroidTestCase {
         {
             Records records = new Records();
             for (int i = 0; i < 3; i++) {
-                records.add(new Record(i, new JSONObject()));
+                records.add(new Record(i, "logcat", new JSONObject()));
             }
             assertEquals(3, records.getSerializedLogs().size());
         }

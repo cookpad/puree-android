@@ -3,95 +3,67 @@ package com.cookpad.android.loghouse;
 import android.content.Context;
 
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
-import com.cookpad.android.loghouse.handlers.BeforeInsertAction;
-import com.cookpad.android.loghouse.handlers.BeforeShipAction;
-import com.cookpad.android.loghouse.handlers.DeliveryPerson;
-import com.cookpad.android.loghouse.async.ShipExecutor;
+import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
 import com.google.gson.Gson;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LogHouseConfiguration {
+    private boolean isTest = false;
     private Context applicationContext;
-    private DeliveryPerson deliveryPerson;
     private Gson gson;
-    private int logsPerRequest;
-    private int shipIntervalTime;
-    private int shipIntervalTimeUnit;
-    private BeforeInsertAction beforeInsertAction;
-    private BeforeShipAction beforeShipAction;
-    private AfterShipAction afterShipAction;
+    private BeforeEmitAction beforeEmitAction;
+    private AfterShipAction afterShipAction = AfterShipAction.DEFAULT;
+    private List<LogHouse.Output> outputs;
+
+    public boolean isTest() {
+        return isTest;
+    }
 
     public Context getApplicationContext() {
         return applicationContext;
-    }
-
-    public DeliveryPerson getDeliveryPerson() {
-        return deliveryPerson;
     }
 
     public Gson getGson() {
         return gson;
     }
 
-    public int getLogsPerRequest() {
-        return logsPerRequest;
+    public BeforeEmitAction getBeforeEmitAction() {
+        return beforeEmitAction;
     }
 
-    public int getShipIntervalTime() {
-        return shipIntervalTime;
-    }
-
-    public int getShipIntervalTimeUnit() {
-        return shipIntervalTimeUnit;
-    }
-
-    public BeforeInsertAction getBeforeInsertAction() {
-        return beforeInsertAction;
-    }
-
-    public BeforeShipAction getBeforeShipAction() {
-        return beforeShipAction;
-    }
-
-    public AfterShipAction getAfterShipAction() {
+    AfterShipAction getAfterShipAction() {
         return afterShipAction;
     }
 
-    public LogHouseConfiguration(Context applicationContext,
-                                 DeliveryPerson deliveryPerson,
-                                 Gson gson,
-                                 int logsPerRequest,
-                                 int shipIntervalTime,
-                                 int shipIntervalTimeUnit,
-                                 BeforeInsertAction beforeInsertAction,
-                                 BeforeShipAction beforeShipAction,
-                                 AfterShipAction afterShipAction) {
-        this.applicationContext = applicationContext;
-        this.deliveryPerson = deliveryPerson;
-        this.gson = gson;
-        this.logsPerRequest = logsPerRequest;
-        this.shipIntervalTime = shipIntervalTime;
-        this.shipIntervalTimeUnit = shipIntervalTimeUnit;
-        this.beforeInsertAction = beforeInsertAction;
-        this.beforeShipAction = beforeShipAction;
+    void setAfterShipAction(AfterShipAction afterShipAction) {
+        this.isTest = true;
         this.afterShipAction = afterShipAction;
+    }
+
+    public List<LogHouse.Output> getOutputs() {
+        return outputs;
+    }
+
+    public LogHouseConfiguration(Context applicationContext,
+                                 Gson gson,
+                                 BeforeEmitAction beforeEmitAction,
+                                 List<LogHouse.Output> outputs) {
+        this.applicationContext = applicationContext;
+        this.gson = gson;
+        this.beforeEmitAction = beforeEmitAction;
+        this.outputs = outputs;
     }
 
     public static class Builder {
         private Context applicationContext;
-        private DeliveryPerson deliveryPerson = DeliveryPerson.DEFAULT;
         private Gson gson = new Gson();
-        private int logsPerRequest = ShipExecutor.DEFAULT_LOGS_PER_REQUEST;
-        private int shipIntervalTime = 5;
-        private int shipIntervalTimeUnit = Calendar.MINUTE;
-        private BeforeInsertAction beforeInsertAction = BeforeInsertAction.DEFAULT;
-        private BeforeShipAction beforeShipAction = BeforeShipAction.DEFAULT;
-        private AfterShipAction afterShipAction = AfterShipAction.DEFAULT;
+        private BeforeEmitAction beforeEmitAction = BeforeEmitAction.DEFAULT;
+        private List<LogHouse.Output> outputs = new ArrayList<LogHouse.Output>();
 
-        public Builder(Context applicationContext, DeliveryPerson deliveryPerson) {
+        public Builder(Context applicationContext) {
             this.applicationContext = applicationContext;
-            this.deliveryPerson = deliveryPerson;
         }
 
         public Builder gson(Gson gson) {
@@ -99,43 +71,22 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder logsPerRequest(int logsPerRequest) {
-            this.logsPerRequest = logsPerRequest;
+        public Builder beforeInsertAction(BeforeEmitAction beforeEmitAction) {
+            this.beforeEmitAction = beforeEmitAction;
             return this;
         }
 
-        public Builder shipInterval(int shipIntervalTime, int shipIntervalTimeUnit) {
-            this.shipIntervalTime = shipIntervalTime;
-            this.shipIntervalTimeUnit = shipIntervalTimeUnit;
-            return this;
-        }
-
-        public Builder beforeInsertAction(BeforeInsertAction beforeInsertAction) {
-            this.beforeInsertAction = beforeInsertAction;
-            return this;
-        }
-
-        public Builder beforeShipAction(BeforeShipAction beforeShipAction) {
-            this.beforeShipAction = beforeShipAction;
-            return this;
-        }
-
-        public Builder afterShipAction(AfterShipAction afterShipAction) {
-            this.afterShipAction = afterShipAction;
+        public Builder registerOutput(LogHouse.Output output) {
+            outputs.add(output);
             return this;
         }
 
         public LogHouseConfiguration build() {
             return new LogHouseConfiguration(
                     applicationContext,
-                    deliveryPerson,
                     gson,
-                    logsPerRequest,
-                    shipIntervalTime,
-                    shipIntervalTimeUnit,
-                    beforeInsertAction,
-                    beforeShipAction,
-                    afterShipAction);
+                    beforeEmitAction,
+                    outputs);
         }
     }
 }

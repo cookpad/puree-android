@@ -6,8 +6,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.cookpad.android.loghouse.LogHouseManager;
+import com.cookpad.android.loghouse.LogHouse;
 import com.example.loghouse.logs.ClickLog;
+import com.example.loghouse.logs.PvLog;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -15,6 +16,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        LogHouse.in(new PvLog(this));
         setupViews();
     }
 
@@ -28,7 +30,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void trackClickEvent() {
-        LogHouseManager.ask(new ClickLog("MainActivity", "track"));
+        LogHouse.in(new ClickLog("MainActivity", "track"));
     }
 
     @Override
