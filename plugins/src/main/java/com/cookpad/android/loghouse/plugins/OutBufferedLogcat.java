@@ -18,6 +18,11 @@ public class OutBufferedLogcat extends LogHouse.BufferedOutput {
     }
 
     @Override
+    protected int callMeAfter() {
+        return 2000;
+    }
+
+    @Override
     public boolean emit(List<JSONObject> serializedLogs) {
         JSONArray log = new JSONArray();
         for (JSONObject serializedLog : serializedLogs) {

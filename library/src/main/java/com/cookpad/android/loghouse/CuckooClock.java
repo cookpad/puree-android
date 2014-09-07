@@ -9,6 +9,8 @@ public class CuckooClock {
     private boolean hasAlreadySet;
     private Runnable callback;
     private int callMeAfter;
+    private int retryCount = 1;
+    private int buckOffTime;
 
     public CuckooClock(final OnAlarmListener onAlarmListener, int callMeAfter) {
         handler = new Handler();
@@ -19,6 +21,7 @@ public class CuckooClock {
             @Override
             public void run() {
                 hasAlreadySet = false;
+                retryCount = 1;
                 onAlarmListener.onAlarm();
             }
         };
@@ -29,11 +32,22 @@ public class CuckooClock {
     }
 
     public synchronized void setAlarm() {
-        if (hasAlreadySet) {
+        if (hasAlreadySet && retryCount == 1) {
             return;
         }
+        retryCount = 1;
+        forceSetAlarm();
+    }
 
-        handler.postDelayed(callback, callMeAfter);
+    private synchronized void forceSetAlarm() {
+        buckOffTime = callMeAfter * retryCount;
+        handler.removeCallbacks(callback);
+        handler.postDelayed(callback, buckOffTime);
         hasAlreadySet = true;
+    }
+
+    public synchronized void retryLater() {
+        retryCount++;
+        forceSetAlarm();
     }
 }

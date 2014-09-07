@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LogHouse {
-    private static final String TAG = LogHouse.class.getSimpleName();
-
     private static Gson gson;
     private static BeforeEmitAction beforeEmitAction;
     private static List<Output> outputs;
@@ -80,7 +78,7 @@ public class LogHouse {
         private CuckooClock cuckooClock;
 
         protected int callMeAfter() {
-            return 2000;
+            return 5 * 60 * 1000;
         }
 
         protected int logsPerRequest() {
@@ -132,11 +130,11 @@ public class LogHouse {
             while (!records.isEmpty()) {
                 List<JSONObject> serializedLogs = records.getSerializedLogs();
                 boolean isShipSucceeded = emit(serializedLogs);
-
                 afterShipAction.call(type(), serializedLogs);
+
                 if (!isShipSucceeded) {
-                    // TODO: retry later
-                    break;
+                    cuckooClock.retryLater();
+                    return;
                 }
 
                 logHouseStorage.delete(records);
