@@ -6,8 +6,6 @@ import com.cookpad.android.loghouse.LogHouse;
 
 import org.json.JSONObject;
 
-import java.util.List;
-
 public class OutLogcat extends LogHouse.Output {
     private static final String TAG = OutLogcat.class.getSimpleName();
     public static final String TYPE = "logcat";
@@ -17,10 +15,7 @@ public class OutLogcat extends LogHouse.Output {
     }
 
     @Override
-    public boolean emit(List<JSONObject> serializedLogs) {
-        for (JSONObject serializedLog : serializedLogs) {
-            Log.d(TAG, serializedLog.toString());
-        }
-        return true;
+    public void emit(JSONObject serializedLog) {
+        Log.d(TAG, serializedLog.toString());
     }
 }

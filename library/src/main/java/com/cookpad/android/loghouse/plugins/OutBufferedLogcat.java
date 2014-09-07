@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.cookpad.android.loghouse.LogHouse;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -18,9 +19,11 @@ public class OutBufferedLogcat extends LogHouse.BufferedOutput {
 
     @Override
     public boolean emit(List<JSONObject> serializedLogs) {
+        JSONArray log = new JSONArray();
         for (JSONObject serializedLog : serializedLogs) {
-            Log.d(TAG, serializedLog.toString());
+            log.put(serializedLog);
         }
+        Log.d(TAG, log.toString());
         return true;
     }
 }

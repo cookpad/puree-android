@@ -59,17 +59,18 @@ public class LogHouse {
 
         public void start(JSONObject serializedLog) {
             try {
-                List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
                 serializedLog = beforeEmitAction.call(serializedLog);
+                emit(serializedLog);
+
+                List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
                 serializedLogs.add(serializedLog);
-                emit(serializedLogs);
                 afterShipAction.call(type(), serializedLogs);
             } catch (JSONException e) {
                 // do nothing
             }
         }
 
-        public abstract boolean emit(List<JSONObject> serializedLogs);
+        public abstract void emit(JSONObject serializedLog);
     }
 
     public static abstract class BufferedOutput extends Output {
@@ -128,6 +129,7 @@ public class LogHouse {
             while (!records.isEmpty()) {
                 List<JSONObject> serializedLogs = records.getSerializedLogs();
                 boolean isShipSucceeded = emit(serializedLogs);
+
                 afterShipAction.call(type(), serializedLogs);
                 if (!isShipSucceeded) {
                     // TODO: retry later
@@ -137,6 +139,12 @@ public class LogHouse {
                 logHouseStorage.delete(records);
                 records = logHouseStorage.select(type(), logsPerRequest());
             }
+        }
+
+        public abstract boolean emit(List<JSONObject> serializedLogs);
+
+        public void emit(JSONObject serializedLog) {
+            // do nothing
         }
     }
 }
