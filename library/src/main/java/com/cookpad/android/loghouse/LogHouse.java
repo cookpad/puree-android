@@ -1,6 +1,7 @@
 package com.cookpad.android.loghouse;
 
 import com.cookpad.android.loghouse.async.AsyncInsertTask;
+import com.cookpad.android.loghouse.async.AsyncResult;
 import com.cookpad.android.loghouse.async.AsyncShipTask;
 import com.cookpad.android.loghouse.handlers.AfterShipAction;
 import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
@@ -128,21 +129,28 @@ public class LogHouse {
             }
 
             while (!records.isEmpty()) {
-                List<JSONObject> serializedLogs = records.getSerializedLogs();
-                boolean isShipSucceeded = emit(serializedLogs);
-                afterShipAction.call(type(), serializedLogs);
-
-                if (!isShipSucceeded) {
+                final List<JSONObject> serializedLogs = records.getSerializedLogs();
+                if (!shipChunkOfLogs(serializedLogs)) {
                     cuckooClock.retryLater();
                     return;
                 }
-
+                afterShipAction.call(type(), serializedLogs);
                 logHouseStorage.delete(records);
                 records = logHouseStorage.select(type(), logsPerRequest());
             }
         }
 
-        public abstract boolean emit(List<JSONObject> serializedLogs);
+        public boolean shipChunkOfLogs(final List<JSONObject> serializedLogs) {
+            try {
+                AsyncResult asyncResult = new AsyncResult();
+                emit(serializedLogs, asyncResult);
+                return asyncResult.get();
+            } catch (InterruptedException e) {
+                return false;
+            }
+        }
+
+        public abstract void emit(List<JSONObject> serializedLogs, final AsyncResult result);
 
         public void emit(JSONObject serializedLog) {
             // do nothing

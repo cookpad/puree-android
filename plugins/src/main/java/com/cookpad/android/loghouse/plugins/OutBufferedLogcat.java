@@ -3,6 +3,7 @@ package com.cookpad.android.loghouse.plugins;
 import android.util.Log;
 
 import com.cookpad.android.loghouse.LogHouse;
+import com.cookpad.android.loghouse.async.AsyncResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,12 +24,18 @@ public class OutBufferedLogcat extends LogHouse.BufferedOutput {
     }
 
     @Override
-    public boolean emit(List<JSONObject> serializedLogs) {
+    protected int logsPerRequest() {
+        return 3;
+    }
+
+    @Override
+    public void emit(List<JSONObject> serializedLogs, AsyncResult asyncResult) {
         JSONArray log = new JSONArray();
         for (JSONObject serializedLog : serializedLogs) {
             log.put(serializedLog);
         }
         Log.d(TAG, log.toString());
-        return true;
+
+        asyncResult.success();
     }
 }
