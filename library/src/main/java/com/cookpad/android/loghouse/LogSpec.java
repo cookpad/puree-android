@@ -1,6 +1,6 @@
 package com.cookpad.android.loghouse;
 
-import com.cookpad.android.loghouse.handlers.AfterShipAction;
+import com.cookpad.android.loghouse.handlers.AfterFlushAction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +38,7 @@ public class LogSpec {
         final CountDownLatch latch = new CountDownLatch(logs.size());
         final List<JSONObject> results = new ArrayList<JSONObject>();
 
-        AfterShipAction afterShipAction = new AfterShipAction() {
+        AfterFlushAction afterFlushAction = new AfterFlushAction() {
             @Override
             public void call(String type, List<JSONObject> serializedLogs) {
                 if (target.equals(type)) {
@@ -48,7 +48,7 @@ public class LogSpec {
             }
         };
 
-        conf.setAfterShipAction(afterShipAction);
+        conf.setAfterFlushAction(afterFlushAction);
         LogHouse.initialize(conf);
 
         for (Log log : logs) {

@@ -107,10 +107,9 @@ You can create a plugin by inheriting LogHouse.Output or LogHouse.BufferedOutput
 ```java
 public class OutLogcat extends LogHouse.Output {
     private static final String TAG = OutLogcat.class.getSimpleName();
-    public static final String TYPE = "logcat";
 
     public String type() {
-        return TYPE;
+        return "logcat";
     }
 
     @Override
@@ -123,25 +122,26 @@ public class OutLogcat extends LogHouse.Output {
 ```java
 public class OutBufferedLogcat extends LogHouse.BufferedOutput {
     private static final String TAG = OutBufferedLogcat.class.getSimpleName();
-    public static final String TYPE = "buffered_logcat";
 
     public String type() {
-        return TYPE;
+        return "buffered_logcat";
     }
 
     @Override
-    public boolean emit(List<JSONObject> serializedLogs) {
+    public void emit(List<JSONObject> serializedLogs, AsyncResult asyncResult) {
         JSONArray log = new JSONArray();
         for (JSONObject serializedLog : serializedLogs) {
             log.put(serializedLog);
         }
         Log.d(TAG, log.toString());
-        return true;
+
+        asyncResult.success();
     }
 }
 ```
 
 ## Install
+
 
 Clone this repository in your PC and compile with your project for now.
 I'll upload LogHouse to maven central sooner or later.

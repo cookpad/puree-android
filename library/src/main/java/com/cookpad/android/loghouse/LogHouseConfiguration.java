@@ -2,7 +2,7 @@ package com.cookpad.android.loghouse;
 
 import android.content.Context;
 
-import com.cookpad.android.loghouse.handlers.AfterShipAction;
+import com.cookpad.android.loghouse.handlers.AfterFlushAction;
 import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
 import com.google.gson.Gson;
 
@@ -14,7 +14,7 @@ public class LogHouseConfiguration {
     private Context applicationContext;
     private Gson gson;
     private BeforeEmitAction beforeEmitAction;
-    private AfterShipAction afterShipAction = AfterShipAction.DEFAULT;
+    private AfterFlushAction afterFlushAction = AfterFlushAction.DEFAULT;
     private List<LogHouse.Output> outputs;
 
     public boolean isTest() {
@@ -33,13 +33,13 @@ public class LogHouseConfiguration {
         return beforeEmitAction;
     }
 
-    AfterShipAction getAfterShipAction() {
-        return afterShipAction;
+    AfterFlushAction getAfterFlushAction() {
+        return afterFlushAction;
     }
 
-    void setAfterShipAction(AfterShipAction afterShipAction) {
+    void setAfterFlushAction(AfterFlushAction afterFlushAction) {
         this.isTest = true;
-        this.afterShipAction = afterShipAction;
+        this.afterFlushAction = afterFlushAction;
     }
 
     public List<LogHouse.Output> getOutputs() {

@@ -1,9 +1,9 @@
 package com.cookpad.android.loghouse;
 
+import com.cookpad.android.loghouse.async.AsyncFlushTask;
 import com.cookpad.android.loghouse.async.AsyncInsertTask;
 import com.cookpad.android.loghouse.async.AsyncResult;
-import com.cookpad.android.loghouse.async.AsyncShipTask;
-import com.cookpad.android.loghouse.handlers.AfterShipAction;
+import com.cookpad.android.loghouse.handlers.AfterFlushAction;
 import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
 import com.cookpad.android.loghouse.storage.Records;
@@ -49,14 +49,14 @@ public class LogHouse {
     }
 
     public static abstract class Output {
-        protected AfterShipAction afterShipAction;
+        protected AfterFlushAction afterFlushAction;
         protected boolean isTest = false;
 
         public abstract String type();
 
         public void configure(LogHouseConfiguration conf) {
             this.isTest = conf.isTest();
-            this.afterShipAction = conf.getAfterShipAction();
+            this.afterFlushAction = conf.getAfterFlushAction();
         }
 
         public void start(JSONObject serializedLog) {
@@ -66,7 +66,7 @@ public class LogHouse {
 
                 List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
                 serializedLogs.add(serializedLog);
-                afterShipAction.call(type(), serializedLogs);
+                afterFlushAction.call(type(), serializedLogs);
             } catch (JSONException e) {
                 // do nothing
             }
@@ -92,7 +92,7 @@ public class LogHouse {
             CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
                 @Override
                 public void onAlarm() {
-                    ship();
+                    flush();
                 }
             };
             cuckooClock = new CuckooClock(onAlarmListener, callMeAfter());
@@ -102,7 +102,7 @@ public class LogHouse {
         public void start(JSONObject serializedLog) {
             if (isTest) {
                 insertSync(type(), serializedLog);
-                shipSync();
+                flushSync();
             } else {
                 new AsyncInsertTask(this, type(), serializedLog).execute();
                 cuckooClock.setAlarm();
@@ -118,11 +118,11 @@ public class LogHouse {
             }
         }
 
-        public void ship() {
-            new AsyncShipTask(this).execute();
+        public void flush() {
+            new AsyncFlushTask(this).execute();
         }
 
-        public void shipSync() {
+        public void flushSync() {
             Records records = logHouseStorage.select(type(), logsPerRequest());
             if (records.isEmpty()) {
                 return;
@@ -130,17 +130,17 @@ public class LogHouse {
 
             while (!records.isEmpty()) {
                 final List<JSONObject> serializedLogs = records.getSerializedLogs();
-                if (!shipChunkOfLogs(serializedLogs)) {
+                if (!flushChunkOfLogs(serializedLogs)) {
                     cuckooClock.retryLater();
                     return;
                 }
-                afterShipAction.call(type(), serializedLogs);
+                afterFlushAction.call(type(), serializedLogs);
                 logHouseStorage.delete(records);
                 records = logHouseStorage.select(type(), logsPerRequest());
             }
         }
 
-        public boolean shipChunkOfLogs(final List<JSONObject> serializedLogs) {
+        public boolean flushChunkOfLogs(final List<JSONObject> serializedLogs) {
             try {
                 AsyncResult asyncResult = new AsyncResult();
                 emit(serializedLogs, asyncResult);
