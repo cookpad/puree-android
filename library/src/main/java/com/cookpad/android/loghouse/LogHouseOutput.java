@@ -11,21 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class LogHouseOutput {
+    protected Configuration conf;
     protected LogHouseStorage storage;
     protected AfterFlushAction afterFlushAction;
     protected BeforeEmitAction beforeEmitAction;
     protected boolean isTest = false;
 
-    public abstract String type();
-
-    public void setStorage(LogHouseStorage storage) {
+    public void initialize(LogHouseConfiguration logHouseConfiguration, LogHouseStorage storage) {
+        this.isTest = logHouseConfiguration.isTest();
+        this.afterFlushAction = logHouseConfiguration.getAfterFlushAction();
+        this.beforeEmitAction = logHouseConfiguration.getBeforeEmitAction();
         this.storage = storage;
-    }
-
-    public void configure(LogHouseConfiguration conf) {
-        this.isTest = conf.isTest();
-        this.afterFlushAction = conf.getAfterFlushAction();
-        this.beforeEmitAction = conf.getBeforeEmitAction();
+        this.conf = configure(new Configuration());
     }
 
     public void start(JSONObject serializedLog) {
@@ -41,6 +38,31 @@ public abstract class LogHouseOutput {
         }
     }
 
+    public abstract String type();
+
+    public abstract Configuration configure(Configuration conf);
+
     public abstract void emit(JSONObject serializedLog);
+
+    public static class Configuration {
+        private int flushInterval = 2 * 60 * 1000;
+        private int logsPerRequest = 100;
+
+        public int getFlushInterval() {
+            return flushInterval;
+        }
+
+        public void setFlushInterval(int flushInterval) {
+            this.flushInterval = flushInterval;
+        }
+
+        public int getLogsPerRequest() {
+            return logsPerRequest;
+        }
+
+        public void setLogsPerRequest(int logsPerRequest) {
+            this.logsPerRequest = logsPerRequest;
+        }
+    }
 }
 

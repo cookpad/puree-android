@@ -1,6 +1,7 @@
 package com.example.loghouse.logs;
 
 import com.cookpad.android.loghouse.LogHouseBufferedOutput;
+import com.cookpad.android.loghouse.LogHouseOutput;
 import com.cookpad.android.loghouse.async.AsyncResult;
 
 import org.json.JSONObject;
@@ -13,6 +14,11 @@ public class OutAsyncSomething extends LogHouseBufferedOutput {
     @Override
     public String type() {
         return TYPE;
+    }
+
+    @Override
+    public Configuration configure(Configuration conf) {
+        return conf;
     }
 
     @Override

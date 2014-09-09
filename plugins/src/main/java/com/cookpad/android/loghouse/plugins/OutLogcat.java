@@ -15,6 +15,11 @@ public class OutLogcat extends LogHouseOutput {
     }
 
     @Override
+    public Configuration configure(Configuration conf) {
+        return conf;
+    }
+
+    @Override
     public void emit(JSONObject serializedLog) {
         Log.d(TAG, serializedLog.toString());
     }

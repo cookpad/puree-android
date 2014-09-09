@@ -3,6 +3,7 @@ package com.cookpad.android.loghouse.plugins;
 import android.util.Log;
 
 import com.cookpad.android.loghouse.LogHouseBufferedOutput;
+import com.cookpad.android.loghouse.LogHouseOutput;
 import com.cookpad.android.loghouse.async.AsyncResult;
 
 import org.json.JSONArray;
@@ -19,13 +20,10 @@ public class OutBufferedLogcat extends LogHouseBufferedOutput {
     }
 
     @Override
-    protected int callMeAfter() {
-        return 2000;
-    }
-
-    @Override
-    protected int logsPerRequest() {
-        return 3;
+    public Configuration configure(Configuration conf) {
+        conf.setFlushInterval(2000);
+        conf.setLogsPerRequest(3);
+        return conf;
     }
 
     @Override

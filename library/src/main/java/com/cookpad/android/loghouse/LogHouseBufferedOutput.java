@@ -3,6 +3,7 @@ package com.cookpad.android.loghouse;
 import com.cookpad.android.loghouse.async.AsyncFlushTask;
 import com.cookpad.android.loghouse.async.AsyncInsertTask;
 import com.cookpad.android.loghouse.async.AsyncResult;
+import com.cookpad.android.loghouse.storage.LogHouseStorage;
 import com.cookpad.android.loghouse.storage.Records;
 
 import org.json.JSONException;
@@ -13,24 +14,16 @@ import java.util.List;
 public abstract class LogHouseBufferedOutput extends LogHouseOutput {
     private CuckooClock cuckooClock;
 
-    protected int callMeAfter() {
-        return 5 * 60 * 1000;
-    }
-
-    protected int logsPerRequest() {
-        return 1000;
-    }
-
     @Override
-    public void configure(LogHouseConfiguration conf) {
-        super.configure(conf);
+    public void initialize(LogHouseConfiguration logHouseConfiguration, LogHouseStorage storage) {
+        super.initialize(logHouseConfiguration, storage);
         CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
             @Override
             public void onAlarm() {
                 flush();
             }
         };
-        cuckooClock = new CuckooClock(onAlarmListener, callMeAfter());
+        cuckooClock = new CuckooClock(onAlarmListener, conf.getFlushInterval());
     }
 
     @Override
@@ -58,7 +51,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
     }
 
     public void flushSync() {
-        Records records = storage.select(type(), logsPerRequest());
+        Records records = storage.select(type(), conf.getLogsPerRequest());
         if (records.isEmpty()) {
             return;
         }
@@ -71,7 +64,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
             }
             afterFlushAction.call(type(), serializedLogs);
             storage.delete(records);
-            records = storage.select(type(), logsPerRequest());
+            records = storage.select(type(), conf.getLogsPerRequest());
         }
     }
 

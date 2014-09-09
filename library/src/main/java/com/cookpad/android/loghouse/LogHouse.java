@@ -24,8 +24,8 @@ public class LogHouse {
         for (Class<? extends LogHouseOutput> outputType : conf.getOutputTypes()) {
             try {
                 LogHouseOutput output = outputType.newInstance();
-                output.setStorage(logHouseStorage);
-                output.configure(conf);
+                output.initialize(conf, logHouseStorage);
+                output.initialize(conf, logHouseStorage);
                 outputs.add(output);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("Unable to create new instance: " + outputType.getSimpleName());
@@ -37,7 +37,7 @@ public class LogHouse {
         in(log.type(), log.toJSON(gson));
     }
 
-    private static synchronized void in(String type, JSONObject serializedLog) {
+    private static void in(String type, JSONObject serializedLog) {
         for (LogHouseOutput output : outputs) {
             if (output.type().equals(type)) {
                 output.start(serializedLog);

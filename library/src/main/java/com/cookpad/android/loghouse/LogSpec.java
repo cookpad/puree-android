@@ -8,10 +8,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class LogSpec {
+    private static final Object LOCK = new Object();
+
     private LogHouseConfiguration conf;
     private List<Log> logs;
     private String target;
@@ -35,32 +38,34 @@ public class LogSpec {
         return this;
     }
 
-    public synchronized void shouldBe(Matcher matcher) {
-        final CountDownLatch latch = new CountDownLatch(logs.size());
-        final List<JSONObject> results = new ArrayList<>();
+    public void shouldBe(Matcher matcher) {
+        synchronized (LOCK) {
+            final CountDownLatch latch = new CountDownLatch(logs.size());
+            final List<JSONObject> results = new ArrayList<>();
 
-        AfterFlushAction afterFlushAction = new AfterFlushAction() {
-            @Override
-            public void call(String type, List<JSONObject> serializedLogs) {
-                if (target.equals(type)) {
-                    results.addAll(serializedLogs);
+            AfterFlushAction afterFlushAction = new AfterFlushAction() {
+                @Override
+                public void call(String type, List<JSONObject> serializedLogs) {
+                    if (target.equals(type)) {
+                        results.addAll(serializedLogs);
+                    }
+                    latch.countDown();
                 }
-                latch.countDown();
+            };
+
+            conf.setAfterFlushAction(afterFlushAction);
+            LogHouse.initialize(conf);
+
+            for (Log log : logs) {
+                LogHouse.in(log);
             }
-        };
 
-        conf.setAfterFlushAction(afterFlushAction);
-        LogHouse.initialize(conf);
-
-        for (Log log : logs) {
-            LogHouse.in(log);
-        }
-
-        try {
-            latch.await(100, TimeUnit.MILLISECONDS);
-            matcher.expect(results);
-        } catch (JSONException | InterruptedException e) {
-            throw new RuntimeException(e.getMessage());
+            try {
+                latch.await(100, TimeUnit.MILLISECONDS);
+                matcher.expect(results);
+            } catch (JSONException | InterruptedException e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
     }
 
