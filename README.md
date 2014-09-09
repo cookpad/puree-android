@@ -31,12 +31,11 @@ public class DemoApplication extends Application {
     }
 
     public static LogHouseConfiguration buildConfiguration(Context context) {
-        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(context)
+        return new LogHouseConfiguration.Builder(context)
                 .beforeEmitAction(new AddRequiredParamsAction())
-                .registerOutput(new OutBufferedLogcat())
-                .registerOutput(new OutLogcat())
+                .registerOutput(OutBufferedLogcat.class)
+                .registerOutput(OutLogcat.class)
                 .build();
-        return conf;
     }
 }
 ```
@@ -105,24 +104,20 @@ There are two types of output plugins: Non-Buffered, Buffered.
 You can create a plugin by inheriting LogHouse.Output or LogHouse.BufferedOutput. See example plugins below.
 
 ```java
-public class OutLogcat extends LogHouse.Output {
-    private static final String TAG = OutLogcat.class.getSimpleName();
-
+public class OutLogcat extends LogHouseOutput {
     public String type() {
         return "logcat";
     }
 
     @Override
     public void emit(JSONObject serializedLog) {
-        Log.d(TAG, serializedLog.toString());
+        Log.d("OutLogcat", serializedLog.toString());
     }
 }
 ```
 
 ```java
-public class OutBufferedLogcat extends LogHouse.BufferedOutput {
-    private static final String TAG = OutBufferedLogcat.class.getSimpleName();
-
+public class OutBufferedLogcat extends LogHouseBufferedOutput {
     public String type() {
         return "buffered_logcat";
     }
@@ -133,7 +128,7 @@ public class OutBufferedLogcat extends LogHouse.BufferedOutput {
         for (JSONObject serializedLog : serializedLogs) {
             log.put(serializedLog);
         }
-        Log.d(TAG, log.toString());
+        Log.d("OutBufferedLogcat", log.toString());
 
         asyncResult.success();
     }
