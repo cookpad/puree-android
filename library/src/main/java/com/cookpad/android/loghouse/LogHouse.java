@@ -6,6 +6,7 @@ import com.cookpad.android.loghouse.async.AsyncResult;
 import com.cookpad.android.loghouse.handlers.AfterFlushAction;
 import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
 import com.cookpad.android.loghouse.storage.LogHouseDbHelper;
+import com.cookpad.android.loghouse.storage.LogHouseStorage;
 import com.cookpad.android.loghouse.storage.Records;
 import com.google.gson.Gson;
 
@@ -18,21 +19,26 @@ import java.util.List;
 public class LogHouse {
     private static Gson gson;
     private static BeforeEmitAction beforeEmitAction;
-    private static List<Output> outputs;
-    private static LogHouseDbHelper logHouseStorage;
+    private static List<Output> outputs = new ArrayList<>();
 
     public static void initialize(LogHouseConfiguration conf) {
         gson = conf.getGson();
         beforeEmitAction = conf.getBeforeEmitAction();
-        outputs = conf.getOutputs();
 
-        for (Output output : outputs) {
-            output.configure(conf);
-        }
-
-        logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
+        LogHouseStorage logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
         if (conf.isTest()) {
             logHouseStorage.clean();
+        }
+
+        for (Class<? extends Output> outputType : conf.getOutputTypes()) {
+            try {
+                Output output = outputType.newInstance();
+                output.setStorage(logHouseStorage);
+                output.configure(conf);
+                outputs.add(output);
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException("Unable to create new instance: " + outputType.getSimpleName());
+            }
         }
     }
 
@@ -40,7 +46,7 @@ public class LogHouse {
         in(log.type(), log.toJSON(gson));
     }
 
-    private static void in(String type, JSONObject serializedLog) {
+    private static synchronized void in(String type, JSONObject serializedLog) {
         for (Output output : outputs) {
             if (output.type().equals(type)) {
                 output.start(serializedLog);
@@ -49,10 +55,15 @@ public class LogHouse {
     }
 
     public static abstract class Output {
+        protected LogHouseStorage storage;
         protected AfterFlushAction afterFlushAction;
         protected boolean isTest = false;
 
         public abstract String type();
+
+        public void setStorage(LogHouseStorage storage) {
+            this.storage = storage;
+        }
 
         public void configure(LogHouseConfiguration conf) {
             this.isTest = conf.isTest();
@@ -64,7 +75,7 @@ public class LogHouse {
                 serializedLog = beforeEmitAction.call(serializedLog);
                 emit(serializedLog);
 
-                List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
+                List<JSONObject> serializedLogs = new ArrayList<>();
                 serializedLogs.add(serializedLog);
                 afterFlushAction.call(type(), serializedLogs);
             } catch (JSONException e) {
@@ -112,7 +123,7 @@ public class LogHouse {
         public void insertSync(String type, JSONObject serializedLog) {
             try {
                 serializedLog = beforeEmitAction.call(serializedLog);
-                logHouseStorage.insert(type, serializedLog);
+                storage.insert(type, serializedLog);
             } catch (JSONException e) {
                 // do nothing
             }
@@ -123,7 +134,7 @@ public class LogHouse {
         }
 
         public void flushSync() {
-            Records records = logHouseStorage.select(type(), logsPerRequest());
+            Records records = storage.select(type(), logsPerRequest());
             if (records.isEmpty()) {
                 return;
             }
@@ -135,8 +146,8 @@ public class LogHouse {
                     return;
                 }
                 afterFlushAction.call(type(), serializedLogs);
-                logHouseStorage.delete(records);
-                records = logHouseStorage.select(type(), logsPerRequest());
+                storage.delete(records);
+                records = storage.select(type(), logsPerRequest());
             }
         }
 

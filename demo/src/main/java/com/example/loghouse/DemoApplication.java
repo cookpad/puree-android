@@ -15,11 +15,10 @@ public class DemoApplication extends Application {
     }
 
     public static LogHouseConfiguration buildConfiguration(Context context) {
-        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(context)
+        return new LogHouseConfiguration.Builder(context)
                 .beforeEmitAction(new AddRequiredParamsAction())
-                .registerOutput(new OutBufferedLogcat())
-                .registerOutput(new OutLogcat())
+                .registerOutput(OutBufferedLogcat.class)
+                .registerOutput(OutLogcat.class)
                 .build();
-        return conf;
     }
 }

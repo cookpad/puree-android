@@ -17,6 +17,7 @@ public class LogSpec {
     private String target;
 
     public LogSpec(LogHouseConfiguration conf) {
+        conf.isTest(true);
         this.conf = conf;
     }
 
@@ -34,9 +35,9 @@ public class LogSpec {
         return this;
     }
 
-    public void shouldBe(Matcher matcher) {
+    public synchronized void shouldBe(Matcher matcher) {
         final CountDownLatch latch = new CountDownLatch(logs.size());
-        final List<JSONObject> results = new ArrayList<JSONObject>();
+        final List<JSONObject> results = new ArrayList<>();
 
         AfterFlushAction afterFlushAction = new AfterFlushAction() {
             @Override
@@ -56,11 +57,9 @@ public class LogSpec {
         }
 
         try {
-            latch.await(30, TimeUnit.MILLISECONDS);
+            latch.await(100, TimeUnit.MILLISECONDS);
             matcher.expect(results);
-        } catch (JSONException e) {
-            throw new RuntimeException(e.getMessage());
-        } catch (InterruptedException e) {
+        } catch (JSONException | InterruptedException e) {
             throw new RuntimeException(e.getMessage());
         }
     }

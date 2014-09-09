@@ -15,7 +15,11 @@ public class LogHouseConfiguration {
     private Gson gson;
     private BeforeEmitAction beforeEmitAction;
     private AfterFlushAction afterFlushAction = AfterFlushAction.DEFAULT;
-    private List<LogHouse.Output> outputs;
+    private List<Class<? extends LogHouse.Output>> outputTypes = new ArrayList<>();
+
+    public void isTest(boolean isTest) {
+        this.isTest = isTest;
+    }
 
     public boolean isTest() {
         return isTest;
@@ -42,25 +46,25 @@ public class LogHouseConfiguration {
         this.afterFlushAction = afterFlushAction;
     }
 
-    public List<LogHouse.Output> getOutputs() {
-        return outputs;
+    public List<Class<? extends LogHouse.Output>> getOutputTypes() {
+        return outputTypes;
     }
 
     public LogHouseConfiguration(Context applicationContext,
                                  Gson gson,
                                  BeforeEmitAction beforeEmitAction,
-                                 List<LogHouse.Output> outputs) {
+                                 List<Class<? extends LogHouse.Output>> outputTypes) {
         this.applicationContext = applicationContext;
         this.gson = gson;
         this.beforeEmitAction = beforeEmitAction;
-        this.outputs = outputs;
+        this.outputTypes = outputTypes;
     }
 
     public static class Builder {
         private Context applicationContext;
         private Gson gson = new Gson();
         private BeforeEmitAction beforeEmitAction = BeforeEmitAction.DEFAULT;
-        private List<LogHouse.Output> outputs = new ArrayList<LogHouse.Output>();
+        private List<Class<? extends LogHouse.Output>> outputTypes = new ArrayList<>();
 
         public Builder(Context applicationContext) {
             this.applicationContext = applicationContext;
@@ -76,8 +80,8 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder registerOutput(LogHouse.Output output) {
-            outputs.add(output);
+        public Builder registerOutput(Class<? extends LogHouse.Output> outputType) {
+            outputTypes.add(outputType);
             return this;
         }
 
@@ -86,7 +90,7 @@ public class LogHouseConfiguration {
                     applicationContext,
                     gson,
                     beforeEmitAction,
-                    outputs);
+                    outputTypes);
         }
     }
 }
