@@ -2,12 +2,12 @@ package com.cookpad.android.loghouse.async;
 
 import android.os.AsyncTask;
 
-import com.cookpad.android.loghouse.LogHouse;
+import com.cookpad.android.loghouse.LogHouseBufferedOutput;
 
 public class AsyncFlushTask extends AsyncTask<Void, Void, Void> {
-    private LogHouse.BufferedOutput output;
+    private LogHouseBufferedOutput output;
 
-    public AsyncFlushTask(LogHouse.BufferedOutput output) {
+    public AsyncFlushTask(LogHouseBufferedOutput output) {
         this.output = output;
     }
 

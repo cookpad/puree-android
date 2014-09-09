@@ -15,7 +15,7 @@ public class LogHouseConfiguration {
     private Gson gson;
     private BeforeEmitAction beforeEmitAction;
     private AfterFlushAction afterFlushAction = AfterFlushAction.DEFAULT;
-    private List<Class<? extends LogHouse.Output>> outputTypes = new ArrayList<>();
+    private List<Class<? extends LogHouseOutput>> outputTypes = new ArrayList<>();
 
     public void isTest(boolean isTest) {
         this.isTest = isTest;
@@ -46,14 +46,14 @@ public class LogHouseConfiguration {
         this.afterFlushAction = afterFlushAction;
     }
 
-    public List<Class<? extends LogHouse.Output>> getOutputTypes() {
+    public List<Class<? extends LogHouseOutput>> getOutputTypes() {
         return outputTypes;
     }
 
     public LogHouseConfiguration(Context applicationContext,
                                  Gson gson,
                                  BeforeEmitAction beforeEmitAction,
-                                 List<Class<? extends LogHouse.Output>> outputTypes) {
+                                 List<Class<? extends LogHouseOutput>> outputTypes) {
         this.applicationContext = applicationContext;
         this.gson = gson;
         this.beforeEmitAction = beforeEmitAction;
@@ -64,7 +64,7 @@ public class LogHouseConfiguration {
         private Context applicationContext;
         private Gson gson = new Gson();
         private BeforeEmitAction beforeEmitAction = BeforeEmitAction.DEFAULT;
-        private List<Class<? extends LogHouse.Output>> outputTypes = new ArrayList<>();
+        private List<Class<? extends LogHouseOutput>> outputTypes = new ArrayList<>();
 
         public Builder(Context applicationContext) {
             this.applicationContext = applicationContext;
@@ -80,7 +80,7 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder registerOutput(Class<? extends LogHouse.Output> outputType) {
+        public Builder registerOutput(Class<? extends LogHouseOutput> outputType) {
             outputTypes.add(outputType);
             return this;
         }

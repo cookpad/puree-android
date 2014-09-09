@@ -1,13 +1,13 @@
 package com.example.loghouse.logs;
 
-import com.cookpad.android.loghouse.LogHouse;
+import com.cookpad.android.loghouse.LogHouseBufferedOutput;
 import com.cookpad.android.loghouse.async.AsyncResult;
 
 import org.json.JSONObject;
 
 import java.util.List;
 
-public class OutAsyncSomething extends LogHouse.BufferedOutput {
+public class OutAsyncSomething extends LogHouseBufferedOutput {
     private static final String TYPE = "async_something";
 
     @Override

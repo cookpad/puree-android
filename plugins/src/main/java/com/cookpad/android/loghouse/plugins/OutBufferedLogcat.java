@@ -2,7 +2,7 @@ package com.cookpad.android.loghouse.plugins;
 
 import android.util.Log;
 
-import com.cookpad.android.loghouse.LogHouse;
+import com.cookpad.android.loghouse.LogHouseBufferedOutput;
 import com.cookpad.android.loghouse.async.AsyncResult;
 
 import org.json.JSONArray;
@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class OutBufferedLogcat extends LogHouse.BufferedOutput {
+public class OutBufferedLogcat extends LogHouseBufferedOutput {
     private static final String TAG = OutBufferedLogcat.class.getSimpleName();
     public static final String TYPE = "buffered_logcat";
 
