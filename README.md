@@ -110,6 +110,11 @@ public class OutLogcat extends LogHouseOutput {
     }
 
     @Override
+    public Configuration configure(Configuration conf) {
+        return conf;
+    }
+
+    @Override
     public void emit(JSONObject serializedLog) {
         Log.d("OutLogcat", serializedLog.toString());
     }
@@ -120,6 +125,13 @@ public class OutLogcat extends LogHouseOutput {
 public class OutBufferedLogcat extends LogHouseBufferedOutput {
     public String type() {
         return "buffered_logcat";
+    }
+
+    @Override
+    public Configuration configure(Configuration conf) {
+        conf.setFlushInterval(2000);
+        conf.setLogsPerRequest(3);
+        return conf;
     }
 
     @Override
