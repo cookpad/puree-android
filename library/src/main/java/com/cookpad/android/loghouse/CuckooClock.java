@@ -3,18 +3,15 @@ package com.cookpad.android.loghouse;
 import android.os.Handler;
 
 public class CuckooClock {
-    private final String TAG = CuckooClock.class.getSimpleName();
-
     private Handler handler;
     private boolean hasAlreadySet;
     private Runnable callback;
-    private int callMeAfter;
+    private int interval;
     private int retryCount = 1;
-    private int buckOffTime;
 
-    public CuckooClock(final OnAlarmListener onAlarmListener, int callMeAfter) {
+    public CuckooClock(final OnAlarmListener onAlarmListener, int interval) {
         handler = new Handler();
-        this.callMeAfter = callMeAfter;
+        this.interval = interval;
         hasAlreadySet = false;
 
         callback = new Runnable() {
@@ -40,9 +37,11 @@ public class CuckooClock {
     }
 
     private synchronized void forceSetAlarm() {
-        buckOffTime = callMeAfter * retryCount;
         handler.removeCallbacks(callback);
+
+        int buckOffTime = interval * retryCount;
         handler.postDelayed(callback, buckOffTime);
+
         hasAlreadySet = true;
     }
 
