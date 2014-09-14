@@ -11,25 +11,39 @@ import android.widget.TextView;
 import com.cookpad.android.loghouse.LogHouse;
 import com.example.loghouse.logs.ClickLog;
 import com.example.loghouse.logs.PvLog;
+import com.example.loghouse.logs.plugins.OutBufferedDisplay;
 import com.example.loghouse.logs.plugins.OutDisplay;
 
 import org.json.JSONObject;
 
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
     private TextView logDisplayTextView;
     private Button logDisplayButton;
+    private Button logBufferedDisplayButton;
 
     private final OutDisplay.Callback outDisplayCallback = new OutDisplay.Callback() {
         @Override
         public void onEmit(JSONObject serializedLog) {
-            logDisplayTextView.setText(new StringBuilder()
-                    .append(serializedLog.toString())
-                    .append(System.getProperty("line.separator"))
-                    .append(logDisplayTextView.getText())
-                    .toString());
+            preprendOutput(serializedLog.toString());
         }
     };
+
+    private final OutBufferedDisplay.Callback outBufferedDisplayCallback = new OutBufferedDisplay.Callback() {
+        @Override
+        public void onEmit(List<JSONObject> serializedLogs) {
+            preprendOutput(serializedLogs.toString());
+        }
+    };
+
+    private void preprendOutput(String text) {
+        logDisplayTextView.setText(new StringBuilder()
+                .append(text)
+                .append(System.getProperty("line.separator"))
+                .append(logDisplayTextView.getText())
+                .toString());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +51,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         findViews();
         OutDisplay.register(outDisplayCallback);
+        OutBufferedDisplay.register(outBufferedDisplayCallback);
         LogHouse.in(new PvLog(this));
         setupViews();
     }
@@ -44,39 +59,39 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         OutDisplay.unregister();
+        OutBufferedDisplay.unregister();
         super.onDestroy();
     }
 
     private void findViews() {
         logDisplayTextView = (TextView) findViewById(R.id.log_display);
-        logDisplayButton = (Button) findViewById(R.id.track_button);
+        logDisplayButton = (Button) findViewById(R.id.display_button);
+        logBufferedDisplayButton = (Button) findViewById(R.id.buffered_display_button);
     }
 
     private void setupViews() {
         logDisplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                trackClickEvent();
+                LogHouse.in(new ClickLog("MainActivity", "track", OutDisplay.TYPE));
+            }
+        });
+        logBufferedDisplayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LogHouse.in(new ClickLog("MainActivity", "track", OutBufferedDisplay.TYPE));
             }
         });
     }
 
-    private void trackClickEvent() {
-        LogHouse.in(new ClickLog("MainActivity", "track"));
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;

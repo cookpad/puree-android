@@ -5,6 +5,7 @@ import android.test.AndroidTestCase;
 import com.cookpad.android.loghouse.LogSpec;
 import com.cookpad.android.loghouse.plugins.OutLogcat;
 import com.example.loghouse.DemoApplication;
+import com.example.loghouse.logs.plugins.OutBufferedDisplay;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +16,7 @@ public class PvLogTest extends AndroidTestCase {
     public void testFormat() {
         new LogSpec(DemoApplication.buildConfiguration(getContext()))
                 .logs(new PvLog("MainActivity"),
-                        new ClickLog("MainActivity", "World"),
+                        new ClickLog("MainActivity", "World", OutBufferedDisplay.TYPE),
                         new PvLog("MainActivity"))
                 .target(OutLogcat.TYPE)
                 .shouldBe(new LogSpec.Matcher() {

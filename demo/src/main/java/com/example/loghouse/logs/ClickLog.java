@@ -1,7 +1,6 @@
 package com.example.loghouse.logs;
 
 import com.cookpad.android.loghouse.Log;
-import com.cookpad.android.loghouse.plugins.OutBufferedLogcat;
 import com.example.loghouse.logs.plugins.OutDisplay;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,12 +10,15 @@ public class ClickLog extends Log {
     @SerializedName("label")
     private String label;
 
+    private String type = OutDisplay.TYPE;
+
     public String type() {
-        return OutDisplay.TYPE;
+        return type;
     }
 
-    public ClickLog(String page, String label) {
+    public ClickLog(String page, String label, String type) {
         this.page = page;
         this.label = label;
+        this.type = type;
     }
 }

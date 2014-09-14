@@ -1,6 +1,7 @@
 package com.cookpad.android.loghouse.async;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class AsyncResult extends CountDownLatch {
     private boolean result = false;
@@ -14,7 +15,7 @@ public class AsyncResult extends CountDownLatch {
     }
 
     public boolean get() throws InterruptedException {
-        await();
+        await(1, TimeUnit.MINUTES);
         return result;
     }
 

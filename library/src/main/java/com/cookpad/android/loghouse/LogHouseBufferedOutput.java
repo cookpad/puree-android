@@ -51,7 +51,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
     }
 
     public void flushSync() {
-        Records records = storage.select(type(), conf.getLogsPerRequest());
+        Records records = getRecordsFromStorage();
         if (records.isEmpty()) {
             return;
         }
@@ -64,8 +64,12 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
             }
             afterFlushAction.call(type(), serializedLogs);
             storage.delete(records);
-            records = storage.select(type(), conf.getLogsPerRequest());
+            records = getRecordsFromStorage();
         }
+    }
+
+    private Records getRecordsFromStorage() {
+        return storage.select(type(), conf.getLogsPerRequest());
     }
 
     public boolean flushChunkOfLogs(final List<JSONObject> serializedLogs) {
