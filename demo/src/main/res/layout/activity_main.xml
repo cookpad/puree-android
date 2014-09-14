@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark_gray"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -14,28 +15,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="display" />
+            android:background="@drawable/clickable_button_background"
+            android:text="display"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/buffered_display_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:layout_weight="1"
-            android:text="buffered display" />
+            android:background="@drawable/clickable_button_background"
+            android:text="buffered display"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="16dp"
-        android:background="@android:color/black"
+        android:background="@color/terminal_background"
         android:padding="8dp">
 
         <TextView
             android:id="@+id/log_display"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:textColor="@color/bg_terminal" />
+            android:textColor="@color/terminal_text_color" />
     </ScrollView>
 </LinearLayout>
