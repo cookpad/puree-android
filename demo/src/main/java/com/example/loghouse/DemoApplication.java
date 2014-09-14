@@ -7,6 +7,7 @@ import com.cookpad.android.loghouse.LogHouse;
 import com.cookpad.android.loghouse.LogHouseConfiguration;
 import com.cookpad.android.loghouse.plugins.OutBufferedLogcat;
 import com.cookpad.android.loghouse.plugins.OutLogcat;
+import com.example.loghouse.logs.plugins.OutDisplay;
 
 public class DemoApplication extends Application {
     @Override
@@ -19,6 +20,7 @@ public class DemoApplication extends Application {
                 .beforeEmitAction(new AddRequiredParamsAction())
                 .registerOutput(OutBufferedLogcat.class)
                 .registerOutput(OutLogcat.class)
+                .registerOutput(OutDisplay.class)
                 .build();
     }
 }

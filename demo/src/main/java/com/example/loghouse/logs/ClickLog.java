@@ -2,6 +2,7 @@ package com.example.loghouse.logs;
 
 import com.cookpad.android.loghouse.Log;
 import com.cookpad.android.loghouse.plugins.OutBufferedLogcat;
+import com.example.loghouse.logs.plugins.OutDisplay;
 import com.google.gson.annotations.SerializedName;
 
 public class ClickLog extends Log {
@@ -11,7 +12,7 @@ public class ClickLog extends Log {
     private String label;
 
     public String type() {
-        return OutBufferedLogcat.TYPE;
+        return OutDisplay.TYPE;
     }
 
     public ClickLog(String page, String label) {

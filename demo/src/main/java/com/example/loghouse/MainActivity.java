@@ -5,23 +5,55 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.cookpad.android.loghouse.LogHouse;
 import com.example.loghouse.logs.ClickLog;
 import com.example.loghouse.logs.PvLog;
+import com.example.loghouse.logs.plugins.OutDisplay;
+
+import org.json.JSONObject;
 
 
 public class MainActivity extends ActionBarActivity {
+    private TextView logDisplayTextView;
+    private Button logDisplayButton;
+
+    private final OutDisplay.Callback outDisplayCallback = new OutDisplay.Callback() {
+        @Override
+        public void onEmit(JSONObject serializedLog) {
+            logDisplayTextView.setText(new StringBuilder()
+                    .append(serializedLog.toString())
+                    .append(System.getProperty("line.separator"))
+                    .append(logDisplayTextView.getText())
+                    .toString());
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViews();
+        OutDisplay.register(outDisplayCallback);
         LogHouse.in(new PvLog(this));
         setupViews();
     }
 
+    @Override
+    protected void onDestroy() {
+        OutDisplay.unregister();
+        super.onDestroy();
+    }
+
+    private void findViews() {
+        logDisplayTextView = (TextView) findViewById(R.id.log_display);
+        logDisplayButton = (Button) findViewById(R.id.track_button);
+    }
+
     private void setupViews() {
-        findViewById(R.id.track_button).setOnClickListener(new View.OnClickListener() {
+        logDisplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 trackClickEvent();
