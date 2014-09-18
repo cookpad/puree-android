@@ -60,7 +60,10 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
         while (!records.isEmpty()) {
             final List<JSONObject> serializedLogs = records.getSerializedLogs();
             if (!isTest) {
-                if (!flushChunkOfLogs(serializedLogs)) {
+                boolean isSuccess = flushChunkOfLogs(serializedLogs);
+                if (isSuccess) {
+                    lazyTaskRunner.reset();
+                } else {
                     lazyTaskRunner.retryLater();
                     return;
                 }

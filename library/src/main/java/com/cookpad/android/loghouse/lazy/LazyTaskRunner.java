@@ -7,7 +7,7 @@ public class LazyTaskRunner {
     private boolean hasAlreadySet;
     private Runnable callback;
     private int interval;
-    private int retryCount = 1;
+    private int retryCount;
 
     public LazyTaskRunner(final LazyTask task, final int interval) {
         this.interval = interval;
@@ -17,18 +17,21 @@ public class LazyTaskRunner {
         this.callback = new Runnable() {
             @Override
             public void run() {
-                hasAlreadySet = false;
-                retryCount = 1;
                 task.run();
             }
         };
     }
 
+    public synchronized void reset() {
+        hasAlreadySet = false;
+        retryCount = 0;
+    }
+
     public synchronized void tryToStart() {
-        if (hasAlreadySet && retryCount == 1) {
+        if (hasAlreadySet && retryCount == 0) {
             return;
         }
-        retryCount = 1;
+        retryCount = 0;
         startDelayed();
     }
 
@@ -36,7 +39,7 @@ public class LazyTaskRunner {
         handler.removeCallbacks(callback);
 
         int buckOffTime = interval * retryCount;
-        handler.postDelayed(callback, buckOffTime);
+        handler.postDelayed(callback, interval + buckOffTime);
 
         hasAlreadySet = true;
     }
