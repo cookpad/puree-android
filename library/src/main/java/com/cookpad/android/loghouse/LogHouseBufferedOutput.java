@@ -3,6 +3,8 @@ package com.cookpad.android.loghouse;
 import com.cookpad.android.loghouse.async.AsyncFlushTask;
 import com.cookpad.android.loghouse.async.AsyncInsertTask;
 import com.cookpad.android.loghouse.async.AsyncResult;
+import com.cookpad.android.loghouse.lazy.LazyTask;
+import com.cookpad.android.loghouse.lazy.LazyTaskRunner;
 import com.cookpad.android.loghouse.storage.LogHouseStorage;
 import com.cookpad.android.loghouse.storage.Records;
 
@@ -12,18 +14,17 @@ import org.json.JSONObject;
 import java.util.List;
 
 public abstract class LogHouseBufferedOutput extends LogHouseOutput {
-    private CuckooClock cuckooClock;
+    private LazyTaskRunner lazyTaskRunner;
 
     @Override
     public void initialize(LogHouseConfiguration logHouseConfiguration, LogHouseStorage storage) {
         super.initialize(logHouseConfiguration, storage);
-        CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
+        lazyTaskRunner = new LazyTaskRunner(new LazyTask() {
             @Override
-            public void onAlarm() {
+            public void run() {
                 flush();
             }
-        };
-        cuckooClock = new CuckooClock(onAlarmListener, conf.getFlushInterval());
+        }, conf.getFlushInterval());
     }
 
     @Override
@@ -33,7 +34,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
             flushSync();
         } else {
             new AsyncInsertTask(this, type(), serializedLog).execute();
-            cuckooClock.setAlarm();
+            lazyTaskRunner.tryToStart();
         }
     }
 
@@ -58,9 +59,11 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
 
         while (!records.isEmpty()) {
             final List<JSONObject> serializedLogs = records.getSerializedLogs();
-            if (!flushChunkOfLogs(serializedLogs)) {
-                cuckooClock.retryLater();
-                return;
+            if (!isTest) {
+                if (!flushChunkOfLogs(serializedLogs)) {
+                    lazyTaskRunner.retryLater();
+                    return;
+                }
             }
             afterFlushAction.call(type(), serializedLogs);
             storage.delete(records);

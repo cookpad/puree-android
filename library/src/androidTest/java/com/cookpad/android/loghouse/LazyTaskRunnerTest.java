@@ -2,24 +2,25 @@ package com.cookpad.android.loghouse;
 
 import android.test.AndroidTestCase;
 
-import java.util.Calendar;
+import com.cookpad.android.loghouse.lazy.LazyTask;
+import com.cookpad.android.loghouse.lazy.LazyTaskRunner;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class CuckooClockTest extends AndroidTestCase {
+public class LazyTaskRunnerTest extends AndroidTestCase {
 
     public void testEnsureToCallMeAfterSetTime() {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        CuckooClock.OnAlarmListener onAlarmListener = new CuckooClock.OnAlarmListener() {
+        LazyTaskRunner lazyTaskRunner = new LazyTaskRunner(new LazyTask() {
             @Override
-            public void onAlarm() {
+            public void run() {
                 latch.countDown();
             }
-        };
+        }, 10);
 
-        CuckooClock cuckooClock = new CuckooClock(onAlarmListener, 10);
-        cuckooClock.setAlarm();
+        lazyTaskRunner.tryToStart();
 
         try {
             latch.await(30, TimeUnit.MILLISECONDS);

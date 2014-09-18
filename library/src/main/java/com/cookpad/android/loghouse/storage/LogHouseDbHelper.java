@@ -70,7 +70,7 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE " + TABLE_NAME + " (" +
+        String query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_NAME_TYPE + " TEXT," +
                 COLUMN_NAME_LOG + " TEXT" +

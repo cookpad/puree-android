@@ -1,42 +1,38 @@
-package com.cookpad.android.loghouse;
+package com.cookpad.android.loghouse.lazy;
 
 import android.os.Handler;
 
-public class CuckooClock {
+public class LazyTaskRunner {
     private Handler handler;
     private boolean hasAlreadySet;
     private Runnable callback;
     private int interval;
     private int retryCount = 1;
 
-    public CuckooClock(final OnAlarmListener onAlarmListener, int interval) {
-        handler = new Handler();
+    public LazyTaskRunner(final LazyTask task, final int interval) {
         this.interval = interval;
-        hasAlreadySet = false;
+        this.handler = new Handler();
+        this.hasAlreadySet = false;
 
-        callback = new Runnable() {
+        this.callback = new Runnable() {
             @Override
             public void run() {
                 hasAlreadySet = false;
                 retryCount = 1;
-                onAlarmListener.onAlarm();
+                task.run();
             }
         };
     }
 
-    public interface OnAlarmListener {
-        public void onAlarm();
-    }
-
-    public synchronized void setAlarm() {
+    public synchronized void tryToStart() {
         if (hasAlreadySet && retryCount == 1) {
             return;
         }
         retryCount = 1;
-        forceSetAlarm();
+        startDelayed();
     }
 
-    private synchronized void forceSetAlarm() {
+    private synchronized void startDelayed() {
         handler.removeCallbacks(callback);
 
         int buckOffTime = interval * retryCount;
@@ -47,6 +43,6 @@ public class CuckooClock {
 
     public synchronized void retryLater() {
         retryCount++;
-        forceSetAlarm();
+        startDelayed();
     }
 }
