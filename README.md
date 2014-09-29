@@ -96,10 +96,16 @@ public class ClickLogTest extends AndroidTestCase {
 
 ### Create output plugins
 
+
 There are two types of output plugins: Non-Buffered, Buffered.
 
 - Non-Buffered output plugins do not buffer data and immediately write out results.
+
+![](./images/output_plugin.png)
+
 - Buffered output plugins store logs to local storage temporary.
+
+![](./images/buffered_output_plugin.png)
 
 You can create a plugin by inheriting LogHouse.Output or LogHouse.BufferedOutput. See example plugins below.
 
