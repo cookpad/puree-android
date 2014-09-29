@@ -10,12 +10,16 @@ Sending logs from mobile app is difficult, isn't it?
 It is inefficient that send logs every time events are fired. So you should implement buffering, retrying, validation, ...
 LogHouse is a data collector for unified logging layer, which provides some functions like below
 
+- Filtering
+ - Enable to interrupt process before sending log.
 - Buffering
- - Store logs on local storage until log was sent.
+ - Store logs to beffere until log was sent.
+- Batching 
+ - Enable to send logs by 1 request.
 - Retrying
  - Retry to send log after some time automatically if sending has failed.
-- Validation
- - Enable to receive broken logs.
+
+![](./images/logging.png)
 
 ## Usage
 
