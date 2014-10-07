@@ -1,6 +1,10 @@
 package com.cookpad.android.loghouse;
 
 import com.cookpad.android.loghouse.handlers.AfterFlushFilter;
+import com.cookpad.android.loghouse.internal.LogDumper;
+import com.cookpad.android.loghouse.storage.Records;
+
+import junit.framework.AssertionFailedError;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,23 +45,32 @@ public class LogSpec {
             final CountDownLatch latch = new CountDownLatch(logs.size());
             final List<JSONObject> results = new ArrayList<>();
 
-            AfterFlushFilter afterFlushFilter = new AfterFlushFilter() {
+            final String[] compareInfoMessage = {"[compare] target : type\n"};
+            conf.setAfterFlushFilter(new AfterFlushFilter() {
                 @Override
                 public void call(String type, List<JSONObject> serializedLogs) {
+                    compareInfoMessage[0] += "    " + target + " : " + type + "\n";
+
                     if (target.equals(type)) {
                         results.addAll(serializedLogs);
                     }
                     latch.countDown();
                 }
-            };
+            });
 
-            conf.setAfterFlushFilter(afterFlushFilter);
-            initializeLogHouse();
+            initializeLogHouse(conf);
             putLogs(logs);
 
             try {
-                latch.await(100, TimeUnit.MILLISECONDS);
+                latch.await(1000, TimeUnit.MILLISECONDS);
                 matcher.expect(results);
+            } catch (AssertionFailedError e) {
+                Records records = LogHouse.getBufferedLogs();
+                String message = LogDumper.buildMessage(records);
+                throw new AssertionFailedError(e.getMessage() + "\n"
+                        + compareInfoMessage[0]
+                        + "[result size] " + results.size() + "\n"
+                        + message);
             } catch (JSONException | InterruptedException e) {
                 throw new RuntimeException(e.getMessage());
             }
@@ -70,7 +83,7 @@ public class LogSpec {
         }
     }
 
-    private void initializeLogHouse() {
+    private void initializeLogHouse(LogHouseConfiguration conf) {
         LogHouse.initialize(conf);
         LogHouse.clear();
     }
