@@ -22,8 +22,8 @@ public class ClickLogTest extends AndroidTestCase {
         });
 
         new LogSpec(DemoApplication.buildConfiguration(getContext()))
-                .logs(new ClickLog("MainActivity", "Hello", OutBufferedDisplay.TYPE),
-                        new ClickLog("MainActivity", "World", OutBufferedDisplay.TYPE),
+                .logs(new ClickLog("MainActivity", "ClickLog1", OutBufferedDisplay.TYPE),
+                        new ClickLog("MainActivity", "ClickLog2", OutBufferedDisplay.TYPE),
                         new PvLog("MainActivity"))
                 .target(OutBufferedDisplay.TYPE)
                 .shouldBe(new LogSpec.Matcher() {
@@ -32,7 +32,7 @@ public class ClickLogTest extends AndroidTestCase {
                         assertEquals(2, serializedLogs.size());
                         JSONObject serializedLog = serializedLogs.get(0);
                         assertEquals("MainActivity", serializedLog.getString("page"));
-                        assertEquals("Hello", serializedLog.getString("label"));
+                        assertEquals("ClickLog1", serializedLog.getString("label"));
                         assertTrue(serializedLog.has("event_time"));
                     }
                 });

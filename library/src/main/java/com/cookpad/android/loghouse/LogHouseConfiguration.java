@@ -10,20 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LogHouseConfiguration {
-    private boolean isTest = false;
+    public static boolean isTest = false;
+
     private Context applicationContext;
     private Gson gson;
     private BeforeEmitFilter beforeEmitFilter;
     private AfterFlushFilter afterFlushFilter = AfterFlushFilter.DEFAULT;
     private List<LogHouseOutput> outputs = new ArrayList<>();
-
-    public void isTest(boolean isTest) {
-        this.isTest = isTest;
-    }
-
-    public boolean isTest() {
-        return isTest;
-    }
 
     public Context getApplicationContext() {
         return applicationContext;
@@ -42,7 +35,7 @@ public class LogHouseConfiguration {
     }
 
     void setAfterFlushFilter(AfterFlushFilter afterFlushFilter) {
-        this.isTest = true;
+        isTest = true;
         this.afterFlushFilter = afterFlushFilter;
     }
 

@@ -15,10 +15,8 @@ public abstract class LogHouseOutput {
     protected LogHouseStorage storage;
     protected AfterFlushFilter afterFlushFilter;
     protected BeforeEmitFilter beforeEmitFilter;
-    protected boolean isTest = false;
 
     public void initialize(LogHouseConfiguration logHouseConfiguration, LogHouseStorage storage) {
-        this.isTest = logHouseConfiguration.isTest();
         this.afterFlushFilter = logHouseConfiguration.getAfterFlushFilter();
         this.beforeEmitFilter = logHouseConfiguration.getBeforeEmitFilter();
         this.storage = storage;

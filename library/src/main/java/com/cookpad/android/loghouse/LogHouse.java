@@ -32,7 +32,6 @@ public class LogHouse {
 
         for (LogHouseOutput output : conf.getOutputs()) {
             output.initialize(conf, storage);
-            output.initialize(conf, storage);
             outputs.add(output);
         }
 

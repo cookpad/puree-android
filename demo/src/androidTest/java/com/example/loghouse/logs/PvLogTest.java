@@ -16,7 +16,7 @@ public class PvLogTest extends AndroidTestCase {
     public void testFormat() {
         new LogSpec(DemoApplication.buildConfiguration(getContext()))
                 .logs(new PvLog("MainActivity"),
-                        new ClickLog("MainActivity", "World", OutBufferedDisplay.TYPE),
+                        new ClickLog("MainActivity", "PvLog1", OutBufferedDisplay.TYPE),
                         new PvLog("MainActivity"))
                 .target(OutLogcat.TYPE)
                 .shouldBe(new LogSpec.Matcher() {

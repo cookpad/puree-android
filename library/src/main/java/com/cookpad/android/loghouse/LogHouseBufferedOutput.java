@@ -29,7 +29,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
 
     @Override
     public void start(JSONObject serializedLog) {
-        if (isTest) {
+        if (LogHouseConfiguration.isTest) {
             insertSync(type(), serializedLog);
             flushSync();
         } else {
@@ -59,7 +59,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
 
         while (!records.isEmpty()) {
             final List<JSONObject> serializedLogs = records.getSerializedLogs();
-            if (!isTest) {
+            if (!LogHouseConfiguration.isTest) {
                 boolean isSuccess = flushChunkOfLogs(serializedLogs);
                 if (isSuccess) {
                     lazyTaskRunner.reset();

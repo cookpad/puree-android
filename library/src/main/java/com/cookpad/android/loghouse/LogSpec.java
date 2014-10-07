@@ -1,8 +1,6 @@
 package com.cookpad.android.loghouse;
 
 import com.cookpad.android.loghouse.handlers.AfterFlushFilter;
-import com.cookpad.android.loghouse.internal.LogDumper;
-import com.cookpad.android.loghouse.storage.Records;
 
 import junit.framework.AssertionFailedError;
 
@@ -65,12 +63,9 @@ public class LogSpec {
                 latch.await(1000, TimeUnit.MILLISECONDS);
                 matcher.expect(results);
             } catch (AssertionFailedError e) {
-                Records records = LogHouse.getBufferedLogs();
-                String message = LogDumper.buildMessage(records);
                 throw new AssertionFailedError(e.getMessage() + "\n"
                         + compareInfoMessage[0]
-                        + "[result size] " + results.size() + "\n"
-                        + message);
+                        + "[result size] " + results.size());
             } catch (JSONException | InterruptedException e) {
                 throw new RuntimeException(e.getMessage());
             }
