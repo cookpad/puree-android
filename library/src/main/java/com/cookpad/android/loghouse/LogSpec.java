@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +15,7 @@ public class LogSpec {
     private static final Object LOCK = new Object();
 
     private LogHouseConfiguration conf;
-    private List<Log> logs;
+    private List<SerializableLog> logs;
     private String target;
 
     public LogSpec(LogHouseConfiguration conf) {
@@ -24,11 +23,11 @@ public class LogSpec {
         this.conf = conf;
     }
 
-    public LogSpec logs(Log... logs) {
+    public LogSpec logs(SerializableLog... logs) {
         return logs(Arrays.asList(logs));
     }
 
-    public LogSpec logs(List<Log> logs) {
+    public LogSpec logs(List<SerializableLog> logs) {
         this.logs = logs;
         return this;
     }
@@ -56,7 +55,7 @@ public class LogSpec {
             conf.setAfterFlushAction(afterFlushAction);
             LogHouse.initialize(conf);
 
-            for (Log log : logs) {
+            for (SerializableLog log : logs) {
                 LogHouse.in(log);
             }
 

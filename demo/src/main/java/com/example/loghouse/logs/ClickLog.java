@@ -1,10 +1,10 @@
 package com.example.loghouse.logs;
 
-import com.cookpad.android.loghouse.Log;
+import com.cookpad.android.loghouse.SerializableLog;
 import com.example.loghouse.logs.plugins.OutDisplay;
 import com.google.gson.annotations.SerializedName;
 
-public class ClickLog extends Log {
+public class ClickLog extends SerializableLog {
     @SerializedName("page")
     private String page;
     @SerializedName("label")

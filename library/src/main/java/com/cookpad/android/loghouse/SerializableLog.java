@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public abstract class Log {
+public abstract class SerializableLog {
     public abstract String type();
 
     public JSONObject toJSON(Gson gson) {

@@ -33,7 +33,7 @@ public class LogHouse {
         }
     }
 
-    public static void in(Log log) {
+    public static void in(SerializableLog log) {
         in(log.type(), log.toJSON(gson));
     }
 

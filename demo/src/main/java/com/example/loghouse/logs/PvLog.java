@@ -3,11 +3,11 @@ package com.example.loghouse.logs;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
-import com.cookpad.android.loghouse.Log;
+import com.cookpad.android.loghouse.SerializableLog;
 import com.cookpad.android.loghouse.plugins.OutLogcat;
 import com.google.gson.annotations.SerializedName;
 
-public class PvLog extends Log {
+public class PvLog extends SerializableLog {
     @SerializedName("screen_name")
     private String sceenName;
 
