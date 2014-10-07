@@ -54,7 +54,7 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
     }
 
     @Override
-    public void clean() {
+    public void clear() {
         String query = "DELETE FROM " + TABLE_NAME;
         db.execSQL(query);
     }

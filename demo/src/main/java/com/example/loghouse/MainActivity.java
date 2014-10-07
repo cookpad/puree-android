@@ -45,7 +45,8 @@ public class MainActivity extends ActionBarActivity {
                 .toString());
     }
 
-    private void clearOutput() {
+    private void clear() {
+        LogHouse.clear();
         logDisplayTextView.setText("");
     }
 
@@ -102,7 +103,7 @@ public class MainActivity extends ActionBarActivity {
                 LogHouse.dump();
                 return true;
             case R.id.action_clear:
-                clearOutput();
+                clear();
                 return true;
             case R.id.action_settings:
                 return true;

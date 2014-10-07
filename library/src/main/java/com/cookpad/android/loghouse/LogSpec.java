@@ -2,6 +2,8 @@ package com.cookpad.android.loghouse;
 
 import com.cookpad.android.loghouse.handlers.AfterFlushAction;
 
+import junit.framework.AssertionFailedError;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,7 +21,6 @@ public class LogSpec {
     private String target;
 
     public LogSpec(LogHouseConfiguration conf) {
-        conf.isTest(true);
         this.conf = conf;
     }
 
@@ -53,11 +54,8 @@ public class LogSpec {
             };
 
             conf.setAfterFlushAction(afterFlushAction);
-            LogHouse.initialize(conf);
-
-            for (SerializableLog log : logs) {
-                LogHouse.in(log);
-            }
+            initializeLogHouse();
+            putLogs(logs);
 
             try {
                 latch.await(100, TimeUnit.MILLISECONDS);
@@ -66,6 +64,17 @@ public class LogSpec {
                 throw new RuntimeException(e.getMessage());
             }
         }
+    }
+
+    private void putLogs(List<SerializableLog> logs) {
+        for (SerializableLog log : logs) {
+            LogHouse.in(log);
+        }
+    }
+
+    private void initializeLogHouse() {
+        LogHouse.initialize(conf);
+        LogHouse.clear();
     }
 
     public static interface Matcher {

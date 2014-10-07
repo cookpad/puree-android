@@ -18,9 +18,6 @@ public class LogHouse {
         gson = conf.getGson();
 
         storage = new LogHouseDbHelper(conf.getApplicationContext());
-        if (conf.isTest()) {
-            storage.clean();
-        }
 
         for (Class<? extends LogHouseOutput> outputType : conf.getOutputTypes()) {
             try {
@@ -48,5 +45,9 @@ public class LogHouse {
 
     public static void dump() {
         storage.dump();
+    }
+
+    public static void clear() {
+        storage.clear();
     }
 }
