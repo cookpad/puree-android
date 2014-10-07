@@ -45,6 +45,10 @@ public class MainActivity extends ActionBarActivity {
                 .toString());
     }
 
+    private void clearOutput() {
+        logDisplayTextView.setText("");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +100,9 @@ public class MainActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_dump:
                 LogHouse.dump();
+                return true;
+            case R.id.action_clear:
+                clearOutput();
                 return true;
             case R.id.action_settings:
                 return true;

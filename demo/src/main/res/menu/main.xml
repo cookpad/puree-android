@@ -6,6 +6,10 @@
         android:title="@string/action_dump"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_clear"
+        android:title="@string/action_clear"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
