@@ -93,6 +93,15 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_dump:
+                LogHouse.dump();
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                // do nothing
+        }
         if (id == R.id.action_settings) {
             return true;
         }

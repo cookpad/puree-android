@@ -7,4 +7,5 @@ public interface LogHouseStorage {
     public Records select(String type, int logsPerRequest);
     public void delete(Records records);
     public void clean();
+    public void dump();
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,21 +39,11 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
                 " LIMIT " + logsPerRequest;
         Cursor cursor = db.rawQuery(query, null);
 
-        Records records = new Records();
         try {
-            while (cursor.moveToNext()) {
-                try {
-                    Record record = new Record(cursor);
-                    records.add(record);
-                } catch (JSONException e) {
-                    // continue
-                }
-            }
+            return recordsFromCursor(cursor);
         } finally {
             cursor.close();
         }
-
-        return records;
     }
 
     @Override
@@ -80,5 +71,48 @@ public class LogHouseDbHelper extends SQLiteOpenHelper implements LogHouseStorag
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    }
+
+    @Override
+    public void dump() {
+        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY id ASC";
+        Cursor cursor = db.rawQuery(query, null);
+
+        try {
+            Records records = recordsFromCursor(cursor);
+            dumpRecords(records);
+        } finally {
+            cursor.close();
+        }
+    }
+
+    private Records recordsFromCursor(Cursor cursor) {
+        Records records = new Records();
+        while (cursor.moveToNext()) {
+            try {
+                Record record = new Record(cursor);
+                records.add(record);
+            } catch (JSONException e) {
+                // continue
+            }
+        }
+        return records;
+    }
+
+    private void dumpRecords(Records records) {
+        switch (records.size()) {
+            case 0:
+                Log.d(TAG, "No records in LogHouse's buffer");
+                break;
+            case 1:
+                Log.d(TAG, "1 record in LogHouse's buffer");
+                Log.d(TAG, records.getSerializedLogs().get(0).toString());
+                break;
+            default:
+                Log.d(TAG, records.size() + " records in LogHouse's buffer");
+                for (JSONObject log : records.getSerializedLogs()) {
+                    Log.d(TAG, log.toString());
+                }
+        }
     }
 }

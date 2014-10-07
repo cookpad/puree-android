@@ -11,21 +11,22 @@ import java.util.List;
 
 public class LogHouse {
     private static Gson gson;
+    private static LogHouseStorage storage;
     private static List<LogHouseOutput> outputs = new ArrayList<>();
 
     public static void initialize(LogHouseConfiguration conf) {
         gson = conf.getGson();
 
-        LogHouseStorage logHouseStorage = new LogHouseDbHelper(conf.getApplicationContext());
+        storage = new LogHouseDbHelper(conf.getApplicationContext());
         if (conf.isTest()) {
-            logHouseStorage.clean();
+            storage.clean();
         }
 
         for (Class<? extends LogHouseOutput> outputType : conf.getOutputTypes()) {
             try {
                 LogHouseOutput output = outputType.newInstance();
-                output.initialize(conf, logHouseStorage);
-                output.initialize(conf, logHouseStorage);
+                output.initialize(conf, storage);
+                output.initialize(conf, storage);
                 outputs.add(output);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("Unable to create new instance: " + outputType.getSimpleName());
@@ -43,5 +44,9 @@ public class LogHouse {
                 output.start(serializedLog);
             }
         }
+    }
+
+    public static void dump() {
+        storage.dump();
     }
 }

@@ -31,7 +31,7 @@ public class OutBufferedDisplay extends LogHouseBufferedOutput {
 
     @Override
     public Configuration configure(Configuration conf) {
-        conf.setFlushInterval(2000);
+        conf.setFlushInterval(3000);
         return conf;
     }
 
