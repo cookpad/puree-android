@@ -2,8 +2,8 @@ package com.cookpad.android.loghouse;
 
 import android.content.Context;
 
-import com.cookpad.android.loghouse.handlers.AfterFlushAction;
-import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
+import com.cookpad.android.loghouse.handlers.AfterFlushFilter;
+import com.cookpad.android.loghouse.handlers.BeforeEmitFilter;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ public class LogHouseConfiguration {
     private boolean isTest = false;
     private Context applicationContext;
     private Gson gson;
-    private BeforeEmitAction beforeEmitAction;
-    private AfterFlushAction afterFlushAction = AfterFlushAction.DEFAULT;
+    private BeforeEmitFilter beforeEmitFilter;
+    private AfterFlushFilter afterFlushFilter = AfterFlushFilter.DEFAULT;
     private List<LogHouseOutput> outputs = new ArrayList<>();
 
     public void isTest(boolean isTest) {
@@ -33,17 +33,17 @@ public class LogHouseConfiguration {
         return gson;
     }
 
-    public BeforeEmitAction getBeforeEmitAction() {
-        return beforeEmitAction;
+    public BeforeEmitFilter getBeforeEmitFilter() {
+        return beforeEmitFilter;
     }
 
-    AfterFlushAction getAfterFlushAction() {
-        return afterFlushAction;
+    AfterFlushFilter getAfterFlushFilter() {
+        return afterFlushFilter;
     }
 
-    void setAfterFlushAction(AfterFlushAction afterFlushAction) {
+    void setAfterFlushFilter(AfterFlushFilter afterFlushFilter) {
         this.isTest = true;
-        this.afterFlushAction = afterFlushAction;
+        this.afterFlushFilter = afterFlushFilter;
     }
 
     public List<LogHouseOutput> getOutputs() {
@@ -52,18 +52,18 @@ public class LogHouseConfiguration {
 
     public LogHouseConfiguration(Context applicationContext,
                                  Gson gson,
-                                 BeforeEmitAction beforeEmitAction,
+                                 BeforeEmitFilter beforeEmitFilter,
                                  List<LogHouseOutput> outputs) {
         this.applicationContext = applicationContext;
         this.gson = gson;
-        this.beforeEmitAction = beforeEmitAction;
+        this.beforeEmitFilter = beforeEmitFilter;
         this.outputs = outputs;
     }
 
     public static class Builder {
         private Context applicationContext;
         private Gson gson = new Gson();
-        private BeforeEmitAction beforeEmitAction = BeforeEmitAction.DEFAULT;
+        private BeforeEmitFilter beforeEmitFilter = BeforeEmitFilter.DEFAULT;
         private List<LogHouseOutput> outputs = new ArrayList<>();
 
         public Builder(Context applicationContext) {
@@ -75,8 +75,8 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder beforeEmitAction(BeforeEmitAction beforeEmitAction) {
-            this.beforeEmitAction = beforeEmitAction;
+        public Builder beforeEmitAction(BeforeEmitFilter beforeEmitFilter) {
+            this.beforeEmitFilter = beforeEmitFilter;
             return this;
         }
 
@@ -89,7 +89,7 @@ public class LogHouseConfiguration {
             return new LogHouseConfiguration(
                     applicationContext,
                     gson,
-                    beforeEmitAction,
+                    beforeEmitFilter,
                     outputs);
         }
     }

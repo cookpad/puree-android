@@ -40,7 +40,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
 
     public void insertSync(String type, JSONObject serializedLog) {
         try {
-            serializedLog = beforeEmitAction.call(serializedLog);
+            serializedLog = beforeEmitFilter.call(serializedLog);
             storage.insert(type, serializedLog);
         } catch (JSONException e) {
             // do nothing
@@ -68,7 +68,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
                     return;
                 }
             }
-            afterFlushAction.call(type(), serializedLogs);
+            afterFlushFilter.call(type(), serializedLogs);
             storage.delete(records);
             records = getRecordsFromStorage();
         }

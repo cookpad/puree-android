@@ -1,8 +1,6 @@
 package com.cookpad.android.loghouse;
 
-import com.cookpad.android.loghouse.handlers.AfterFlushAction;
-
-import junit.framework.AssertionFailedError;
+import com.cookpad.android.loghouse.handlers.AfterFlushFilter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +41,7 @@ public class LogSpec {
             final CountDownLatch latch = new CountDownLatch(logs.size());
             final List<JSONObject> results = new ArrayList<>();
 
-            AfterFlushAction afterFlushAction = new AfterFlushAction() {
+            AfterFlushFilter afterFlushFilter = new AfterFlushFilter() {
                 @Override
                 public void call(String type, List<JSONObject> serializedLogs) {
                     if (target.equals(type)) {
@@ -53,7 +51,7 @@ public class LogSpec {
                 }
             };
 
-            conf.setAfterFlushAction(afterFlushAction);
+            conf.setAfterFlushFilter(afterFlushFilter);
             initializeLogHouse();
             putLogs(logs);
 

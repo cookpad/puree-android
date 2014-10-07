@@ -18,7 +18,7 @@ public class DemoApplication extends Application {
 
     public static LogHouseConfiguration buildConfiguration(Context context) {
         return new LogHouseConfiguration.Builder(context)
-                .beforeEmitAction(new AddRequiredParamsAction())
+                .beforeEmitAction(new AddRequiredParamsFilter())
                 .registerOutput(new OutLogcat())
                 .registerOutput(new OutBufferedLogcat())
                 .registerOutput(new OutDisplay())

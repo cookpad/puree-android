@@ -4,8 +4,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public interface AfterFlushAction {
-    public static final AfterFlushAction DEFAULT = new AfterFlushAction() {
+public interface AfterFlushFilter {
+    public static final AfterFlushFilter DEFAULT = new AfterFlushFilter() {
         @Override
         public void call(String type, List<JSONObject> serializedLogs) {
         }

@@ -1,7 +1,7 @@
 package com.cookpad.android.loghouse;
 
-import com.cookpad.android.loghouse.handlers.AfterFlushAction;
-import com.cookpad.android.loghouse.handlers.BeforeEmitAction;
+import com.cookpad.android.loghouse.handlers.AfterFlushFilter;
+import com.cookpad.android.loghouse.handlers.BeforeEmitFilter;
 import com.cookpad.android.loghouse.storage.LogHouseStorage;
 
 import org.json.JSONException;
@@ -13,26 +13,26 @@ import java.util.List;
 public abstract class LogHouseOutput {
     protected Configuration conf;
     protected LogHouseStorage storage;
-    protected AfterFlushAction afterFlushAction;
-    protected BeforeEmitAction beforeEmitAction;
+    protected AfterFlushFilter afterFlushFilter;
+    protected BeforeEmitFilter beforeEmitFilter;
     protected boolean isTest = false;
 
     public void initialize(LogHouseConfiguration logHouseConfiguration, LogHouseStorage storage) {
         this.isTest = logHouseConfiguration.isTest();
-        this.afterFlushAction = logHouseConfiguration.getAfterFlushAction();
-        this.beforeEmitAction = logHouseConfiguration.getBeforeEmitAction();
+        this.afterFlushFilter = logHouseConfiguration.getAfterFlushFilter();
+        this.beforeEmitFilter = logHouseConfiguration.getBeforeEmitFilter();
         this.storage = storage;
         this.conf = configure(new Configuration());
     }
 
     public void start(JSONObject serializedLog) {
         try {
-            serializedLog = beforeEmitAction.call(serializedLog);
+            serializedLog = beforeEmitFilter.call(serializedLog);
             emit(serializedLog);
 
             List<JSONObject> serializedLogs = new ArrayList<>();
             serializedLogs.add(serializedLog);
-            afterFlushAction.call(type(), serializedLogs);
+            afterFlushFilter.call(type(), serializedLogs);
         } catch (JSONException e) {
             // do nothing
         }
