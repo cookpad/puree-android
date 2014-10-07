@@ -19,10 +19,10 @@ public class DemoApplication extends Application {
     public static LogHouseConfiguration buildConfiguration(Context context) {
         return new LogHouseConfiguration.Builder(context)
                 .beforeEmitAction(new AddRequiredParamsAction())
-                .registerOutput(OutLogcat.class)
-                .registerOutput(OutBufferedLogcat.class)
-                .registerOutput(OutDisplay.class)
-                .registerOutput(OutBufferedDisplay.class)
+                .registerOutput(new OutLogcat())
+                .registerOutput(new OutBufferedLogcat())
+                .registerOutput(new OutDisplay())
+                .registerOutput(new OutBufferedDisplay())
                 .build();
     }
 }

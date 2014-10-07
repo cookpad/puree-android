@@ -19,15 +19,10 @@ public class LogHouse {
 
         storage = new LogHouseDbHelper(conf.getApplicationContext());
 
-        for (Class<? extends LogHouseOutput> outputType : conf.getOutputTypes()) {
-            try {
-                LogHouseOutput output = outputType.newInstance();
-                output.initialize(conf, storage);
-                output.initialize(conf, storage);
-                outputs.add(output);
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException("Unable to create new instance: " + outputType.getSimpleName());
-            }
+        for (LogHouseOutput output : conf.getOutputs()) {
+            output.initialize(conf, storage);
+            output.initialize(conf, storage);
+            outputs.add(output);
         }
     }
 
