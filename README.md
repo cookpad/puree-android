@@ -1,14 +1,12 @@
-LogHouse
+Puree
 ====
 
-![](http://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Pfarr_Log_House.jpg/800px-Pfarr_Log_House.jpg)
+![](https://c2.staticflickr.com/6/5277/5898217803_92ff370d7e_b.jpg)
 
 ## Description
 
-Sending logs from mobile app is difficult, isn't it?
-
 It is inefficient that send logs every time events are fired. So you should implement buffering, retrying, validation, ...
-LogHouse is a data collector for unified logging layer, which provides some functions like below
+Puree is a data collector for unified logging layer, which provides some functions like below
 
 - Filtering
  - Enable to interrupt process before sending log.
@@ -25,20 +23,20 @@ LogHouse is a data collector for unified logging layer, which provides some func
 
 ### Initializing
 
-Configure LogHouse on application created.
+Configure Puree on application created.
 
 ```java
 public class DemoApplication extends Application {
     @Override
     public void onCreate() {
-        LogHouse.initialize(buildConfiguration(this));
+        Puree.initialize(buildConfiguration(this));
     }
 
-    public static LogHouseConfiguration buildConfiguration(Context context) {
-        return new LogHouseConfiguration.Builder(context)
-                .beforeEmitAction(new AddRequiredParamsAction())
-                .registerOutput(OutBufferedLogcat.class)
-                .registerOutput(OutLogcat.class)
+    public static PureeConfiguration buildConfiguration(Context context) {
+        return new PureeConfiguration.Builder(context)
+                .beforeEmitAction(new AddRequiredParamsFilter())
+                .registerOutput(new OutLogcat())
+                .registerOutput(new OutBufferedLogcat())
                 .build();
     }
 }
@@ -66,10 +64,10 @@ public class ClickLog extends Log {
 }
 ```
 
-Shed log to LogHouse in an arbitrary timing.
+Shed log to Puree in an arbitrary timing.
 
 ```java
-LogHouse.in(new ClickLog("MainActivity", "Hello"));
+Puree.in(new ClickLog("MainActivity", "Hello"));
 ```
 
 ### Testing
@@ -80,8 +78,8 @@ LogSpec provides utilities for tests.
 public class ClickLogTest extends AndroidTestCase {
     public void testFormat() {
         new LogSpec(DemoApplication.buildConfiguration(getContext()))
-                .logs(new ClickLog("MainActivity", "Hello"),
-                        new ClickLog("MainActivity", "World"),
+                .logs(new ClickLog("MainActivity", "ClickLog1"),
+                        new ClickLog("MainActivity", "ClickLog2"),
                         new PvLog("MainActivity"))
                 .target(OutBufferedLogcat.TYPE)
                 .shouldBe(new LogSpec.Matcher() {
@@ -90,7 +88,7 @@ public class ClickLogTest extends AndroidTestCase {
                         assertEquals(2, serializedLogs.size());
                         JSONObject serializedLog = serializedLogs.get(0);
                         assertEquals("MainActivity", serializedLog.getString("page"));
-                        assertEquals("Hello", serializedLog.getString("label"));
+                        assertEquals("ClickLog1", serializedLog.getString("label"));
                         assertTrue(serializedLog.has("event_time"));
                     }
                 });
@@ -111,10 +109,10 @@ There are two types of output plugins: Non-Buffered, Buffered.
 
 ![](./images/buffered_output_plugin.png)
 
-You can create a plugin by inheriting LogHouse.Output or LogHouse.BufferedOutput. See example plugins below.
+You can create a plugin by inheriting Puree.Output or Puree.BufferedOutput. See example plugins below.
 
 ```java
-public class OutLogcat extends LogHouseOutput {
+public class OutLogcat extends PureeOutput {
     public String type() {
         return "logcat";
     }
@@ -132,7 +130,7 @@ public class OutLogcat extends LogHouseOutput {
 ```
 
 ```java
-public class OutBufferedLogcat extends LogHouseBufferedOutput {
+public class OutBufferedLogcat extends PureeBufferedOutput {
     public String type() {
         return "buffered_logcat";
     }
@@ -161,13 +159,13 @@ public class OutBufferedLogcat extends LogHouseBufferedOutput {
 
 
 Clone this repository in your PC and compile with your project for now.
-I'll upload LogHouse to maven central sooner or later.
+I'll upload Puree to maven central sooner or later.
 
 ```java
 // settings.gradle
-include ':app', ':..:LogHouse:library', ':..:LogHouse:plugins'
+include ':app', ':..:Puree:library', ':..:Puree:plugins'
 
 // app/build.gradle
-compile project(':..:LogHouse:library')
-compile project(':..:LogHouse:plugins')
+compile project(':..:Puree:library')
+compile project(':..:Puree:plugins')
 ```
