@@ -56,7 +56,7 @@ public class LogSpec {
                 }
             });
 
-            initializeLogHouse(conf);
+            initializePuree(conf);
             putLogs(logs);
 
             try {
@@ -78,7 +78,7 @@ public class LogSpec {
         }
     }
 
-    private void initializeLogHouse(PureeConfiguration conf) {
+    private void initializePuree(PureeConfiguration conf) {
         Puree.initialize(conf);
         Puree.clear();
     }

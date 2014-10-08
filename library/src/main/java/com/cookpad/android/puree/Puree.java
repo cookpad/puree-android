@@ -24,7 +24,7 @@ public class Puree {
 
     public static synchronized void initialize(PureeConfiguration conf) {
         if (isInitialized) {
-            Log.w(TAG, "LogHouse has already initialized");
+            Log.w(TAG, "Puree has already initialized");
         }
 
         gson = conf.getGson();
@@ -39,12 +39,12 @@ public class Puree {
     }
 
     public static void in(SerializableLog log) {
-        checkIfLogHouseHasInitialized();
+        checkIfPureeHasInitialized();
         in(log.type(), log.toJSON(gson));
     }
 
     private static void in(String type, JSONObject serializedLog) {
-        checkIfLogHouseHasInitialized();
+        checkIfPureeHasInitialized();
         for (PureeOutput output : outputs) {
             if (output.type().equals(type)) {
                 output.start(serializedLog);
@@ -53,21 +53,21 @@ public class Puree {
     }
 
     public static Records getBufferedLogs() {
-        checkIfLogHouseHasInitialized();
+        checkIfPureeHasInitialized();
         return storage.selectAll();
     }
 
     public static void dump() {
-        checkIfLogHouseHasInitialized();
+        checkIfPureeHasInitialized();
         LogDumper.outLogcat(storage.selectAll());
     }
 
     public static void clear() {
-        checkIfLogHouseHasInitialized();
+        checkIfPureeHasInitialized();
         storage.clear();
     }
 
-    private static void checkIfLogHouseHasInitialized() {
+    private static void checkIfPureeHasInitialized() {
         if (!isInitialized) {
             throw new PureeNotInitializedException();
         }

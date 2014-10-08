@@ -16,13 +16,13 @@ public class LogDumper {
     public static String buildMessage(Records records) {
         switch (records.size()) {
             case 0:
-                return "No records in LogHouse's buffer";
+                return "No records in Puree's buffer";
             case 1:
-                return "1 record in LogHouse's buffer" + "\n"
+                return "1 record in Puree's buffer" + "\n"
                         + records.getSerializedLogs().get(0);
             default:
                 StringBuilder builder = new StringBuilder();
-                builder.append(records.size() + " records in LogHouse's buffer\n");
+                builder.append(records.size() + " records in Puree's buffer\n");
                 for (JSONObject log : records.getSerializedLogs()) {
                     builder.append(log.toString() + "\n");
                 }
