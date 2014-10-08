@@ -1,13 +1,13 @@
 package com.example.puree.logs;
 
-import com.cookpad.android.puree.LogHouseBufferedOutput;
+import com.cookpad.android.puree.PureeBufferedOutput;
 import com.cookpad.android.puree.async.AsyncResult;
 
 import org.json.JSONObject;
 
 import java.util.List;
 
-public class OutAsyncSomething extends LogHouseBufferedOutput {
+public class OutAsyncSomething extends PureeBufferedOutput {
     private static final String TYPE = "async_something";
 
     @Override

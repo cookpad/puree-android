@@ -5,7 +5,7 @@ import com.cookpad.android.puree.async.AsyncInsertTask;
 import com.cookpad.android.puree.async.AsyncResult;
 import com.cookpad.android.puree.lazy.LazyTask;
 import com.cookpad.android.puree.lazy.LazyTaskRunner;
-import com.cookpad.android.puree.storage.LogHouseStorage;
+import com.cookpad.android.puree.storage.PureeStorage;
 import com.cookpad.android.puree.storage.Records;
 
 import org.json.JSONException;
@@ -13,12 +13,12 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public abstract class LogHouseBufferedOutput extends LogHouseOutput {
+public abstract class PureeBufferedOutput extends PureeOutput {
     private LazyTaskRunner lazyTaskRunner;
 
     @Override
-    public void initialize(LogHouseConfiguration logHouseConfiguration, LogHouseStorage storage) {
-        super.initialize(logHouseConfiguration, storage);
+    public void initialize(PureeConfiguration pureeConfiguration, PureeStorage storage) {
+        super.initialize(pureeConfiguration, storage);
         lazyTaskRunner = new LazyTaskRunner(new LazyTask() {
             @Override
             public void run() {
@@ -29,7 +29,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
 
     @Override
     public void start(JSONObject serializedLog) {
-        if (LogHouseConfiguration.isTest) {
+        if (PureeConfiguration.isTest) {
             insertSync(type(), serializedLog);
             flushSync();
         } else {
@@ -59,7 +59,7 @@ public abstract class LogHouseBufferedOutput extends LogHouseOutput {
 
         while (!records.isEmpty()) {
             final List<JSONObject> serializedLogs = records.getSerializedLogs();
-            if (!LogHouseConfiguration.isTest) {
+            if (!PureeConfiguration.isTest) {
                 boolean isSuccess = flushChunkOfLogs(serializedLogs);
                 if (isSuccess) {
                     lazyTaskRunner.reset();

@@ -2,16 +2,16 @@ package com.cookpad.android.puree.async;
 
 import android.os.AsyncTask;
 
-import com.cookpad.android.puree.LogHouseBufferedOutput;
+import com.cookpad.android.puree.PureeBufferedOutput;
 
 import org.json.JSONObject;
 
 public class AsyncInsertTask extends AsyncTask<Void, Void, Void> {
-    private LogHouseBufferedOutput output;
+    private PureeBufferedOutput output;
     private String type;
     private JSONObject serializedLog;
 
-    public AsyncInsertTask(LogHouseBufferedOutput output, String type, JSONObject serializedLog) {
+    public AsyncInsertTask(PureeBufferedOutput output, String type, JSONObject serializedLog) {
         this.output = output;
         this.type = type;
         this.serializedLog = serializedLog;

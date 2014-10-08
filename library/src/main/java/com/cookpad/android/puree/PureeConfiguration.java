@@ -9,14 +9,14 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogHouseConfiguration {
+public class PureeConfiguration {
     public static boolean isTest = false;
 
     private Context applicationContext;
     private Gson gson;
     private BeforeEmitFilter beforeEmitFilter;
     private AfterFlushFilter afterFlushFilter = AfterFlushFilter.DEFAULT;
-    private List<LogHouseOutput> outputs = new ArrayList<>();
+    private List<PureeOutput> outputs = new ArrayList<>();
 
     public Context getApplicationContext() {
         return applicationContext;
@@ -39,14 +39,14 @@ public class LogHouseConfiguration {
         this.afterFlushFilter = afterFlushFilter;
     }
 
-    public List<LogHouseOutput> getOutputs() {
+    public List<PureeOutput> getOutputs() {
         return outputs;
     }
 
-    public LogHouseConfiguration(Context applicationContext,
-                                 Gson gson,
-                                 BeforeEmitFilter beforeEmitFilter,
-                                 List<LogHouseOutput> outputs) {
+    public PureeConfiguration(Context applicationContext,
+                              Gson gson,
+                              BeforeEmitFilter beforeEmitFilter,
+                              List<PureeOutput> outputs) {
         this.applicationContext = applicationContext;
         this.gson = gson;
         this.beforeEmitFilter = beforeEmitFilter;
@@ -57,7 +57,7 @@ public class LogHouseConfiguration {
         private Context applicationContext;
         private Gson gson = new Gson();
         private BeforeEmitFilter beforeEmitFilter = BeforeEmitFilter.DEFAULT;
-        private List<LogHouseOutput> outputs = new ArrayList<>();
+        private List<PureeOutput> outputs = new ArrayList<>();
 
         public Builder(Context applicationContext) {
             this.applicationContext = applicationContext;
@@ -73,13 +73,13 @@ public class LogHouseConfiguration {
             return this;
         }
 
-        public Builder registerOutput(LogHouseOutput output) {
+        public Builder registerOutput(PureeOutput output) {
             outputs.add(output);
             return this;
         }
 
-        public LogHouseConfiguration build() {
-            return new LogHouseConfiguration(
+        public PureeConfiguration build() {
+            return new PureeConfiguration(
                     applicationContext,
                     gson,
                     beforeEmitFilter,

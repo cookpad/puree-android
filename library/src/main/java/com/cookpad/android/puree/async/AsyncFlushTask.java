@@ -2,12 +2,12 @@ package com.cookpad.android.puree.async;
 
 import android.os.AsyncTask;
 
-import com.cookpad.android.puree.LogHouseBufferedOutput;
+import com.cookpad.android.puree.PureeBufferedOutput;
 
 public class AsyncFlushTask extends AsyncTask<Void, Void, Void> {
-    private LogHouseBufferedOutput output;
+    private PureeBufferedOutput output;
 
-    public AsyncFlushTask(LogHouseBufferedOutput output) {
+    public AsyncFlushTask(PureeBufferedOutput output) {
         this.output = output;
     }
 

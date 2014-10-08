@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit;
 public class LogSpec {
     private static final Object LOCK = new Object();
 
-    private LogHouseConfiguration conf;
+    private PureeConfiguration conf;
     private List<SerializableLog> logs;
     private String target;
 
-    public LogSpec(LogHouseConfiguration conf) {
+    public LogSpec(PureeConfiguration conf) {
         this.conf = conf;
     }
 
@@ -74,13 +74,13 @@ public class LogSpec {
 
     private void putLogs(List<SerializableLog> logs) {
         for (SerializableLog log : logs) {
-            LogHouse.in(log);
+            Puree.in(log);
         }
     }
 
-    private void initializeLogHouse(LogHouseConfiguration conf) {
-        LogHouse.initialize(conf);
-        LogHouse.clear();
+    private void initializeLogHouse(PureeConfiguration conf) {
+        Puree.initialize(conf);
+        Puree.clear();
     }
 
     public static interface Matcher {

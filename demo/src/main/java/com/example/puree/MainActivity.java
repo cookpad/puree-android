@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.cookpad.android.puree.LogHouse;
+import com.cookpad.android.puree.Puree;
 import com.example.loghouse.R;
 import com.example.puree.logs.ClickLog;
 import com.example.puree.logs.PvLog;
@@ -47,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void clear() {
-        LogHouse.clear();
+        Puree.clear();
         logDisplayTextView.setText("");
     }
 
@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
         findViews();
         OutDisplay.register(outDisplayCallback);
         OutBufferedDisplay.register(outBufferedDisplayCallback);
-        LogHouse.in(new PvLog(this));
+        Puree.in(new PvLog(this));
         setupViews();
     }
 
@@ -79,13 +79,13 @@ public class MainActivity extends ActionBarActivity {
         logDisplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LogHouse.in(new ClickLog("MainActivity", "track", OutDisplay.TYPE));
+                Puree.in(new ClickLog("MainActivity", "track", OutDisplay.TYPE));
             }
         });
         logBufferedDisplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LogHouse.in(new ClickLog("MainActivity", "track", OutBufferedDisplay.TYPE));
+                Puree.in(new ClickLog("MainActivity", "track", OutBufferedDisplay.TYPE));
             }
         });
     }
@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
         switch (item.getItemId()) {
             case R.id.action_dump:
-                LogHouse.dump();
+                Puree.dump();
                 return true;
             case R.id.action_clear:
                 clear();

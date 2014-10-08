@@ -3,7 +3,7 @@ package com.example.puree.logs.plugins;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.cookpad.android.puree.LogHouseBufferedOutput;
+import com.cookpad.android.puree.PureeBufferedOutput;
 import com.cookpad.android.puree.async.AsyncResult;
 
 import org.json.JSONObject;
@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class OutBufferedDisplay extends LogHouseBufferedOutput {
+public class OutBufferedDisplay extends PureeBufferedOutput {
     public static final String TYPE = "buffered_display";
 
     private static WeakReference<Callback> callbackRef = new WeakReference<>(null);

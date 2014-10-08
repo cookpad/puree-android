@@ -2,7 +2,7 @@ package com.cookpad.android.puree.plugins;
 
 import android.util.Log;
 
-import com.cookpad.android.puree.LogHouseBufferedOutput;
+import com.cookpad.android.puree.PureeBufferedOutput;
 import com.cookpad.android.puree.async.AsyncResult;
 
 import org.json.JSONArray;
@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class OutBufferedLogcat extends LogHouseBufferedOutput {
+public class OutBufferedLogcat extends PureeBufferedOutput {
     private static final String TAG = OutBufferedLogcat.class.getSimpleName();
     public static final String TYPE = "buffered_logcat";
 

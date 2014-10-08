@@ -2,12 +2,10 @@ package com.cookpad.android.puree;
 
 import android.test.AndroidTestCase;
 
-import com.cookpad.android.puree.LogHouseConfiguration;
-
-public class LogHouseConfigurationTest extends AndroidTestCase {
+public class PureeConfigurationTest extends AndroidTestCase {
 
     public void testCheckDefaultValues() {
-        LogHouseConfiguration conf = new LogHouseConfiguration.Builder(getContext())
+        PureeConfiguration conf = new PureeConfiguration.Builder(getContext())
                 .build();
         assertNotNull(conf.getApplicationContext());
         assertNotNull(conf.getGson());

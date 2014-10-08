@@ -2,7 +2,7 @@ package com.cookpad.android.puree;
 
 import com.cookpad.android.puree.handlers.AfterFlushFilter;
 import com.cookpad.android.puree.handlers.BeforeEmitFilter;
-import com.cookpad.android.puree.storage.LogHouseStorage;
+import com.cookpad.android.puree.storage.PureeStorage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,15 +10,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class LogHouseOutput {
+public abstract class PureeOutput {
     protected Configuration conf;
-    protected LogHouseStorage storage;
+    protected PureeStorage storage;
     protected AfterFlushFilter afterFlushFilter;
     protected BeforeEmitFilter beforeEmitFilter;
 
-    public void initialize(LogHouseConfiguration logHouseConfiguration, LogHouseStorage storage) {
-        this.afterFlushFilter = logHouseConfiguration.getAfterFlushFilter();
-        this.beforeEmitFilter = logHouseConfiguration.getBeforeEmitFilter();
+    public void initialize(PureeConfiguration pureeConfiguration, PureeStorage storage) {
+        this.afterFlushFilter = pureeConfiguration.getAfterFlushFilter();
+        this.beforeEmitFilter = pureeConfiguration.getBeforeEmitFilter();
         this.storage = storage;
         this.conf = configure(new Configuration());
     }

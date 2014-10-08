@@ -2,11 +2,11 @@ package com.cookpad.android.puree.plugins;
 
 import android.util.Log;
 
-import com.cookpad.android.puree.LogHouseOutput;
+import com.cookpad.android.puree.PureeOutput;
 
 import org.json.JSONObject;
 
-public class OutLogcat extends LogHouseOutput {
+public class OutLogcat extends PureeOutput {
     private static final String TAG = OutLogcat.class.getSimpleName();
     public static final String TYPE = "logcat";
 

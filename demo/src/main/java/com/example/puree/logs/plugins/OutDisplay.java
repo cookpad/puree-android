@@ -1,12 +1,12 @@
 package com.example.puree.logs.plugins;
 
-import com.cookpad.android.puree.LogHouseOutput;
+import com.cookpad.android.puree.PureeOutput;
 
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
-public class OutDisplay extends LogHouseOutput {
+public class OutDisplay extends PureeOutput {
     public static final String TYPE = "display";
 
     private static WeakReference<Callback> callbackRef = new WeakReference<>(null);
