@@ -1,6 +1,7 @@
 package com.cookpad.android.puree;
 
 import com.cookpad.android.puree.handlers.AfterFlushFilter;
+import com.cookpad.android.puree.handlers.PureeFilters;
 
 import junit.framework.AssertionFailedError;
 
@@ -43,29 +44,33 @@ public class LogSpec {
             final CountDownLatch latch = new CountDownLatch(logs.size());
             final List<JSONObject> results = new ArrayList<>();
 
-            final String[] compareInfoMessage = {"[compare] target : type\n"};
-            conf.setAfterFlushFilter(new AfterFlushFilter() {
-                @Override
-                public void call(String type, List<JSONObject> serializedLogs) {
-                    compareInfoMessage[0] += "    " + target + " : " + type + "\n";
-
-                    if (target.equals(type)) {
-                        results.addAll(serializedLogs);
-                    }
-                    latch.countDown();
-                }
-            });
-
             initializePuree(conf);
+
+            final String[] compareInfoMessage = {"[compare] target : type\n"};
+            for (PureeOutput output : conf.getOutputs()) {
+                PureeFilters filters = output.getFilters();
+                filters.registerAfterFilter(new AfterFlushFilter() {
+                    @Override
+                    public void call(String type, List<JSONObject> serializedLogs) {
+                        compareInfoMessage[0] += "    " + target + " : " + type + "\n";
+
+                        if (target.equals(type)) {
+                            results.addAll(serializedLogs);
+                        }
+                        latch.countDown();
+                    }
+                });
+            }
+
             putLogs(logs);
 
             try {
                 latch.await(1000, TimeUnit.MILLISECONDS);
                 matcher.expect(results);
-            } catch (AssertionFailedError e) {
-                throw new AssertionFailedError(e.getMessage() + "\n"
-                        + compareInfoMessage[0]
-                        + "[result size] " + results.size());
+//            } catch (AssertionFailedError e) {
+//                throw new AssertionFailedError(e.getMessage() + "\n"
+//                        + compareInfoMessage[0]
+//                        + "[result size] " + results.size());
             } catch (JSONException | InterruptedException e) {
                 throw new RuntimeException(e.getMessage());
             }
@@ -79,6 +84,7 @@ public class LogSpec {
     }
 
     private void initializePuree(PureeConfiguration conf) {
+        PureeConfiguration.isTest = true;
         Puree.initialize(conf);
         Puree.clear();
     }

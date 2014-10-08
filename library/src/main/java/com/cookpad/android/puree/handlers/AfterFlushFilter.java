@@ -4,12 +4,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public interface AfterFlushFilter {
-    public static final AfterFlushFilter DEFAULT = new AfterFlushFilter() {
-        @Override
-        public void call(String type, List<JSONObject> serializedLogs) {
-        }
-    };
-
-    public void call(String type, List<JSONObject> serializedLogs);
+public abstract class AfterFlushFilter implements PureeFilter {
+    public abstract void call(String type, List<JSONObject> serializedLogs);
 }

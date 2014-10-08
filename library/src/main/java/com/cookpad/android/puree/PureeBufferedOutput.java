@@ -17,8 +17,8 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     private LazyTaskRunner lazyTaskRunner;
 
     @Override
-    public void initialize(PureeConfiguration pureeConfiguration, PureeStorage storage) {
-        super.initialize(pureeConfiguration, storage);
+    public void initialize(PureeStorage storage) {
+        super.initialize(storage);
         lazyTaskRunner = new LazyTaskRunner(new LazyTask() {
             @Override
             public void run() {
@@ -40,7 +40,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
 
     public void insertSync(String type, JSONObject serializedLog) {
         try {
-            serializedLog = beforeEmitFilter.call(serializedLog);
+            serializedLog = applyBeforeFilters(serializedLog);
             storage.insert(type, serializedLog);
         } catch (JSONException e) {
             // do nothing
@@ -68,7 +68,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
                     return;
                 }
             }
-            afterFlushFilter.call(type(), serializedLogs);
+            applyAfterFilters(type(), serializedLogs);
             storage.delete(records);
             records = getRecordsFromStorage();
         }

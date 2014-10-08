@@ -9,6 +9,5 @@ public class PureeConfigurationTest extends AndroidTestCase {
                 .build();
         assertNotNull(conf.getApplicationContext());
         assertNotNull(conf.getGson());
-        assertNotNull(conf.getBeforeEmitFilter());
     }
 }

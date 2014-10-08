@@ -2,7 +2,6 @@ package com.cookpad.android.puree;
 
 import android.content.Context;
 
-import com.cookpad.android.puree.handlers.AfterFlushFilter;
 import com.cookpad.android.puree.handlers.BeforeEmitFilter;
 import com.google.gson.Gson;
 
@@ -14,8 +13,6 @@ public class PureeConfiguration {
 
     private Context applicationContext;
     private Gson gson;
-    private BeforeEmitFilter beforeEmitFilter;
-    private AfterFlushFilter afterFlushFilter = AfterFlushFilter.DEFAULT;
     private List<PureeOutput> outputs = new ArrayList<>();
 
     public Context getApplicationContext() {
@@ -26,37 +23,21 @@ public class PureeConfiguration {
         return gson;
     }
 
-    public BeforeEmitFilter getBeforeEmitFilter() {
-        return beforeEmitFilter;
-    }
-
-    AfterFlushFilter getAfterFlushFilter() {
-        return afterFlushFilter;
-    }
-
-    void setAfterFlushFilter(AfterFlushFilter afterFlushFilter) {
-        isTest = true;
-        this.afterFlushFilter = afterFlushFilter;
-    }
-
     public List<PureeOutput> getOutputs() {
         return outputs;
     }
 
     public PureeConfiguration(Context applicationContext,
                               Gson gson,
-                              BeforeEmitFilter beforeEmitFilter,
                               List<PureeOutput> outputs) {
         this.applicationContext = applicationContext;
         this.gson = gson;
-        this.beforeEmitFilter = beforeEmitFilter;
         this.outputs = outputs;
     }
 
     public static class Builder {
         private Context applicationContext;
         private Gson gson = new Gson();
-        private BeforeEmitFilter beforeEmitFilter = BeforeEmitFilter.DEFAULT;
         private List<PureeOutput> outputs = new ArrayList<>();
 
         public Builder(Context applicationContext) {
@@ -68,12 +49,15 @@ public class PureeConfiguration {
             return this;
         }
 
-        public Builder beforeEmitAction(BeforeEmitFilter beforeEmitFilter) {
-            this.beforeEmitFilter = beforeEmitFilter;
+        public Builder registerOutput(PureeOutput output) {
+            outputs.add(output);
             return this;
         }
 
-        public Builder registerOutput(PureeOutput output) {
+        public Builder registerOutput(PureeOutput output, BeforeEmitFilter... filters) {
+            for (BeforeEmitFilter filter : filters) {
+                output.registerBeforeFilter(filter);
+            }
             outputs.add(output);
             return this;
         }
@@ -82,7 +66,6 @@ public class PureeConfiguration {
             return new PureeConfiguration(
                     applicationContext,
                     gson,
-                    beforeEmitFilter,
                     outputs);
         }
     }
