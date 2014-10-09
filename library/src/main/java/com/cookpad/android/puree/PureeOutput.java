@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PureeOutput {
-    protected Configuration conf;
+    protected OutputConfiguration conf;
     protected PureeStorage storage;
     protected List<PureeFilter> filters = new ArrayList<>();
     protected EmitCallback emitCallback = EmitCallback.DEFAULT;
@@ -24,7 +24,7 @@ public abstract class PureeOutput {
 
     public void initialize(PureeStorage storage) {
         this.storage = storage;
-        this.conf = configure(new Configuration());
+        this.conf = configure(new OutputConfiguration());
     }
 
     public void start(JSONObject serializedLog) {
@@ -53,29 +53,8 @@ public abstract class PureeOutput {
 
     public abstract String type();
 
-    public abstract Configuration configure(Configuration conf);
+    public abstract OutputConfiguration configure(OutputConfiguration conf);
 
     public abstract void emit(JSONObject serializedLog);
-
-    public static class Configuration {
-        private int flushInterval = 2 * 60 * 1000;
-        private int logsPerRequest = 100;
-
-        public int getFlushInterval() {
-            return flushInterval;
-        }
-
-        public void setFlushInterval(int flushInterval) {
-            this.flushInterval = flushInterval;
-        }
-
-        public int getLogsPerRequest() {
-            return logsPerRequest;
-        }
-
-        public void setLogsPerRequest(int logsPerRequest) {
-            this.logsPerRequest = logsPerRequest;
-        }
-    }
 }
 

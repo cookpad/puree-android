@@ -2,6 +2,7 @@ package com.cookpad.android.puree.plugins;
 
 import android.util.Log;
 
+import com.cookpad.android.puree.OutputConfiguration;
 import com.cookpad.android.puree.PureeOutput;
 
 import org.json.JSONObject;
@@ -15,7 +16,7 @@ public class OutLogcat extends PureeOutput {
     }
 
     @Override
-    public Configuration configure(Configuration conf) {
+    public OutputConfiguration configure(OutputConfiguration conf) {
         return conf;
     }
 

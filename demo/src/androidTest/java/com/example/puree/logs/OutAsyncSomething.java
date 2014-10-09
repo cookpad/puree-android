@@ -1,5 +1,6 @@
 package com.example.puree.logs;
 
+import com.cookpad.android.puree.OutputConfiguration;
 import com.cookpad.android.puree.PureeBufferedOutput;
 import com.cookpad.android.puree.async.AsyncResult;
 
@@ -16,7 +17,7 @@ public class OutAsyncSomething extends PureeBufferedOutput {
     }
 
     @Override
-    public Configuration configure(Configuration conf) {
+    public OutputConfiguration configure(OutputConfiguration conf) {
         return conf;
     }
 

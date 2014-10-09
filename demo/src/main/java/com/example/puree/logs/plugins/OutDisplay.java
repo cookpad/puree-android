@@ -1,5 +1,6 @@
 package com.example.puree.logs.plugins;
 
+import com.cookpad.android.puree.OutputConfiguration;
 import com.cookpad.android.puree.PureeOutput;
 
 import org.json.JSONObject;
@@ -25,7 +26,7 @@ public class OutDisplay extends PureeOutput {
     }
 
     @Override
-    public Configuration configure(Configuration conf) {
+    public OutputConfiguration configure(OutputConfiguration conf) {
         return conf;
     }
 

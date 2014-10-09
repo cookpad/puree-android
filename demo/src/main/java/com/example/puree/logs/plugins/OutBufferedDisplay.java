@@ -3,6 +3,7 @@ package com.example.puree.logs.plugins;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.cookpad.android.puree.OutputConfiguration;
 import com.cookpad.android.puree.PureeBufferedOutput;
 import com.cookpad.android.puree.async.AsyncResult;
 
@@ -30,7 +31,7 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
     }
 
     @Override
-    public Configuration configure(Configuration conf) {
+    public OutputConfiguration configure(OutputConfiguration conf) {
         conf.setFlushInterval(3000);
         return conf;
     }
@@ -39,6 +40,7 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
     public void emit(final List<JSONObject> serializedLogs, final AsyncResult result) {
         final Callback callback = callbackRef.get();
         if (callback == null) {
+            result.success();
             return;
         }
         new Handler(Looper.getMainLooper()).post(new Runnable() {

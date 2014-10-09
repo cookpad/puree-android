@@ -2,6 +2,7 @@ package com.cookpad.android.puree.plugins;
 
 import android.util.Log;
 
+import com.cookpad.android.puree.OutputConfiguration;
 import com.cookpad.android.puree.PureeBufferedOutput;
 import com.cookpad.android.puree.async.AsyncResult;
 
@@ -19,7 +20,7 @@ public class OutBufferedLogcat extends PureeBufferedOutput {
     }
 
     @Override
-    public Configuration configure(Configuration conf) {
+    public OutputConfiguration configure(OutputConfiguration conf) {
         conf.setFlushInterval(2000);
         conf.setLogsPerRequest(3);
         return conf;
