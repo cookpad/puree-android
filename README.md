@@ -2,6 +2,7 @@ Puree
 ====
 
 ![](https://c2.staticflickr.com/6/5277/5898217803_92ff370d7e_b.jpg)
+[Photo License](https://creativecommons.org/licenses/by-sa/2.0/)
 
 ## Description
 
@@ -33,10 +34,11 @@ public class DemoApplication extends Application {
     }
 
     public static PureeConfiguration buildConfiguration(Context context) {
+        PureeFilter addEventTimeFilter = new AddEventTimeFilter();
+
         return new PureeConfiguration.Builder(context)
-                .beforeEmitAction(new AddRequiredParamsFilter())
                 .registerOutput(new OutLogcat())
-                .registerOutput(new OutBufferedLogcat())
+                .registerOutput(new OutBufferedLogcat(), addEventTimeFilter)
                 .build();
     }
 }
@@ -53,7 +55,7 @@ public class ClickLog extends Log {
     @SerializedName("label")
     private String label;
 
-    public String type() {
+    public String sendTo() {
         return OutBufferedLogcat.TYPE;
     }
 
@@ -64,10 +66,10 @@ public class ClickLog extends Log {
 }
 ```
 
-Shed log to Puree in an arbitrary timing.
+Send log to Puree in an arbitrary timing.
 
 ```java
-Puree.in(new ClickLog("MainActivity", "Hello"));
+Puree.send(new ClickLog("MainActivity", "Hello"));
 ```
 
 ### Testing
@@ -118,7 +120,7 @@ public class OutLogcat extends PureeOutput {
     }
 
     @Override
-    public Configuration configure(Configuration conf) {
+    public OutputConfiguration configure(OutputConfiguration conf) {
         return conf;
     }
 
@@ -139,6 +141,7 @@ public class OutBufferedLogcat extends PureeBufferedOutput {
     public Configuration configure(Configuration conf) {
         conf.setFlushInterval(2000);
         conf.setLogsPerRequest(3);
+        conf.setMaxRetryCount(3);
         return conf;
     }
 
