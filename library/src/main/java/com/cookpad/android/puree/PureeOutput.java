@@ -42,7 +42,7 @@ public abstract class PureeOutput {
 
     protected JSONObject applyFilters(JSONObject serializedLog) throws JSONException {
         for (PureeFilter filter : filters) {
-            serializedLog = filter.call(serializedLog);
+            serializedLog = filter.apply(serializedLog);
         }
         return serializedLog;
     }
