@@ -4,14 +4,14 @@ import android.os.Handler;
 
 public class RetryableTaskRunner {
     private Handler handler;
-    private boolean hasAlreadySet;
+    private boolean hasAlreadyStarted;
     private Runnable callback;
     private BuckoffCounter buckoffCounter;
 
     public RetryableTaskRunner(final Runnable task, final int interval) {
         this.buckoffCounter = new BuckoffCounter(interval);
         this.handler = new Handler();
-        this.hasAlreadySet = false;
+        this.hasAlreadyStarted = false;
 
         this.callback = new Runnable() {
             @Override
@@ -22,7 +22,7 @@ public class RetryableTaskRunner {
     }
 
     public synchronized void tryToStart() {
-        if (hasAlreadySet) {
+        if (hasAlreadyStarted) {
             return;
         }
         buckoffCounter.resetRetryCount();
@@ -32,11 +32,11 @@ public class RetryableTaskRunner {
     private synchronized void startDelayed() {
         handler.removeCallbacks(callback);
         handler.postDelayed(callback, buckoffCounter.time());
-        hasAlreadySet = true;
+        hasAlreadyStarted = true;
     }
 
     public synchronized void reset() {
-        hasAlreadySet = false;
+        hasAlreadyStarted = false;
         buckoffCounter.resetRetryCount();
     }
 
