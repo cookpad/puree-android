@@ -2,7 +2,6 @@ package com.cookpad.android.puree;
 
 import android.test.AndroidTestCase;
 
-import com.cookpad.android.puree.retryable.RetryableTask;
 import com.cookpad.android.puree.retryable.RetryableTaskRunner;
 
 import java.util.concurrent.CountDownLatch;
@@ -13,12 +12,12 @@ public class RetryableTaskRunnerTest extends AndroidTestCase {
     public void testEnsureToCallMeAfterSetTime() {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        RetryableTaskRunner retryableTaskRunner = new RetryableTaskRunner(new RetryableTask() {
+        RetryableTaskRunner retryableTaskRunner = new RetryableTaskRunner(new Runnable() {
             @Override
             public void run() {
                 latch.countDown();
             }
-        }, 10);
+        }, 10, 5);
 
         retryableTaskRunner.tryToStart();
 

@@ -8,8 +8,8 @@ public class RetryableTaskRunner {
     private Runnable callback;
     private BuckoffCounter buckoffCounter;
 
-    public RetryableTaskRunner(final Runnable task, final int interval) {
-        this.buckoffCounter = new BuckoffCounter(interval);
+    public RetryableTaskRunner(final Runnable task, int interval, int maxRetryCount) {
+        this.buckoffCounter = new BuckoffCounter(interval, maxRetryCount);
         this.handler = new Handler();
         this.hasAlreadyStarted = false;
 
@@ -41,7 +41,11 @@ public class RetryableTaskRunner {
     }
 
     public synchronized void retryLater() {
-        buckoffCounter.incrementRetryCount();
-        startDelayed();
+        if (buckoffCounter.isRemainingRetryCount()) {
+            buckoffCounter.incrementRetryCount();
+            startDelayed();
+        } else {
+            reset();
+        }
     }
 }

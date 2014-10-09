@@ -1,11 +1,21 @@
 package com.cookpad.android.puree.retryable;
 
 public class BuckoffCounter {
-    private int baseTime;
-    private int retryCount;
+    private final int baseTime;
+    private final int maxRetryCount;
+    private int retryCount = 0;
 
-    public BuckoffCounter(int baseTime) {
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    public BuckoffCounter(int baseTime, int maxRetryCount) {
         this.baseTime = baseTime;
+        this.maxRetryCount = maxRetryCount;
+    }
+
+    public boolean isRemainingRetryCount() {
+        return ((maxRetryCount - retryCount) > 0);
     }
 
     public void incrementRetryCount() {
