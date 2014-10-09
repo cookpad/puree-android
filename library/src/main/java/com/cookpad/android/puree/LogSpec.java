@@ -41,13 +41,10 @@ public class LogSpec {
 
             initializePuree(conf);
 
-            final String[] compareInfoMessage = {"[compare] target : type\n"};
             for (PureeOutput output : conf.getOutputs()) {
                 output.setEmitCallback(new EmitCallback() {
                     @Override
                     public void call(String type, List<JSONObject> serializedLogs) {
-                        compareInfoMessage[0] += "    " + target + " : " + type + "\n";
-
                         if (target.equals(type)) {
                             results.addAll(serializedLogs);
                         }

@@ -18,10 +18,6 @@ public abstract class PureeOutput {
         filters.add(filter);
     }
 
-    public List<PureeFilter> getFilters() {
-        return filters;
-    }
-
     public void setEmitCallback(EmitCallback emitCallback) {
         this.emitCallback = emitCallback;
     }

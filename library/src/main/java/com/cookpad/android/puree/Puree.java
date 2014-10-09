@@ -52,14 +52,13 @@ public class Puree {
         }
     }
 
+    public static void dump() {
+        LogDumper.outLogcat(getBufferedLogs());
+    }
+
     public static Records getBufferedLogs() {
         checkIfPureeHasInitialized();
         return storage.selectAll();
-    }
-
-    public static void dump() {
-        checkIfPureeHasInitialized();
-        LogDumper.outLogcat(storage.selectAll());
     }
 
     public static void clear() {
