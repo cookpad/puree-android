@@ -27,7 +27,7 @@ public abstract class PureeOutput {
         this.conf = configure(new OutputConfiguration());
     }
 
-    public void start(JSONObject serializedLog) {
+    public void receive(JSONObject serializedLog) {
         try {
             serializedLog = applyFilters(serializedLog);
             emit(serializedLog);

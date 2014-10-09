@@ -28,7 +28,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     }
 
     @Override
-    public void start(JSONObject serializedLog) {
+    public void receive(JSONObject serializedLog) {
         if (PureeConfiguration.isTest) {
             insertSync(type(), serializedLog);
             flushSync();

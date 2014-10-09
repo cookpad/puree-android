@@ -6,7 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class SerializableLog {
-    public abstract String type();
+    public abstract String sendTo();
 
     public JSONObject toJSON(Gson gson) {
         try {

@@ -12,7 +12,7 @@ public class PvLog extends SerializableLog {
     private String sceenName;
 
     @Override
-    public String type() {
+    public String sendTo() {
         return OutLogcat.TYPE;
     }
 

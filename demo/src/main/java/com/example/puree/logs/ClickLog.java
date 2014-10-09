@@ -12,7 +12,7 @@ public class ClickLog extends SerializableLog {
 
     private String type = OutDisplay.TYPE;
 
-    public String type() {
+    public String sendTo() {
         return type;
     }
 

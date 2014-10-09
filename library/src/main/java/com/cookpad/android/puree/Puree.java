@@ -38,16 +38,16 @@ public class Puree {
         isInitialized = true;
     }
 
-    public static void in(SerializableLog log) {
+    public static void send(SerializableLog log) {
         checkIfPureeHasInitialized();
-        in(log.type(), log.toJSON(gson));
+        send(log.sendTo(), log.toJSON(gson));
     }
 
-    private static void in(String type, JSONObject serializedLog) {
+    private static void send(String type, JSONObject serializedLog) {
         checkIfPureeHasInitialized();
         for (PureeOutput output : outputs) {
             if (output.type().equals(type)) {
-                output.start(serializedLog);
+                output.receive(serializedLog);
             }
         }
     }

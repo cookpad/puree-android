@@ -66,7 +66,7 @@ public class LogSpec {
 
     private void putLogs(List<SerializableLog> logs) {
         for (SerializableLog log : logs) {
-            Puree.in(log);
+            Puree.send(log);
         }
     }
 
