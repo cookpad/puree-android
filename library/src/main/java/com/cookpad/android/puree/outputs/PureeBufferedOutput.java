@@ -1,5 +1,6 @@
-package com.cookpad.android.puree;
+package com.cookpad.android.puree.outputs;
 
+import com.cookpad.android.puree.PureeConfiguration;
 import com.cookpad.android.puree.async.AsyncFlushTask;
 import com.cookpad.android.puree.async.AsyncInsertTask;
 import com.cookpad.android.puree.async.AsyncResult;

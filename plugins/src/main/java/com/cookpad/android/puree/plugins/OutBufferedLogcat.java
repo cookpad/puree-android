@@ -3,7 +3,7 @@ package com.cookpad.android.puree.plugins;
 import android.util.Log;
 
 import com.cookpad.android.puree.OutputConfiguration;
-import com.cookpad.android.puree.PureeBufferedOutput;
+import com.cookpad.android.puree.outputs.PureeBufferedOutput;
 import com.cookpad.android.puree.async.AsyncResult;
 
 import org.json.JSONArray;

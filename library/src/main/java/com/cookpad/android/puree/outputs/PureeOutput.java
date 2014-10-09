@@ -1,5 +1,8 @@
-package com.cookpad.android.puree;
+package com.cookpad.android.puree.outputs;
 
+import com.cookpad.android.puree.EmitCallback;
+import com.cookpad.android.puree.OutputConfiguration;
+import com.cookpad.android.puree.PureeFilter;
 import com.cookpad.android.puree.storage.PureeStorage;
 
 import org.json.JSONException;

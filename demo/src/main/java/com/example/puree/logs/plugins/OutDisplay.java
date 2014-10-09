@@ -1,7 +1,7 @@
 package com.example.puree.logs.plugins;
 
 import com.cookpad.android.puree.OutputConfiguration;
-import com.cookpad.android.puree.PureeOutput;
+import com.cookpad.android.puree.outputs.PureeOutput;
 
 import org.json.JSONObject;
 

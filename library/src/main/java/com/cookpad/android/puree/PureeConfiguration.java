@@ -2,6 +2,7 @@ package com.cookpad.android.puree;
 
 import android.content.Context;
 
+import com.cookpad.android.puree.outputs.PureeOutput;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

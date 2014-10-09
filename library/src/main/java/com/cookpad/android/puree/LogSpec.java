@@ -1,5 +1,7 @@
 package com.cookpad.android.puree;
 
+import com.cookpad.android.puree.outputs.PureeOutput;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

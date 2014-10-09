@@ -2,7 +2,7 @@ package com.cookpad.android.puree.async;
 
 import android.os.AsyncTask;
 
-import com.cookpad.android.puree.PureeBufferedOutput;
+import com.cookpad.android.puree.outputs.PureeBufferedOutput;
 
 import org.json.JSONObject;
 
