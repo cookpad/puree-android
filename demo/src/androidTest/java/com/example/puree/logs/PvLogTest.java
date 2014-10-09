@@ -14,7 +14,7 @@ import java.util.List;
 
 public class PvLogTest extends AndroidTestCase {
     public void testFormat() {
-        new LogSpec(DemoApplication.buildConfiguration(getContext()))
+        new LogSpec(PureeConfigurator.buildConf(getContext()))
                 .logs(new PvLog("MainActivity"),
                         new ClickLog("MainActivity", "PvLog1", OutBufferedDisplay.TYPE),
                         new PvLog("MainActivity"))

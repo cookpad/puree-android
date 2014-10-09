@@ -22,7 +22,7 @@ public class ClickLogTest extends AndroidTestCase {
             }
         });
 
-        new LogSpec(DemoApplication.buildConfiguration(getContext()))
+        new LogSpec(PureeConfigurator.buildConf(getContext()))
                 .logs(new ClickLog("MainActivity", "ClickLog1", OutBufferedDisplay.TYPE),
                         new ClickLog("MainActivity", "ClickLog2", OutBufferedDisplay.TYPE),
                         new PvLog("MainActivity"))

@@ -1,7 +1,5 @@
 package com.cookpad.android.puree;
 
-import com.cookpad.android.puree.handlers.AfterFlushFilter;
-import com.cookpad.android.puree.handlers.BeforeEmitFilter;
 import com.cookpad.android.puree.storage.PureeStorage;
 
 import org.json.JSONException;
@@ -13,27 +11,44 @@ import java.util.List;
 public abstract class PureeOutput {
     protected Configuration conf;
     protected PureeStorage storage;
-    protected AfterFlushFilter afterFlushFilter;
-    protected BeforeEmitFilter beforeEmitFilter;
+    protected List<PureeFilter> filters = new ArrayList<>();
+    protected EmitCallback emitCallback = EmitCallback.DEFAULT;
 
-    public void initialize(PureeConfiguration pureeConfiguration, PureeStorage storage) {
-        this.afterFlushFilter = pureeConfiguration.getAfterFlushFilter();
-        this.beforeEmitFilter = pureeConfiguration.getBeforeEmitFilter();
+    public void registerFilter(PureeFilter filter) {
+        filters.add(filter);
+    }
+
+    public void setEmitCallback(EmitCallback emitCallback) {
+        this.emitCallback = emitCallback;
+    }
+
+    public void initialize(PureeStorage storage) {
         this.storage = storage;
         this.conf = configure(new Configuration());
     }
 
     public void start(JSONObject serializedLog) {
         try {
-            serializedLog = beforeEmitFilter.call(serializedLog);
+            serializedLog = applyFilters(serializedLog);
             emit(serializedLog);
 
             List<JSONObject> serializedLogs = new ArrayList<>();
             serializedLogs.add(serializedLog);
-            afterFlushFilter.call(type(), serializedLogs);
+            applyAfterFilters(type(), serializedLogs);
         } catch (JSONException e) {
             // do nothing
         }
+    }
+
+    protected JSONObject applyFilters(JSONObject serializedLog) throws JSONException {
+        for (PureeFilter filter : filters) {
+            serializedLog = filter.call(serializedLog);
+        }
+        return serializedLog;
+    }
+
+    protected void applyAfterFilters(String type, List<JSONObject> serializedLogs) {
+        emitCallback.call(type, serializedLogs);
     }
 
     public abstract String type();
