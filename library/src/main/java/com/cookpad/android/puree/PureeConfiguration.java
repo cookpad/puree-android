@@ -2,7 +2,6 @@ package com.cookpad.android.puree;
 
 import android.content.Context;
 
-import com.cookpad.android.puree.handlers.BeforeEmitFilter;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -54,9 +53,9 @@ public class PureeConfiguration {
             return this;
         }
 
-        public Builder registerOutput(PureeOutput output, BeforeEmitFilter... filters) {
-            for (BeforeEmitFilter filter : filters) {
-                output.registerBeforeFilter(filter);
+        public Builder registerOutput(PureeOutput output, PureeFilter... filters) {
+            for (PureeFilter filter : filters) {
+                output.registerFilter(filter);
             }
             outputs.add(output);
             return this;

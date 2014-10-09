@@ -1,10 +1,5 @@
 package com.cookpad.android.puree;
 
-import com.cookpad.android.puree.handlers.AfterFlushFilter;
-import com.cookpad.android.puree.handlers.PureeFilters;
-
-import junit.framework.AssertionFailedError;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,8 +43,7 @@ public class LogSpec {
 
             final String[] compareInfoMessage = {"[compare] target : type\n"};
             for (PureeOutput output : conf.getOutputs()) {
-                PureeFilters filters = output.getFilters();
-                filters.registerAfterFilter(new AfterFlushFilter() {
+                output.setEmitCallback(new EmitCallback() {
                     @Override
                     public void call(String type, List<JSONObject> serializedLogs) {
                         compareInfoMessage[0] += "    " + target + " : " + type + "\n";
@@ -67,10 +61,6 @@ public class LogSpec {
             try {
                 latch.await(1000, TimeUnit.MILLISECONDS);
                 matcher.expect(results);
-//            } catch (AssertionFailedError e) {
-//                throw new AssertionFailedError(e.getMessage() + "\n"
-//                        + compareInfoMessage[0]
-//                        + "[result size] " + results.size());
             } catch (JSONException | InterruptedException e) {
                 throw new RuntimeException(e.getMessage());
             }

@@ -40,7 +40,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
 
     public void insertSync(String type, JSONObject serializedLog) {
         try {
-            serializedLog = applyBeforeFilters(serializedLog);
+            serializedLog = applyFilters(serializedLog);
             storage.insert(type, serializedLog);
         } catch (JSONException e) {
             // do nothing

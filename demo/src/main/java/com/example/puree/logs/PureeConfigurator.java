@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.cookpad.android.puree.Puree;
 import com.cookpad.android.puree.PureeConfiguration;
-import com.cookpad.android.puree.handlers.BeforeEmitFilter;
+import com.cookpad.android.puree.PureeFilter;
 import com.cookpad.android.puree.plugins.OutBufferedLogcat;
 import com.cookpad.android.puree.plugins.OutLogcat;
 import com.example.puree.AddEventTimeFilter;
@@ -17,7 +17,7 @@ public class PureeConfigurator {
     }
 
     public static PureeConfiguration buildConf(Context context) {
-        BeforeEmitFilter addEventTimeFilter = new AddEventTimeFilter();
+        PureeFilter addEventTimeFilter = new AddEventTimeFilter();
         return new PureeConfiguration.Builder(context)
                 .registerOutput(new OutLogcat(), addEventTimeFilter)
                 .registerOutput(new OutBufferedLogcat(), addEventTimeFilter)
