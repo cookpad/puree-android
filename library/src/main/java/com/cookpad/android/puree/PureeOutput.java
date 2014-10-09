@@ -29,22 +29,26 @@ public abstract class PureeOutput {
 
     public void receive(JSONObject serializedLog) {
         try {
-            serializedLog = applyFilters(serializedLog);
-            emit(serializedLog);
-
-            List<JSONObject> serializedLogs = new ArrayList<>();
-            serializedLogs.add(serializedLog);
-            applyAfterFilters(type(), serializedLogs);
+            final JSONObject filteredLog = applyFilters(serializedLog);
+            emit(filteredLog);
+            applyAfterFilters(type(), new ArrayList<JSONObject>() {{
+                add(filteredLog);
+            }});
         } catch (JSONException e) {
             // do nothing
         }
     }
 
     protected JSONObject applyFilters(JSONObject serializedLog) throws JSONException {
-        for (PureeFilter filter : filters) {
-            serializedLog = filter.apply(serializedLog);
+        if (filters == null || filters.isEmpty()) {
+            return serializedLog;
         }
-        return serializedLog;
+
+        JSONObject filteredLog = new JSONObject();
+        for (PureeFilter filter : filters) {
+            filteredLog = filter.apply(serializedLog);
+        }
+        return filteredLog;
     }
 
     protected void applyAfterFilters(String type, List<JSONObject> serializedLogs) {

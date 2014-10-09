@@ -40,16 +40,18 @@ public class Puree {
 
     public static void send(SerializableLog log) {
         checkIfPureeHasInitialized();
-        send(log.sendTo(), log.toJSON(gson));
-    }
 
-    private static void send(String type, JSONObject serializedLog) {
-        checkIfPureeHasInitialized();
         for (PureeOutput output : outputs) {
-            if (output.type().equals(type)) {
-                output.receive(serializedLog);
+            for (String type : getTypes(log.sendTo())) {
+                if (output.type().equals(type)) {
+                    output.receive(log.toJSON(gson));
+                }
             }
         }
+    }
+
+    private static String[] getTypes(String spaceSeparatedString) {
+        return spaceSeparatedString.split(" ");
     }
 
     public static void dump() {
