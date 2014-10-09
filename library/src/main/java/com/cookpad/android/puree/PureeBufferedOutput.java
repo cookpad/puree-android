@@ -3,8 +3,8 @@ package com.cookpad.android.puree;
 import com.cookpad.android.puree.async.AsyncFlushTask;
 import com.cookpad.android.puree.async.AsyncInsertTask;
 import com.cookpad.android.puree.async.AsyncResult;
-import com.cookpad.android.puree.lazy.LazyTask;
-import com.cookpad.android.puree.lazy.LazyTaskRunner;
+import com.cookpad.android.puree.retryable.RetryableTask;
+import com.cookpad.android.puree.retryable.RetryableTaskRunner;
 import com.cookpad.android.puree.storage.PureeStorage;
 import com.cookpad.android.puree.storage.Records;
 
@@ -14,12 +14,12 @@ import org.json.JSONObject;
 import java.util.List;
 
 public abstract class PureeBufferedOutput extends PureeOutput {
-    private LazyTaskRunner lazyTaskRunner;
+    private RetryableTaskRunner retryableTaskRunner;
 
     @Override
     public void initialize(PureeStorage storage) {
         super.initialize(storage);
-        lazyTaskRunner = new LazyTaskRunner(new LazyTask() {
+        retryableTaskRunner = new RetryableTaskRunner(new RetryableTask() {
             @Override
             public void run() {
                 flush();
@@ -34,7 +34,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
             flushSync();
         } else {
             new AsyncInsertTask(this, type(), serializedLog).execute();
-            lazyTaskRunner.tryToStart();
+            retryableTaskRunner.tryToStart();
         }
     }
 
@@ -62,9 +62,9 @@ public abstract class PureeBufferedOutput extends PureeOutput {
             if (!PureeConfiguration.isTest) {
                 boolean isSuccess = flushChunkOfLogs(serializedLogs);
                 if (isSuccess) {
-                    lazyTaskRunner.reset();
+                    retryableTaskRunner.reset();
                 } else {
-                    lazyTaskRunner.retryLater();
+                    retryableTaskRunner.retryLater();
                     return;
                 }
             }

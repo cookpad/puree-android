@@ -2,25 +2,25 @@ package com.cookpad.android.puree;
 
 import android.test.AndroidTestCase;
 
-import com.cookpad.android.puree.lazy.LazyTask;
-import com.cookpad.android.puree.lazy.LazyTaskRunner;
+import com.cookpad.android.puree.retryable.RetryableTask;
+import com.cookpad.android.puree.retryable.RetryableTaskRunner;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class LazyTaskRunnerTest extends AndroidTestCase {
+public class RetryableTaskRunnerTest extends AndroidTestCase {
 
     public void testEnsureToCallMeAfterSetTime() {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        LazyTaskRunner lazyTaskRunner = new LazyTaskRunner(new LazyTask() {
+        RetryableTaskRunner retryableTaskRunner = new RetryableTaskRunner(new RetryableTask() {
             @Override
             public void run() {
                 latch.countDown();
             }
         }, 10);
 
-        lazyTaskRunner.tryToStart();
+        retryableTaskRunner.tryToStart();
 
         try {
             latch.await(30, TimeUnit.MILLISECONDS);

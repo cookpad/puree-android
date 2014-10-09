@@ -1,15 +1,15 @@
-package com.cookpad.android.puree.lazy;
+package com.cookpad.android.puree.retryable;
 
 import android.os.Handler;
 
-public class LazyTaskRunner {
+public class RetryableTaskRunner {
     private Handler handler;
     private boolean hasAlreadySet;
     private Runnable callback;
     private int interval;
     private int retryCount;
 
-    public LazyTaskRunner(final LazyTask task, final int interval) {
+    public RetryableTaskRunner(final RetryableTask task, final int interval) {
         this.interval = interval;
         this.handler = new Handler();
         this.hasAlreadySet = false;
