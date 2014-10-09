@@ -3,7 +3,6 @@ package com.cookpad.android.puree;
 import com.cookpad.android.puree.async.AsyncFlushTask;
 import com.cookpad.android.puree.async.AsyncInsertTask;
 import com.cookpad.android.puree.async.AsyncResult;
-import com.cookpad.android.puree.retryable.RetryableTask;
 import com.cookpad.android.puree.retryable.RetryableTaskRunner;
 import com.cookpad.android.puree.storage.PureeStorage;
 import com.cookpad.android.puree.storage.Records;
@@ -19,7 +18,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     @Override
     public void initialize(PureeStorage storage) {
         super.initialize(storage);
-        retryableTaskRunner = new RetryableTaskRunner(new RetryableTask() {
+        retryableTaskRunner = new RetryableTaskRunner(new Runnable() {
             @Override
             public void run() {
                 flush();

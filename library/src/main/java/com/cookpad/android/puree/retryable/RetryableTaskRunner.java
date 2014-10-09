@@ -9,7 +9,7 @@ public class RetryableTaskRunner {
     private int interval;
     private int retryCount;
 
-    public RetryableTaskRunner(final RetryableTask task, final int interval) {
+    public RetryableTaskRunner(final Runnable task, final int interval) {
         this.interval = interval;
         this.handler = new Handler();
         this.hasAlreadySet = false;
