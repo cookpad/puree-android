@@ -25,6 +25,7 @@ public class Puree {
     public static synchronized void initialize(PureeConfiguration conf) {
         if (isInitialized) {
             Log.w(TAG, "Puree has already initialized");
+            return;
         }
 
         gson = conf.getGson();
