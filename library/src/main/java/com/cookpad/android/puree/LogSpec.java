@@ -15,18 +15,18 @@ public class LogSpec {
     private static final Object LOCK = new Object();
 
     private PureeConfiguration conf;
-    private List<SerializableLog> logs;
+    private List<JsonConvertible> logs;
     private String target;
 
     public LogSpec(PureeConfiguration conf) {
         this.conf = conf;
     }
 
-    public LogSpec logs(SerializableLog... logs) {
+    public LogSpec logs(JsonConvertible... logs) {
         return logs(Arrays.asList(logs));
     }
 
-    public LogSpec logs(List<SerializableLog> logs) {
+    public LogSpec logs(List<JsonConvertible> logs) {
         this.logs = logs;
         return this;
     }
@@ -66,8 +66,8 @@ public class LogSpec {
         }
     }
 
-    private void putLogs(List<SerializableLog> logs) {
-        for (SerializableLog log : logs) {
+    private void putLogs(List<JsonConvertible> logs) {
+        for (JsonConvertible log : logs) {
             Puree.send(log);
         }
     }

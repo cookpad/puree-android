@@ -1,10 +1,10 @@
 package com.example.puree.logs;
 
-import com.cookpad.android.puree.SerializableLog;
+import com.cookpad.android.puree.JsonConvertible;
 import com.example.puree.logs.plugins.OutDisplay;
 import com.google.gson.annotations.SerializedName;
 
-public class ClickLog extends SerializableLog {
+public class ClickLog extends JsonConvertible {
     @SerializedName("page")
     private String page;
     @SerializedName("label")

@@ -38,7 +38,7 @@ public class Puree {
         isInitialized = true;
     }
 
-    public static void send(SerializableLog log) {
+    public static void send(JsonConvertible log) {
         checkIfPureeHasInitialized();
 
         for (PureeOutput output : OutputMatcher.matchWith(outputMap, log.sendTo())) {
