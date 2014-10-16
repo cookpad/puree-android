@@ -15,8 +15,9 @@ import java.util.List;
 public class PvLogTest extends AndroidTestCase {
     public void testFormat() {
         new LogSpec(PureeConfigurator.buildConf(getContext()))
-                .logs(new PvLog("MainActivity"),
-                        new PvLog("MainActivity"))
+                .log(new PvLog("MainActivity"), OutLogcat.TYPE)
+                .log(new PvLog("MainActivity"), OutLogcat.TYPE)
+                .targetType(OutLogcat.TYPE)
                 .shouldBe(new LogSpec.Matcher() {
                     @Override
                     public void expect(List<JSONObject> serializedLogs) throws JSONException {

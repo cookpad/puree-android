@@ -3,9 +3,7 @@ package com.example.puree.logs;
 import android.test.AndroidTestCase;
 
 import com.cookpad.android.puree.LogSpec;
-import com.example.puree.DemoApplication;
-import com.example.puree.logs.ClickLog;
-import com.example.puree.logs.PvLog;
+import com.cookpad.android.puree.plugins.OutLogcat;
 import com.example.puree.logs.plugins.OutBufferedDisplay;
 
 import org.json.JSONException;
@@ -23,8 +21,9 @@ public class ClickLogTest extends AndroidTestCase {
         });
 
         new LogSpec(PureeConfigurator.buildConf(getContext()))
-                .logs(new ClickLog("MainActivity", "ClickLog1"),
-                        new ClickLog("MainActivity", "ClickLog2"))
+                .log(new ClickLog("MainActivity", "ClickLog1"), OutLogcat.TYPE)
+                .log(new ClickLog("MainActivity", "ClickLog2"), OutLogcat.TYPE)
+                .targetType(OutLogcat.TYPE)
                 .shouldBe(new LogSpec.Matcher() {
                     @Override
                     public void expect(List<JSONObject> serializedLogs) throws JSONException {
