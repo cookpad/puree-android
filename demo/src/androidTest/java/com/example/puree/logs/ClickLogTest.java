@@ -23,10 +23,8 @@ public class ClickLogTest extends AndroidTestCase {
         });
 
         new LogSpec(PureeConfigurator.buildConf(getContext()))
-                .logs(new ClickLog("MainActivity", "ClickLog1", OutBufferedDisplay.TYPE),
-                        new ClickLog("MainActivity", "ClickLog2", OutBufferedDisplay.TYPE),
-                        new PvLog("MainActivity"))
-                .target(OutBufferedDisplay.TYPE)
+                .logs(new ClickLog("MainActivity", "ClickLog1"),
+                        new ClickLog("MainActivity", "ClickLog2"))
                 .shouldBe(new LogSpec.Matcher() {
                     @Override
                     public void expect(List<JSONObject> serializedLogs) throws JSONException {

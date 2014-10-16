@@ -51,43 +51,18 @@ public class OutputMatcherTest extends AndroidTestCase {
         outputMap.put(output2.type(), output2);
 
         {
-            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, "JAVA");
+            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, new String[]{"JAVA"});
             assertEquals(0, outputs.size());
         }
         {
-            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, "output1");
+            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, new String[]{"output1"});
             assertEquals(1, outputs.size());
             assertEquals("output1", outputs.get(0).type());
         }
         {
-            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, "output2");
+            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, new String[]{"output2"});
             assertEquals(1, outputs.size());
             assertEquals("output2", outputs.get(0).type());
-        }
-    }
-
-    public void testGetTypes() {
-        {
-            String[] types = OutputMatcher.getTypes("logcat buffered_logcat");
-            assertEquals("logcat", types[0]);
-            assertEquals("buffered_logcat", types[1]);
-        }
-        {
-            String[] types = OutputMatcher.getTypes("JAVA + YOU");
-            assertEquals("JAVA", types[0]);
-            assertEquals("+", types[1]);
-            assertEquals("YOU", types[2]);
-        }
-    }
-
-    public void testGetTypesWithEmptyString() {
-        {
-            String[] types = OutputMatcher.getTypes(null);
-            assertEquals(0, types.length);
-        }
-        {
-            String[] types = OutputMatcher.getTypes("");
-            assertEquals(0, types.length);
         }
     }
 }

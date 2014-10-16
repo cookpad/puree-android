@@ -16,9 +16,7 @@ public class PvLogTest extends AndroidTestCase {
     public void testFormat() {
         new LogSpec(PureeConfigurator.buildConf(getContext()))
                 .logs(new PvLog("MainActivity"),
-                        new ClickLog("MainActivity", "PvLog1", OutBufferedDisplay.TYPE),
                         new PvLog("MainActivity"))
-                .target(OutLogcat.TYPE)
                 .shouldBe(new LogSpec.Matcher() {
                     @Override
                     public void expect(List<JSONObject> serializedLogs) throws JSONException {

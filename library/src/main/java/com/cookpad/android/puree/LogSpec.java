@@ -16,7 +16,6 @@ public class LogSpec {
 
     private PureeConfiguration conf;
     private List<JsonConvertible> logs;
-    private String target;
 
     public LogSpec(PureeConfiguration conf) {
         this.conf = conf;
@@ -31,11 +30,6 @@ public class LogSpec {
         return this;
     }
 
-    public LogSpec target(String type) {
-        this.target = type;
-        return this;
-    }
-
     public void shouldBe(Matcher matcher) {
         synchronized (LOCK) {
             final CountDownLatch latch = new CountDownLatch(logs.size());
@@ -47,9 +41,7 @@ public class LogSpec {
                 output.setEmitCallback(new EmitCallback() {
                     @Override
                     public void call(String type, List<JSONObject> serializedLogs) {
-                        if (target.equals(type)) {
-                            results.addAll(serializedLogs);
-                        }
+                        results.addAll(serializedLogs);
                         latch.countDown();
                     }
                 });

@@ -38,10 +38,10 @@ public class Puree {
         isInitialized = true;
     }
 
-    public static void send(JsonConvertible log) {
+    public static void send(JsonConvertible log, String... sendTo) {
         checkIfPureeHasInitialized();
 
-        for (PureeOutput output : OutputMatcher.matchWith(outputMap, log.sendTo())) {
+        for (PureeOutput output : OutputMatcher.matchWith(outputMap, sendTo)) {
             output.receive(log.toJSON(gson));
         }
     }

@@ -79,13 +79,13 @@ public class MainActivity extends ActionBarActivity {
         logDisplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Puree.send(new ClickLog("MainActivity", "track", OutDisplay.TYPE));
+                Puree.send(new ClickLog("MainActivity", "track"), OutDisplay.TYPE);
             }
         });
         logBufferedDisplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Puree.send(new ClickLog("MainActivity", "track", OutBufferedDisplay.TYPE));
+                Puree.send(new ClickLog("MainActivity", "track"), OutBufferedDisplay.TYPE);
             }
         });
     }

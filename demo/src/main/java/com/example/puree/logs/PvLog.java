@@ -11,11 +11,6 @@ public class PvLog extends JsonConvertible {
     @SerializedName("screen_name")
     private String sceenName;
 
-    @Override
-    public String sendTo() {
-        return OutLogcat.TYPE;
-    }
-
     public PvLog(Activity activity) {
         this(activity.getClass().getSimpleName());
     }
