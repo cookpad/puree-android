@@ -13,13 +13,6 @@ import java.util.List;
 
 public class ClickLogTest extends AndroidTestCase {
     public void testFormat() {
-        OutBufferedDisplay.register(new OutBufferedDisplay.Callback() {
-            @Override
-            public void onEmit(List<JSONObject> serializedLogs) {
-                // do nothing
-            }
-        });
-
         new LogSpec(PureeConfigurator.buildConf(getContext()))
                 .log(new ClickLog("MainActivity", "ClickLog1"), OutLogcat.TYPE)
                 .log(new ClickLog("MainActivity", "ClickLog2"), OutLogcat.TYPE)

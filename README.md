@@ -79,11 +79,10 @@ LogSpec provides utilities for tests.
 ```java
 public class ClickLogTest extends AndroidTestCase {
     public void testFormat() {
-        new LogSpec(DemoApplication.buildConfiguration(getContext()))
-                .logs(new ClickLog("MainActivity", "ClickLog1"),
-                        new ClickLog("MainActivity", "ClickLog2"),
-                        new PvLog("MainActivity"))
-                .target(OutBufferedLogcat.TYPE)
+        new LogSpec(PureeConfigurator.buildConf(getContext()))
+                .log(new ClickLog("MainActivity", "ClickLog1"), OutLogcat.TYPE)
+                .log(new ClickLog("MainActivity", "ClickLog2"), OutLogcat.TYPE)
+                .targetType(OutLogcat.TYPE)
                 .shouldBe(new LogSpec.Matcher() {
                     @Override
                     public void expect(List<JSONObject> serializedLogs) throws JSONException {
