@@ -13,7 +13,7 @@ Puree is a data collector for unified logging layer, which provides some functio
  - Enable to interrupt process before sending log.
 - Buffering
  - Store logs to beffere until log was sent.
-- Batching 
+- Batching
  - Enable to send logs by 1 request.
 - Retrying
  - Retry to send log after some time automatically if sending has failed.
@@ -49,7 +49,7 @@ public class DemoApplication extends Application {
 Log class should implements Log interface, and define type of output plugin.
 
 ```java
-public class ClickLog extends Log {
+public class ClickLog extends JsonConvertible {
     @SerializedName("page")
     private String page;
     @SerializedName("label")
@@ -69,7 +69,7 @@ public class ClickLog extends Log {
 Send log to Puree in an arbitrary timing.
 
 ```java
-Puree.send(new ClickLog("MainActivity", "Hello"));
+Puree.send(new ClickLog("MainActivity", "Hello"), OutLogcat.TYPE);
 ```
 
 ### Testing
