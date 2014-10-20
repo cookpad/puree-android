@@ -1,9 +1,6 @@
 Puree
 ====
 
-![](https://c2.staticflickr.com/6/5277/5898217803_92ff370d7e_b.jpg)
-[Photo License](https://creativecommons.org/licenses/by-sa/2.0/)
-
 ## Description
 
 It is inefficient that send logs every time events are fired. So you should implement buffering, retrying, validation, ...
@@ -112,50 +109,8 @@ There are two types of output plugins: Non-Buffered, Buffered.
 
 You can create a plugin by inheriting Puree.Output or Puree.BufferedOutput. See example plugins below.
 
-```java
-public class OutLogcat extends PureeOutput {
-    public String type() {
-        return "logcat";
-    }
-
-    @Override
-    public OutputConfiguration configure(OutputConfiguration conf) {
-        return conf;
-    }
-
-    @Override
-    public void emit(JSONObject serializedLog) {
-        Log.d("OutLogcat", serializedLog.toString());
-    }
-}
-```
-
-```java
-public class OutBufferedLogcat extends PureeBufferedOutput {
-    public String type() {
-        return "buffered_logcat";
-    }
-
-    @Override
-    public Configuration configure(Configuration conf) {
-        conf.setFlushInterval(2000);
-        conf.setLogsPerRequest(3);
-        conf.setMaxRetryCount(3);
-        return conf;
-    }
-
-    @Override
-    public void emit(List<JSONObject> serializedLogs, AsyncResult asyncResult) {
-        JSONArray log = new JSONArray();
-        for (JSONObject serializedLog : serializedLogs) {
-            log.put(serializedLog);
-        }
-        Log.d("OutBufferedLogcat", log.toString());
-
-        asyncResult.success();
-    }
-}
-```
+- [OutLogcat](https://github.com/rejasupotaro/Puree/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fandroid%2Fpuree%2Fplugins%2FOutLogcat.java)
+- [OutBufferedLogcat](https://github.com/rejasupotaro/Puree/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fandroid%2Fpuree%2Fplugins%2FOutBufferedLogcat.java)
 
 ## Install
 
