@@ -3,17 +3,16 @@ Puree
 
 ## Description
 
-It is inefficient that send logs every time events are fired. So you should implement buffering, retrying, validation, ...
 Puree is a data collector for unified logging layer, which provides some functions like below
 
 - Filtering
  - Enable to interrupt process before sending log.
 - Buffering
- - Store logs to beffere until log was sent.
+ - Store logs to buffer until log was sent.
 - Batching
  - Enable to send logs by 1 request.
 - Retrying
- - Retry to send log after some time automatically if sending has failed.
+ - Retry to send logs after buckoff time automatically if sending logs fails.
 
 ![](./images/logging.png)
 
@@ -43,7 +42,7 @@ public class DemoApplication extends Application {
 
 ### Sending logs
 
-Log class should implements Log interface, and define type of output plugin.
+Log class should implements JsonConvertible interface.
 
 ```java
 public class ClickLog extends JsonConvertible {
@@ -51,10 +50,6 @@ public class ClickLog extends JsonConvertible {
     private String page;
     @SerializedName("label")
     private String label;
-
-    public String sendTo() {
-        return OutBufferedLogcat.TYPE;
-    }
 
     public ClickLog(String page, String label) {
         this.page = page;
@@ -82,9 +77,9 @@ public class ClickLogTest extends AndroidTestCase {
                 .targetType(OutLogcat.TYPE)
                 .shouldBe(new LogSpec.Matcher() {
                     @Override
-                    public void expect(List<JSONObject> serializedLogs) throws JSONException {
-                        assertEquals(2, serializedLogs.size());
-                        JSONObject serializedLog = serializedLogs.get(0);
+                    public void expect(JSONArray serializedLogs) throws JSONException {
+                        assertEquals(2, serializedLogs.length());
+                        JSONObject serializedLog = serializedLogs.getJSONObject(0);
                         assertEquals("MainActivity", serializedLog.getString("page"));
                         assertEquals("ClickLog1", serializedLog.getString("label"));
                         assertTrue(serializedLog.has("event_time"));
@@ -120,9 +115,9 @@ I'll upload Puree to maven central sooner or later.
 
 ```java
 // settings.gradle
-include ':app', ':..:Puree:library', ':..:Puree:plugins'
+include ':app', ':..:puree-android:library', ':..:puree-android:plugins'
 
 // app/build.gradle
-compile project(':..:Puree:library')
-compile project(':..:Puree:plugins')
+compile project(':..:puree-android:library')
+compile project(':..:puree-android:plugins')
 ```
