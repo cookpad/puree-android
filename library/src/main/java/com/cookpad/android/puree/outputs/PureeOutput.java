@@ -5,6 +5,7 @@ import com.cookpad.android.puree.OutputConfiguration;
 import com.cookpad.android.puree.PureeFilter;
 import com.cookpad.android.puree.storage.PureeStorage;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,8 +35,8 @@ public abstract class PureeOutput {
         try {
             final JSONObject filteredLog = applyFilters(serializedLog);
             emit(filteredLog);
-            applyAfterFilters(type(), new ArrayList<JSONObject>() {{
-                add(filteredLog);
+            applyAfterFilters(type(), new JSONArray() {{
+                put(filteredLog);
             }});
         } catch (JSONException e) {
             // do nothing
@@ -54,7 +55,7 @@ public abstract class PureeOutput {
         return filteredLog;
     }
 
-    protected void applyAfterFilters(String type, List<JSONObject> serializedLogs) {
+    protected void applyAfterFilters(String type, JSONArray serializedLogs) {
         emitCallback.call(type, serializedLogs);
     }
 

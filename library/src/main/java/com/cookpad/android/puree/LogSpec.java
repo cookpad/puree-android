@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.cookpad.android.puree.outputs.PureeOutput;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,16 +37,21 @@ public class LogSpec {
     public void shouldBe(Matcher matcher) {
         synchronized (LOCK) {
             final CountDownLatch latch = new CountDownLatch(logs.size());
-            final List<JSONObject> results = new ArrayList<>();
+            final JSONArray results = new JSONArray();
 
             initializePuree(conf);
 
             for (PureeOutput output : conf.getOutputs()) {
                 output.setEmitCallback(new EmitCallback() {
                     @Override
-                    public void call(String type, List<JSONObject> serializedLogs) {
+                    public void call(String type, JSONArray serializedLogs) {
                         if (targetType.equals(type)) {
-                            results.addAll(serializedLogs);
+                            for (int i = 0; i < serializedLogs.length(); i++) {
+                                try {
+                                    results.put(serializedLogs.getJSONObject(i));
+                                } catch (JSONException ignored) {
+                                }
+                            }
                         }
                         latch.countDown();
                     }
@@ -76,6 +82,6 @@ public class LogSpec {
     }
 
     public static interface Matcher {
-        public void expect(List<JSONObject> serializedLogs) throws JSONException;
+        public void expect(JSONArray serializedLogs) throws JSONException;
     }
 }

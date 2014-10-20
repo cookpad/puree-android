@@ -31,14 +31,14 @@ public class RecordsTest extends AndroidTestCase {
     public void testGetSerializedLogs() {
         {
             Records records = new Records();
-            assertEquals(0, records.getSerializedLogs().size());
+            assertEquals(0, records.getSerializedLogs().length());
         }
         {
             Records records = new Records();
             for (int i = 0; i < 3; i++) {
                 records.add(new Record(i, "logcat", new JSONObject()));
             }
-            assertEquals(3, records.getSerializedLogs().size());
+            assertEquals(3, records.getSerializedLogs().length());
         }
     }
 }

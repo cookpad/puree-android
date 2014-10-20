@@ -8,6 +8,7 @@ import com.cookpad.android.puree.retryable.RetryableTaskRunner;
 import com.cookpad.android.puree.storage.PureeStorage;
 import com.cookpad.android.puree.storage.Records;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,7 +59,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         }
 
         while (!records.isEmpty()) {
-            final List<JSONObject> serializedLogs = records.getSerializedLogs();
+            final JSONArray serializedLogs = records.getSerializedLogs();
             if (!PureeConfiguration.isTest) {
                 boolean isSuccess = flushChunkOfLogs(serializedLogs);
                 if (isSuccess) {
@@ -78,7 +79,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         return storage.select(type(), conf.getLogsPerRequest());
     }
 
-    public boolean flushChunkOfLogs(final List<JSONObject> serializedLogs) {
+    public boolean flushChunkOfLogs(final JSONArray serializedLogs) {
         try {
             AsyncResult asyncResult = new AsyncResult();
             emit(serializedLogs, asyncResult);
@@ -88,7 +89,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         }
     }
 
-    public abstract void emit(List<JSONObject> serializedLogs, final AsyncResult result);
+    public abstract void emit(JSONArray jsonArray, final AsyncResult result);
 
     public void emit(JSONObject serializedLog) {
         // do nothing

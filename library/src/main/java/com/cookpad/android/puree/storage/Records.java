@@ -1,5 +1,6 @@
 package com.cookpad.android.puree.storage;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -19,10 +20,10 @@ public class Records extends ArrayList<Record> {
         return builder.substring(0, builder.length() - 1);
     }
 
-    public List<JSONObject> getSerializedLogs() {
-        List<JSONObject> serializedLogs = new ArrayList<JSONObject>();
+    public JSONArray getSerializedLogs() {
+        JSONArray serializedLogs = new JSONArray();
         for (Record record : this) {
-            serializedLogs.add(record.getSerializedLog());
+            serializedLogs.put(record.getSerializedLog());
         }
         return serializedLogs;
     }

@@ -6,6 +6,7 @@ import com.cookpad.android.puree.LogSpec;
 import com.cookpad.android.puree.plugins.OutLogcat;
 import com.example.puree.logs.plugins.OutBufferedDisplay;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,9 +20,9 @@ public class ClickLogTest extends AndroidTestCase {
                 .targetType(OutLogcat.TYPE)
                 .shouldBe(new LogSpec.Matcher() {
                     @Override
-                    public void expect(List<JSONObject> serializedLogs) throws JSONException {
-                        assertEquals(2, serializedLogs.size());
-                        JSONObject serializedLog = serializedLogs.get(0);
+                    public void expect(JSONArray serializedLogs) throws JSONException {
+                        assertEquals(2, serializedLogs.length());
+                        JSONObject serializedLog = serializedLogs.getJSONObject(0);
                         assertEquals("MainActivity", serializedLog.getString("page"));
                         assertEquals("ClickLog1", serializedLog.getString("label"));
                         assertTrue(serializedLog.has("event_time"));

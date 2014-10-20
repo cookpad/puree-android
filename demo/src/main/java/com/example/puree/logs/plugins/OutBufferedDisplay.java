@@ -7,6 +7,7 @@ import com.cookpad.android.puree.OutputConfiguration;
 import com.cookpad.android.puree.outputs.PureeBufferedOutput;
 import com.cookpad.android.puree.async.AsyncResult;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
@@ -37,7 +38,7 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(final List<JSONObject> serializedLogs, final AsyncResult result) {
+    public void emit(final JSONArray serializedLogs, final AsyncResult result) {
         final Callback callback = callbackRef.get();
         if (callback == null) {
             result.success();
@@ -53,6 +54,6 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
     }
 
     public static interface Callback {
-        public void onEmit(List<JSONObject> serializedLogs);
+        public void onEmit(JSONArray serializedLogs);
     }
 }

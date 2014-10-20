@@ -14,6 +14,7 @@ import com.example.puree.logs.PvLog;
 import com.example.puree.logs.plugins.OutBufferedDisplay;
 import com.example.puree.logs.plugins.OutDisplay;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
 
     private final OutBufferedDisplay.Callback outBufferedDisplayCallback = new OutBufferedDisplay.Callback() {
         @Override
-        public void onEmit(List<JSONObject> serializedLogs) {
+        public void onEmit(JSONArray serializedLogs) {
             preprendOutput(serializedLogs.toString());
         }
     };
