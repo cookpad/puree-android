@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cookpad.android.loghouse.plugins">
+    package="com.cookpad.android.puree.plugins">
 
     <application android:allowBackup="true" />
 </manifest>

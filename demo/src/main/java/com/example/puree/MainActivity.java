@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cookpad.android.puree.Puree;
-import com.example.loghouse.R;
 import com.example.puree.logs.ClickLog;
 import com.example.puree.logs.PvLog;
 import com.example.puree.logs.plugins.OutBufferedDisplay;

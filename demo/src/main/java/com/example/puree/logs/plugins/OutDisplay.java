@@ -22,7 +22,7 @@ public class OutDisplay extends PureeOutput {
 
     @Override
     public String type() {
-        return TYPE;
+        return "display";
     }
 
     @Override

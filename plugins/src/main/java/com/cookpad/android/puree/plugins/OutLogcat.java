@@ -8,9 +8,11 @@ import com.cookpad.android.puree.outputs.PureeOutput;
 import org.json.JSONObject;
 
 public class OutLogcat extends PureeOutput {
-    private static final String TAG = OutLogcat.class.getSimpleName();
     public static final String TYPE = "logcat";
 
+    private static final String TAG = OutLogcat.class.getSimpleName();
+
+    @Override
     public String type() {
         return TYPE;
     }

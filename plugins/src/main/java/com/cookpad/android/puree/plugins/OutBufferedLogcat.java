@@ -12,9 +12,11 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class OutBufferedLogcat extends PureeBufferedOutput {
-    private static final String TAG = OutBufferedLogcat.class.getSimpleName();
     public static final String TYPE = "buffered_logcat";
 
+    private static final String TAG = OutBufferedLogcat.class.getSimpleName();
+
+    @Override
     public String type() {
         return TYPE;
     }

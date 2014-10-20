@@ -10,7 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
-    private static final String DATABASE_NAME = "log_house";
+    private static final String DATABASE_NAME = "puree";
     private static final String TABLE_NAME = "logs";
     private static final String COLUMN_NAME_TYPE = "type";
     private static final String COLUMN_NAME_LOG = "log";
