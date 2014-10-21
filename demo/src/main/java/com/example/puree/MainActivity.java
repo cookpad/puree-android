@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.cookpad.android.puree.Puree;
+import com.cookpad.puree.Puree;
 import com.example.puree.logs.ClickLog;
 import com.example.puree.logs.PvLog;
 import com.example.puree.logs.plugins.OutBufferedDisplay;
@@ -16,8 +16,6 @@ import com.example.puree.logs.plugins.OutDisplay;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
     private TextView logDisplayTextView;

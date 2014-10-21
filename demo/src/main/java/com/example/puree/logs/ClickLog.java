@@ -1,6 +1,6 @@
 package com.example.puree.logs;
 
-import com.cookpad.android.puree.JsonConvertible;
+import com.cookpad.puree.JsonConvertible;
 import com.google.gson.annotations.SerializedName;
 
 public class ClickLog extends JsonConvertible {

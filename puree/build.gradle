@@ -77,7 +77,7 @@ publishing {
             pom.withXml {
                 Node root = asNode()
                 root.appendNode('name', "${artifactId}")
-                root.appendNode('description', 'Puree is a data collector for unified logging layer.')
+                root.appendNode('description', 'Puree is a data collector for unified logging layer for Android.')
                 root.appendNode('url', 'https://github.com/cookpad/puree-android')
 
                 def issues = root.appendNode('issueManagement')
@@ -100,7 +100,7 @@ publishing {
 
 bintray {
     user = "$bintrayUser"
-    key = "$bintaryApiKey"
+    key = "$bintrayApiKey"
     publications = ['mavenAndroid']
     pkg {
         repo = 'maven'

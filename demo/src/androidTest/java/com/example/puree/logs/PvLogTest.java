@@ -2,16 +2,12 @@ package com.example.puree.logs;
 
 import android.test.AndroidTestCase;
 
-import com.cookpad.android.puree.LogSpec;
-import com.cookpad.android.puree.plugins.OutLogcat;
-import com.example.puree.DemoApplication;
-import com.example.puree.logs.plugins.OutBufferedDisplay;
+import com.cookpad.puree.LogSpec;
+import com.cookpad.puree.plugins.OutLogcat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 public class PvLogTest extends AndroidTestCase {
     public void testFormat() {

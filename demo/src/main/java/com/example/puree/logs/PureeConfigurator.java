@@ -2,11 +2,11 @@ package com.example.puree.logs;
 
 import android.content.Context;
 
-import com.cookpad.android.puree.Puree;
-import com.cookpad.android.puree.PureeConfiguration;
-import com.cookpad.android.puree.PureeFilter;
-import com.cookpad.android.puree.plugins.OutBufferedLogcat;
-import com.cookpad.android.puree.plugins.OutLogcat;
+import com.cookpad.puree.Puree;
+import com.cookpad.puree.PureeConfiguration;
+import com.cookpad.puree.PureeFilter;
+import com.cookpad.puree.plugins.OutBufferedLogcat;
+import com.cookpad.puree.plugins.OutLogcat;
 import com.example.puree.AddEventTimeFilter;
 import com.example.puree.logs.plugins.OutBufferedDisplay;
 import com.example.puree.logs.plugins.OutDisplay;

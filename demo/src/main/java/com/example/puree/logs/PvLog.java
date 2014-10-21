@@ -3,8 +3,7 @@ package com.example.puree.logs;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
-import com.cookpad.android.puree.JsonConvertible;
-import com.cookpad.android.puree.plugins.OutLogcat;
+import com.cookpad.puree.JsonConvertible;
 import com.google.gson.annotations.SerializedName;
 
 public class PvLog extends JsonConvertible {
