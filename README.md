@@ -115,9 +115,9 @@ I'll upload Puree to maven central sooner or later.
 
 ```java
 // settings.gradle
-include ':app', ':..:puree-android:library', ':..:puree-android:plugins'
+include ':app', ':..:puree-android:puree', ':..:puree-android:plugins'
 
 // app/build.gradle
-compile project(':..:puree-android:library')
+compile project(':..:puree-android:puree')
 compile project(':..:puree-android:plugins')
 ```
