@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -41,7 +42,9 @@ public class LogSpec {
 
             initializePuree(conf);
 
-            for (PureeOutput output : conf.getOutputs()) {
+            Map<String, PureeOutput> outputs = conf.getOutputs();
+            for (String type : outputs.keySet()) {
+                PureeOutput output = outputs.get(type);
                 output.setEmitCallback(new EmitCallback() {
                     @Override
                     public void call(String type, JSONArray serializedLogs) {

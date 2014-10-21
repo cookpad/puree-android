@@ -20,7 +20,7 @@ public class Puree {
     private static boolean isInitialized = false;
     private static Gson gson;
     private static PureeStorage storage;
-    private static Map<String, PureeOutput> outputMap = new HashMap<>();
+    private static Map<String, PureeOutput> outputs = new HashMap<>();
 
     public static synchronized void initialize(PureeConfiguration conf) {
         if (isInitialized && !PureeConfiguration.isTest) {
@@ -30,10 +30,10 @@ public class Puree {
 
         gson = conf.getGson();
         storage = new PureeDbHelper(conf.getApplicationContext());
+        outputs = conf.getOutputs();
 
-        for (PureeOutput output : conf.getOutputs()) {
-            output.initialize(storage);
-            outputMap.put(output.type(), output);
+        for (String type : outputs.keySet()) {
+            outputs.get(type).initialize(storage);
         }
 
         isInitialized = true;
@@ -42,7 +42,7 @@ public class Puree {
     public static void send(JsonConvertible log, String... sendTo) {
         checkIfPureeHasInitialized();
 
-        for (PureeOutput output : OutputMatcher.matchWith(outputMap, sendTo)) {
+        for (PureeOutput output : OutputMatcher.matchWith(outputs, sendTo)) {
             output.receive(log.toJSON(gson));
         }
     }

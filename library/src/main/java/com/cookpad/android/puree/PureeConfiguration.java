@@ -6,14 +6,16 @@ import com.cookpad.android.puree.outputs.PureeOutput;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PureeConfiguration {
     public static boolean isTest = false;
 
     private Context applicationContext;
     private Gson gson;
-    private List<PureeOutput> outputs = new ArrayList<>();
+    private Map<String, PureeOutput> outputs = new HashMap<>();
 
     public Context getApplicationContext() {
         return applicationContext;
@@ -23,13 +25,13 @@ public class PureeConfiguration {
         return gson;
     }
 
-    public List<PureeOutput> getOutputs() {
+    public Map<String, PureeOutput> getOutputs() {
         return outputs;
     }
 
     public PureeConfiguration(Context applicationContext,
                               Gson gson,
-                              List<PureeOutput> outputs) {
+                              Map<String, PureeOutput> outputs) {
         this.applicationContext = applicationContext;
         this.gson = gson;
         this.outputs = outputs;
@@ -38,7 +40,7 @@ public class PureeConfiguration {
     public static class Builder {
         private Context applicationContext;
         private Gson gson = new Gson();
-        private List<PureeOutput> outputs = new ArrayList<>();
+        private Map<String, PureeOutput> outputs = new HashMap<>();
 
         public Builder(Context applicationContext) {
             this.applicationContext = applicationContext;
@@ -49,16 +51,11 @@ public class PureeConfiguration {
             return this;
         }
 
-        public Builder registerOutput(PureeOutput output) {
-            outputs.add(output);
-            return this;
-        }
-
         public Builder registerOutput(PureeOutput output, PureeFilter... filters) {
             for (PureeFilter filter : filters) {
                 output.registerFilter(filter);
             }
-            outputs.add(output);
+            outputs.put(output.type(), output);
             return this;
         }
 
