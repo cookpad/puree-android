@@ -1,7 +1,7 @@
 package com.cookpad.puree.retryable;
 
 public class BuckoffCounter {
-    private final int baseTime;
+    private final int baseTimeMillis;
     private final int maxRetryCount;
     private int retryCount = 0;
 
@@ -9,8 +9,8 @@ public class BuckoffCounter {
         return retryCount;
     }
 
-    public BuckoffCounter(int baseTime, int maxRetryCount) {
-        this.baseTime = baseTime;
+    public BuckoffCounter(int baseTimeMillis, int maxRetryCount) {
+        this.baseTimeMillis = baseTimeMillis;
         this.maxRetryCount = maxRetryCount;
     }
 
@@ -28,9 +28,9 @@ public class BuckoffCounter {
 
     public int time() {
         if (retryCount == 0) {
-            return baseTime;
+            return baseTimeMillis;
         } else {
-            return baseTime * (retryCount + 1);
+            return baseTimeMillis * (retryCount + 1);
         }
     }
 }

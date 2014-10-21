@@ -8,8 +8,8 @@ public class RetryableTaskRunner {
     private Runnable callback;
     private BuckoffCounter buckoffCounter;
 
-    public RetryableTaskRunner(final Runnable task, int interval, int maxRetryCount) {
-        this.buckoffCounter = new BuckoffCounter(interval, maxRetryCount);
+    public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount) {
+        this.buckoffCounter = new BuckoffCounter(intervalMillis, maxRetryCount);
         this.handler = new Handler();
         this.hasAlreadyStarted = false;
 

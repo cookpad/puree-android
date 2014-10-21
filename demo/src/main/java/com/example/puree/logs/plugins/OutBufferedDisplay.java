@@ -31,7 +31,7 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
 
     @Override
     public OutputConfiguration configure(OutputConfiguration conf) {
-        conf.setFlushInterval(3000);
+        conf.setFlushIntervalMillis(3000);
         return conf;
     }
 

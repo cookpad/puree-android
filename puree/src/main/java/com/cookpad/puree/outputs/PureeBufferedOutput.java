@@ -23,7 +23,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
             public void run() {
                 flush();
             }
-        }, conf.getFlushInterval(), conf.getMaxRetryCount());
+        }, conf.getFlushIntervalMillis(), conf.getMaxRetryCount());
     }
 
     @Override

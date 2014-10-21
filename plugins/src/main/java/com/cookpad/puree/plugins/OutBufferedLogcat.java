@@ -20,7 +20,7 @@ public class OutBufferedLogcat extends PureeBufferedOutput {
 
     @Override
     public OutputConfiguration configure(OutputConfiguration conf) {
-        conf.setFlushInterval(2000);
+        conf.setFlushIntervalMillis(2000);
         conf.setLogsPerRequest(3);
         return conf;
     }
