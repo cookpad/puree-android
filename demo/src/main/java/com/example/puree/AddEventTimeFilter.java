@@ -1,6 +1,6 @@
 package com.example.puree;
 
-import com.cookpad.android.puree.PureeFilter;
+import com.cookpad.puree.PureeFilter;
 
 import org.json.JSONException;
 import org.json.JSONObject;

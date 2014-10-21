@@ -1,1 +1,1 @@
-include ':library', ':demo', ':plugins'
+include ':puree', ':demo', ':plugins'
