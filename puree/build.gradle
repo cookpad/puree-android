@@ -90,7 +90,7 @@ publishing {
 
                 def license = root.appendNode('licenses').appendNode('license')
                 license.appendNode('name', 'MIT')
-                license.appendNode('url', 'https://raw.githubusercontent.com/cookpad/puree-android/master/LICENCE.txt')
+                license.appendNode('url', 'https://raw.githubusercontent.com/cookpad/puree-android/master/LICENSE.txt')
                 license.appendNode('distribution', 'repo')
             }
         }
