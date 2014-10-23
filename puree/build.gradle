@@ -2,14 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
-def getBintrayUserProperty() {
-    return hasProperty('bintrayUser') ? bintrayUser : ""
-}
-
-def getBintrayApiKeyProperty() {
-    return hasProperty('bintrayApiKey') ? bintrayApiKey : ""
-}
-
 android {
     compileSdkVersion 19
     buildToolsVersion "19.1.0"
@@ -98,11 +90,19 @@ publishing {
 
                 def license = root.appendNode('licenses').appendNode('license')
                 license.appendNode('name', 'MIT')
-//              license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
+                license.appendNode('url', 'https://raw.githubusercontent.com/cookpad/puree-android/master/LICENCE.txt')
                 license.appendNode('distribution', 'repo')
             }
         }
     }
+}
+
+def getBintrayUserProperty() {
+    return hasProperty('bintrayUser') ? bintrayUser : ""
+}
+
+def getBintrayApiKeyProperty() {
+    return hasProperty('bintrayApiKey') ? bintrayApiKey : ""
 }
 
 bintray {
