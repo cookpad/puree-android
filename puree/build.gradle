@@ -65,6 +65,10 @@ artifacts {
     archives androidSourcesJar
 }
 
+groupId = "com.cookpad"
+artifactId = "puree"
+version = "0.0.4"
+
 publishing {
     publications {
         mavenAndroid(MavenPublication) {
