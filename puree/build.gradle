@@ -65,21 +65,19 @@ artifacts {
     archives androidSourcesJar
 }
 
-groupId = "com.cookpad"
-artifactId = "puree"
-version = "0.0.4"
+version = "0.0.5"
 
 publishing {
     publications {
         mavenAndroid(MavenPublication) {
-            groupId "${groupId}"
-            artifactId "${artifactId}"
+            groupId 'com.cookpad'
+            artifactId 'puree'
             version version
             artifact androidJar
             artifact androidSourcesJar
             pom.withXml {
                 Node root = asNode()
-                root.appendNode('name', "${artifactId}")
+                root.appendNode('name', 'puree')
                 root.appendNode('description', 'Puree is a data collector for unified logging layer for Android.')
                 root.appendNode('url', 'https://github.com/cookpad/puree-android')
 
@@ -113,6 +111,7 @@ bintray {
     user = bintrayUserProperty
     key = bintrayApiKeyProperty
     publications = ['mavenAndroid']
+    dryRun = false
     pkg {
         repo = 'maven'
         name = 'puree'
