@@ -1,5 +1,6 @@
 package com.cookpad.puree;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cookpad.puree.exceptions.PureeNotInitializedException;
@@ -11,7 +12,10 @@ import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Puree {
@@ -39,10 +43,18 @@ public class Puree {
         isInitialized = true;
     }
 
-    public static void send(JsonConvertible log, String... sendTo) {
+    public static void send(JsonConvertible log, String type, String... optionalTypes) {
         checkIfPureeHasInitialized();
 
-        for (PureeOutput output : OutputMatcher.matchWith(outputs, sendTo)) {
+        List<String> types = new ArrayList<>();
+        if (!TextUtils.isEmpty(type)) {
+            types.add(type);
+        }
+        if (optionalTypes != null && optionalTypes.length > 0) {
+            Collections.addAll(types, optionalTypes);
+        }
+
+        for (PureeOutput output : OutputMatcher.matchWith(outputs, types)) {
             output.receive(log.toJSON(gson));
         }
     }

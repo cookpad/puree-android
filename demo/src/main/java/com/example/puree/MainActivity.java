@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cookpad.puree.Puree;
+import com.cookpad.puree.plugins.OutLogcat;
 import com.example.puree.logs.ClickLog;
 import com.example.puree.logs.PvLog;
 import com.example.puree.logs.plugins.OutBufferedDisplay;
@@ -56,7 +57,7 @@ public class MainActivity extends ActionBarActivity {
         findViews();
         OutDisplay.register(outDisplayCallback);
         OutBufferedDisplay.register(outBufferedDisplayCallback);
-        Puree.send(new PvLog(this));
+        Puree.send(new PvLog(this), OutLogcat.TYPE);
         setupViews();
     }
 

@@ -6,6 +6,7 @@ import com.cookpad.puree.OutputConfiguration;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,16 +52,22 @@ public class OutputMatcherTest extends AndroidTestCase {
         outputMap.put(output2.type(), output2);
 
         {
-            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, new String[]{"JAVA"});
+            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, new ArrayList<String>() {{
+                add("JAVA");
+            }});
             assertEquals(0, outputs.size());
         }
         {
-            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, new String[]{"output1"});
+            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, new ArrayList<String>() {{
+                add("output1");
+            }});
             assertEquals(1, outputs.size());
             assertEquals("output1", outputs.get(0).type());
         }
         {
-            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, new String[]{"output2"});
+            List<PureeOutput> outputs = OutputMatcher.matchWith(outputMap, new ArrayList<String>(){{
+                add("output2");
+            }});
             assertEquals(1, outputs.size());
             assertEquals("output2", outputs.get(0).type());
         }

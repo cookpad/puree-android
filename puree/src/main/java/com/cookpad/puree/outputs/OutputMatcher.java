@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public class OutputMatcher {
-    public static List<PureeOutput> matchWith(Map<String, PureeOutput> outputMap, String[] types) {
+    public static List<PureeOutput> matchWith(Map<String, PureeOutput> outputMap, List<String> types) {
         List<PureeOutput> foundOutputs = new ArrayList<>();
         for (String type : types) {
             PureeOutput output = outputMap.get(type);

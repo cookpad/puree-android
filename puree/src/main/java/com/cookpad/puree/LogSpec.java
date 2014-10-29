@@ -73,7 +73,7 @@ public class LogSpec {
 
     private void putLogs(List<Pair<JsonConvertible, String[]>> logs) {
         for (Pair<JsonConvertible, String[]> log : logs) {
-            Puree.send(log.first, log.second);
+            Puree.send(log.first, null, log.second);
         }
     }
 
