@@ -1,5 +1,7 @@
 package com.cookpad.puree.outputs;
 
+import android.util.Log;
+
 import com.cookpad.puree.EmitCallback;
 import com.cookpad.puree.OutputConfiguration;
 import com.cookpad.puree.PureeFilter;
@@ -34,12 +36,15 @@ public abstract class PureeOutput {
     public void receive(JSONObject serializedLog) {
         try {
             final JSONObject filteredLog = applyFilters(serializedLog);
+            if (filteredLog == null) {
+                return;
+            }
+
             emit(filteredLog);
             applyAfterFilters(type(), new JSONArray() {{
                 put(filteredLog);
             }});
-        } catch (JSONException e) {
-            // do nothing
+        } catch (JSONException ignored) {
         }
     }
 
