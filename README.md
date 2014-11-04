@@ -107,17 +107,18 @@ You can create a plugin by inheriting Puree.Output or Puree.BufferedOutput. See 
 - [OutLogcat](https://github.com/rejasupotaro/Puree/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fandroid%2Fpuree%2Fplugins%2FOutLogcat.java)
 - [OutBufferedLogcat](https://github.com/rejasupotaro/Puree/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fandroid%2Fpuree%2Fplugins%2FOutBufferedLogcat.java)
 
-## Install
+## Download
 
+Reference on jcenter as
 
-Clone this repository in your PC and compile with your project for now.
-I'll upload Puree to maven central sooner or later.
-
-```java
-// settings.gradle
-include ':app', ':..:puree-android:puree', ':..:puree-android:plugins'
+```
+// build.gradle
+buildscript {
+    repositories {
+        jcenter()
+    }
+    ...
 
 // app/build.gradle
-compile project(':..:puree-android:puree')
-compile project(':..:puree-android:plugins')
+compile 'com.cookpad:puree:0.0.6'
 ```
