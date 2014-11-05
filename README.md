@@ -120,5 +120,5 @@ buildscript {
     ...
 
 // app/build.gradle
-compile 'com.cookpad:puree:0.0.6'
+compile 'com.cookpad:puree:0.0.7'
 ```
