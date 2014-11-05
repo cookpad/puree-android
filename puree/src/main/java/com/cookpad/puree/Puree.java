@@ -59,6 +59,15 @@ public class Puree {
         }
     }
 
+    public static void flush() {
+        if (outputs == null) {
+            throw new PureeNotInitializedException();
+        }
+        for (String type : outputs.keySet()) {
+            outputs.get(type).flush();
+        }
+    }
+
     public static void dump() {
         LogDumper.outLogcat(getBufferedLogs());
     }

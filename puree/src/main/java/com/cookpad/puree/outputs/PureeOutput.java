@@ -1,7 +1,5 @@
 package com.cookpad.puree.outputs;
 
-import android.util.Log;
-
 import com.cookpad.puree.EmitCallback;
 import com.cookpad.puree.OutputConfiguration;
 import com.cookpad.puree.PureeFilter;
@@ -62,6 +60,10 @@ public abstract class PureeOutput {
 
     protected void applyAfterFilters(String type, JSONArray serializedLogs) {
         emitCallback.call(type, serializedLogs);
+    }
+
+    public void flush() {
+        // do nothing because PureeOutput don't have any buffers.
     }
 
     public abstract String type();

@@ -46,6 +46,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         }
     }
 
+    @Override
     public void flush() {
         new AsyncFlushTask(this).execute();
     }
