@@ -64,31 +64,6 @@ Send log to Puree in an arbitrary timing.
 Puree.send(new ClickLog("MainActivity", "Hello"), OutLogcat.TYPE);
 ```
 
-### Testing
-
-LogSpec provides utilities for tests.
-
-```java
-public class ClickLogTest extends AndroidTestCase {
-    public void testFormat() {
-        new LogSpec(PureeConfigurator.buildConf(getContext()))
-                .log(new ClickLog("MainActivity", "ClickLog1"), OutLogcat.TYPE)
-                .log(new ClickLog("MainActivity", "ClickLog2"), OutLogcat.TYPE)
-                .targetType(OutLogcat.TYPE)
-                .shouldBe(new LogSpec.Matcher() {
-                    @Override
-                    public void expect(JSONArray serializedLogs) throws JSONException {
-                        assertEquals(2, serializedLogs.length());
-                        JSONObject serializedLog = serializedLogs.getJSONObject(0);
-                        assertEquals("MainActivity", serializedLog.getString("page"));
-                        assertEquals("ClickLog1", serializedLog.getString("label"));
-                        assertTrue(serializedLog.has("event_time"));
-                    }
-                });
-    }
-}
-```
-
 ### Create output plugins
 
 
