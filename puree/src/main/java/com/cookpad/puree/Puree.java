@@ -27,7 +27,7 @@ public class Puree {
     private static Map<String, PureeOutput> outputs = new HashMap<>();
 
     public static synchronized void initialize(PureeConfiguration conf) {
-        if (isInitialized && !PureeConfiguration.isTest) {
+        if (isInitialized) {
             Log.w(TAG, "Puree has already initialized");
             return;
         }

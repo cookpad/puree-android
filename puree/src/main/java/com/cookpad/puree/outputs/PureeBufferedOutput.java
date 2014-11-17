@@ -1,6 +1,5 @@
 package com.cookpad.puree.outputs;
 
-import com.cookpad.puree.PureeConfiguration;
 import com.cookpad.puree.async.AsyncFlushTask;
 import com.cookpad.puree.async.AsyncInsertTask;
 import com.cookpad.puree.async.AsyncResult;
@@ -28,13 +27,8 @@ public abstract class PureeBufferedOutput extends PureeOutput {
 
     @Override
     public void receive(JSONObject serializedLog) {
-        if (PureeConfiguration.isTest) {
-            insertSync(type(), serializedLog);
-            flushSync();
-        } else {
-            new AsyncInsertTask(this, type(), serializedLog).execute();
-            retryableTaskRunner.tryToStart();
-        }
+        new AsyncInsertTask(this, type(), serializedLog).execute();
+        retryableTaskRunner.tryToStart();
     }
 
     public void insertSync(String type, JSONObject serializedLog) {
@@ -59,14 +53,12 @@ public abstract class PureeBufferedOutput extends PureeOutput {
 
         while (!records.isEmpty()) {
             final JSONArray serializedLogs = records.getSerializedLogs();
-            if (!PureeConfiguration.isTest) {
-                boolean isSuccess = flushChunkOfLogs(serializedLogs);
-                if (isSuccess) {
-                    retryableTaskRunner.reset();
-                } else {
-                    retryableTaskRunner.retryLater();
-                    return;
-                }
+            boolean isSuccess = flushChunkOfLogs(serializedLogs);
+            if (isSuccess) {
+                retryableTaskRunner.reset();
+            } else {
+                retryableTaskRunner.retryLater();
+                return;
             }
             applyAfterFilters(type(), serializedLogs);
             storage.delete(records);

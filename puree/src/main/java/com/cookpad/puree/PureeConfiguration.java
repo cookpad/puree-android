@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PureeConfiguration {
-    public static boolean isTest = false;
-
     private Context applicationContext;
     private Gson gson;
     private Map<String, PureeOutput> outputs = new HashMap<>();
