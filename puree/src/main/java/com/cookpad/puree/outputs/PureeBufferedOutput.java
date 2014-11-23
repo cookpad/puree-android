@@ -60,7 +60,6 @@ public abstract class PureeBufferedOutput extends PureeOutput {
                 retryableTaskRunner.retryLater();
                 return;
             }
-            applyAfterFilters(type(), serializedLogs);
             storage.delete(records);
             records = getRecordsFromStorage();
         }

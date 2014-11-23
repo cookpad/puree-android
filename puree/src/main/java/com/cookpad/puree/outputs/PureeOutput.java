@@ -1,6 +1,5 @@
 package com.cookpad.puree.outputs;
 
-import com.cookpad.puree.EmitCallback;
 import com.cookpad.puree.OutputConfiguration;
 import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.storage.PureeStorage;
@@ -16,14 +15,9 @@ public abstract class PureeOutput {
     protected OutputConfiguration conf;
     protected PureeStorage storage;
     protected List<PureeFilter> filters = new ArrayList<>();
-    protected EmitCallback emitCallback = EmitCallback.DEFAULT;
 
     public void registerFilter(PureeFilter filter) {
         filters.add(filter);
-    }
-
-    public void setEmitCallback(EmitCallback emitCallback) {
-        this.emitCallback = emitCallback;
     }
 
     public void initialize(PureeStorage storage) {
@@ -39,9 +33,6 @@ public abstract class PureeOutput {
             }
 
             emit(filteredLog);
-            applyAfterFilters(type(), new JSONArray() {{
-                put(filteredLog);
-            }});
         } catch (JSONException ignored) {
         }
     }
@@ -56,10 +47,6 @@ public abstract class PureeOutput {
             filteredLog = filter.apply(serializedLog);
         }
         return filteredLog;
-    }
-
-    protected void applyAfterFilters(String type, JSONArray serializedLogs) {
-        emitCallback.call(type, serializedLogs);
     }
 
     public void flush() {
