@@ -23,7 +23,7 @@ public class PureeConfigurator {
                 .registerOutput(new OutLogcat(), addEventTimeFilter)
                 .registerOutput(new OutBufferedLogcat(), addEventTimeFilter)
                 .registerOutput(new OutDisplay(), new SamplingFilter(0.5F))
-                .registerOutput(new OutBufferedDisplay(), addEventTimeFilter)
+                .registerOutput(new OutBufferedDisplay())
                 .build();
     }
 }
