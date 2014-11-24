@@ -12,8 +12,6 @@ Puree is a log collector which provides some features like below
 
 Puree helps you unify your logging infrastructure.
 
-![](./images/overview.png)
-
 ## Usage
 
 ### Initializing
