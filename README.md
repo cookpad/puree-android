@@ -3,18 +3,16 @@ Puree
 
 ## Description
 
-Puree is a data collector for unified logging layer, which provides some functions like below
+Puree is a log collector which provides some features like below
 
-- Filtering
- - Enable to interrupt process before sending log.
-- Buffering
- - Store logs to buffer until log was sent.
-- Batching
- - Enable to send logs by 1 request.
-- Retrying
- - Retry to send logs after buckoff time automatically if sending logs fails.
+- Filtering: Enable to interrupt process before sending log. You can add common params to logs, or the sampling of logs.
+- Buffering: Store logs to buffer until log was sent.
+- Batching: Enable to send logs by 1 request.
+- Retrying: Retry to send logs after buckoff time automatically if sending logs fails.
 
-![](./images/logging.png)
+Puree helps you unify your logging infrastructure.
+
+![](./images/overview.png)
 
 ## Usage
 
@@ -31,7 +29,6 @@ public class DemoApplication extends Application {
 
     public static PureeConfiguration buildConfiguration(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
-
         return new PureeConfiguration.Builder(context)
                 .registerOutput(new OutLogcat())
                 .registerOutput(new OutBufferedLogcat(), addEventTimeFilter)
@@ -42,7 +39,7 @@ public class DemoApplication extends Application {
 
 ### Sending logs
 
-Log class should implements JsonConvertible interface.
+Log class should extend JsonConvertible.
 
 ```java
 public class ClickLog extends JsonConvertible {
@@ -58,7 +55,7 @@ public class ClickLog extends JsonConvertible {
 }
 ```
 
-Send log to Puree in an arbitrary timing.
+Call `Puree.send` in an arbitary timing.
 
 ```java
 Puree.send(new ClickLog("MainActivity", "Hello"), OutLogcat.TYPE);
