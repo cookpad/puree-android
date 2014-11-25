@@ -9,17 +9,17 @@ import org.json.JSONObject;
 public class AsyncInsertTask extends AsyncTask<Void, Void, Void> {
     private PureeBufferedOutput output;
     private String type;
-    private JSONObject serializedLog;
+    private JSONObject jsonLog;
 
-    public AsyncInsertTask(PureeBufferedOutput output, String type, JSONObject serializedLog) {
+    public AsyncInsertTask(PureeBufferedOutput output, String type, JSONObject jsonLog) {
         this.output = output;
         this.type = type;
-        this.serializedLog = serializedLog;
+        this.jsonLog = jsonLog;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
-        output.insertSync(type, serializedLog);
+        output.insertSync(type, jsonLog);
         return null;
     }
 }

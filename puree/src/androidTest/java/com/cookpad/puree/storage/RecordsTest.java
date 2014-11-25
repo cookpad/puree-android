@@ -25,17 +25,17 @@ public class RecordsTest extends AndroidTestCase {
         }
     }
 
-    public void testGetSerializedLogs() {
+    public void testGetJsonLogs() {
         {
             Records records = new Records();
-            assertEquals(0, records.getSerializedLogs().length());
+            assertEquals(0, records.getJsonLogs().length());
         }
         {
             Records records = new Records();
             for (int i = 0; i < 3; i++) {
                 records.add(new Record(i, "logcat", new JSONObject()));
             }
-            assertEquals(3, records.getSerializedLogs().length());
+            assertEquals(3, records.getJsonLogs().length());
         }
     }
 }

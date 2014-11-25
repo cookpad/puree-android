@@ -23,10 +23,10 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
         db = getWritableDatabase();
     }
 
-    public void insert(String type, JSONObject serializedLog) {
+    public void insert(String type, JSONObject jsonLog) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_TYPE, type);
-        contentValues.put(COLUMN_NAME_LOG, serializedLog.toString());
+        contentValues.put(COLUMN_NAME_LOG, jsonLog.toString());
         db.insert(TABLE_NAME, null, contentValues);
     }
 

@@ -25,15 +25,15 @@ public class MainActivity extends ActionBarActivity {
 
     private final OutDisplay.Callback outDisplayCallback = new OutDisplay.Callback() {
         @Override
-        public void onEmit(JSONObject serializedLog) {
-            preprendOutput(serializedLog.toString());
+        public void onEmit(JSONObject jsonLog) {
+            preprendOutput(jsonLog.toString());
         }
     };
 
     private final OutBufferedDisplay.Callback outBufferedDisplayCallback = new OutBufferedDisplay.Callback() {
         @Override
-        public void onEmit(JSONArray serializedLogs) {
-            preprendOutput(serializedLogs.toString());
+        public void onEmit(JSONArray jsonLogs) {
+            preprendOutput(jsonLogs.toString());
         }
     };
 

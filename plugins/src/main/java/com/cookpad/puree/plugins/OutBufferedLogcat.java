@@ -26,8 +26,8 @@ public class OutBufferedLogcat extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(JSONArray serializedLogs, AsyncResult asyncResult) {
-        Log.d(TAG, serializedLogs.toString());
+    public void emit(JSONArray jsonLogs, AsyncResult asyncResult) {
+        Log.d(TAG, jsonLogs.toString());
         asyncResult.success();
     }
 }

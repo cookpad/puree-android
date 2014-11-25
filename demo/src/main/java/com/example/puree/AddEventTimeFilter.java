@@ -6,8 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AddEventTimeFilter implements PureeFilter {
-    public JSONObject apply(JSONObject serializedLog) throws JSONException {
-        serializedLog.put("event_time", System.currentTimeMillis());
-        return serializedLog;
+    public JSONObject apply(JSONObject jsonLog) throws JSONException {
+        jsonLog.put("event_time", System.currentTimeMillis());
+        return jsonLog;
     }
 }
