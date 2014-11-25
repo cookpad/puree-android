@@ -18,11 +18,11 @@ public class Records extends ArrayList<Record> {
         return builder.substring(0, builder.length() - 1);
     }
 
-    public JSONArray getSerializedLogs() {
-        JSONArray serializedLogs = new JSONArray();
+    public JSONArray getJsonLogs() {
+        JSONArray jsonLogs = new JSONArray();
         for (Record record : this) {
-            serializedLogs.put(record.getSerializedLog());
+            jsonLogs.put(record.getJsonLog());
         }
-        return serializedLogs;
+        return jsonLogs;
     }
 }

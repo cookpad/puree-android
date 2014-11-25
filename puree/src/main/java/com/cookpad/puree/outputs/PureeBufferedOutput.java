@@ -26,14 +26,14 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     }
 
     @Override
-    public void receive(JSONObject serializedLog) {
-        new AsyncInsertTask(this, type(), serializedLog).execute();
+    public void receive(JSONObject jsonLog) {
+        new AsyncInsertTask(this, type(), jsonLog).execute();
         retryableTaskRunner.tryToStart();
     }
 
-    public void insertSync(String type, JSONObject serializedLog) {
+    public void insertSync(String type, JSONObject jsonLog) {
         try {
-            JSONObject filteredLog = applyFilters(serializedLog);
+            JSONObject filteredLog = applyFilters(jsonLog);
             storage.insert(type, filteredLog);
         } catch (JSONException e) {
             // do nothing
@@ -52,8 +52,8 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         }
 
         while (!records.isEmpty()) {
-            final JSONArray serializedLogs = records.getSerializedLogs();
-            boolean isSuccess = flushChunkOfLogs(serializedLogs);
+            final JSONArray jsonLogs = records.getJsonLogs();
+            boolean isSuccess = flushChunkOfLogs(jsonLogs);
             if (isSuccess) {
                 retryableTaskRunner.reset();
             } else {
@@ -69,10 +69,10 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         return storage.select(type(), conf.getLogsPerRequest());
     }
 
-    public boolean flushChunkOfLogs(final JSONArray serializedLogs) {
+    public boolean flushChunkOfLogs(final JSONArray jsonLogs) {
         try {
             AsyncResult asyncResult = new AsyncResult();
-            emit(serializedLogs, asyncResult);
+            emit(jsonLogs, asyncResult);
             return asyncResult.get();
         } catch (InterruptedException e) {
             return false;
@@ -81,7 +81,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
 
     public abstract void emit(JSONArray jsonArray, final AsyncResult result);
 
-    public void emit(JSONObject serializedLog) {
+    public void emit(JSONObject jsonLog) {
         // do nothing
     }
 }

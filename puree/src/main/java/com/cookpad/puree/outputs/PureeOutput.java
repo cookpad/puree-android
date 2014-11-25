@@ -25,9 +25,9 @@ public abstract class PureeOutput {
         this.conf = configure(new OutputConfiguration());
     }
 
-    public void receive(JSONObject serializedLog) {
+    public void receive(JSONObject jsonLog) {
         try {
-            final JSONObject filteredLog = applyFilters(serializedLog);
+            final JSONObject filteredLog = applyFilters(jsonLog);
             if (filteredLog == null) {
                 return;
             }
@@ -37,14 +37,14 @@ public abstract class PureeOutput {
         }
     }
 
-    protected JSONObject applyFilters(JSONObject serializedLog) throws JSONException {
+    protected JSONObject applyFilters(JSONObject jsonLog) throws JSONException {
         if (filters == null || filters.isEmpty()) {
-            return serializedLog;
+            return jsonLog;
         }
 
         JSONObject filteredLog = new JSONObject();
         for (PureeFilter filter : filters) {
-            filteredLog = filter.apply(serializedLog);
+            filteredLog = filter.apply(jsonLog);
         }
         return filteredLog;
     }
@@ -57,6 +57,6 @@ public abstract class PureeOutput {
 
     public abstract OutputConfiguration configure(OutputConfiguration conf);
 
-    public abstract void emit(JSONObject serializedLog);
+    public abstract void emit(JSONObject jsonLog);
 }
 

@@ -8,14 +8,14 @@ import org.json.JSONObject;
 public class Record {
     private int id;
     private String type;
-    private JSONObject serializedLog;
+    private JSONObject jsonLog;
 
     public int getId() {
         return id;
     }
 
-    public JSONObject getSerializedLog() {
-        return serializedLog;
+    public JSONObject getJsonLog() {
+        return jsonLog;
     }
 
     public Record(Cursor cursor) throws JSONException {
@@ -25,9 +25,9 @@ public class Record {
                 new JSONObject(cursor.getString(2)));
     }
 
-    public Record(int id, String type, JSONObject serializedLog) {
+    public Record(int id, String type, JSONObject jsonLog) {
         this.id = id;
         this.type = type;
-        this.serializedLog = serializedLog;
+        this.jsonLog = jsonLog;
     }
 }

@@ -31,15 +31,15 @@ public class OutDisplay extends PureeOutput {
     }
 
     @Override
-    public void emit(JSONObject serializedLog) {
+    public void emit(JSONObject jsonLog) {
         Callback callback = callbackRef.get();
         if (callback == null) {
             return;
         }
-        callback.onEmit(serializedLog);
+        callback.onEmit(jsonLog);
     }
 
     public static interface Callback {
-        public void onEmit(JSONObject serializedLog);
+        public void onEmit(JSONObject jsonLog);
     }
 }

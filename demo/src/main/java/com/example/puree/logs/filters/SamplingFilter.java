@@ -13,7 +13,7 @@ public class SamplingFilter implements PureeFilter {
     }
 
     @Override
-    public JSONObject apply(JSONObject serializedLog) throws JSONException {
-        return (samplingRate < Math.random() ? null : serializedLog);
+    public JSONObject apply(JSONObject jsonLog) throws JSONException {
+        return (samplingRate < Math.random() ? null : jsonLog);
     }
 }

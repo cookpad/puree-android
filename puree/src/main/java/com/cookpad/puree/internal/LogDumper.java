@@ -20,12 +20,12 @@ public class LogDumper {
                     return "No records in Puree's buffer";
                 case 1:
                     return "1 record in Puree's buffer" + "\n"
-                            + records.getSerializedLogs().get(0);
+                            + records.getJsonLogs().get(0);
                 default:
                     StringBuilder builder = new StringBuilder();
                     builder.append(records.size() + " records in Puree's buffer\n");
                     for (int i = 0; i < records.size(); i++) {
-                        builder.append(records.getSerializedLogs().get(0)).append("\n");
+                        builder.append(records.getJsonLogs().get(0)).append("\n");
                     }
                     return builder.substring(0, builder.length() - 1);
             }

@@ -36,7 +36,7 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(final JSONArray serializedLogs, final AsyncResult result) {
+    public void emit(final JSONArray jsonLogs, final AsyncResult result) {
         final Callback callback = callbackRef.get();
         if (callback == null) {
             result.success();
@@ -45,13 +45,13 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                callback.onEmit(serializedLogs);
+                callback.onEmit(jsonLogs);
                 result.success();
             }
         });
     }
 
     public static interface Callback {
-        public void onEmit(JSONArray serializedLogs);
+        public void onEmit(JSONArray jsonLogs);
     }
 }

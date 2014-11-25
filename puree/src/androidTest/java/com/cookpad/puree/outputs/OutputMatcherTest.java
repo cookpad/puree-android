@@ -24,7 +24,7 @@ public class OutputMatcherTest extends AndroidTestCase {
         }
 
         @Override
-        public void emit(JSONObject serializedLog) {
+        public void emit(JSONObject jsonLog) {
 
         }
     };
@@ -41,7 +41,7 @@ public class OutputMatcherTest extends AndroidTestCase {
         }
 
         @Override
-        public void emit(JSONObject serializedLog) {
+        public void emit(JSONObject jsonLog) {
 
         }
     };

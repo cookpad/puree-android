@@ -23,7 +23,7 @@ public class OutLogcat extends PureeOutput {
     }
 
     @Override
-    public void emit(JSONObject serializedLog) {
-        Log.d(TAG, serializedLog.toString());
+    public void emit(JSONObject jsonLog) {
+        Log.d(TAG, jsonLog.toString());
     }
 }
