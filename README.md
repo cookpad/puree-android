@@ -10,6 +10,8 @@ Puree is a log collector which provides some features like below
 - Batching: Enable to send logs by 1 request.
 - Retrying: Retry to send logs after buckoff time automatically if sending logs fails.
 
+![](./images/overview.png)
+
 Puree helps you unify your logging infrastructure.
 
 ## Usage
