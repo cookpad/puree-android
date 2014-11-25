@@ -60,9 +60,7 @@ public class Puree {
     }
 
     public static void flush() {
-        if (outputs == null) {
-            throw new PureeNotInitializedException();
-        }
+        checkIfPureeHasInitialized();
         for (String type : outputs.keySet()) {
             outputs.get(type).flush();
         }
@@ -82,7 +80,7 @@ public class Puree {
         storage.clear();
     }
 
-    private static void checkIfPureeHasInitialized() {
+    private static synchronized void checkIfPureeHasInitialized() {
         if (!isInitialized) {
             throw new PureeNotInitializedException();
         }
