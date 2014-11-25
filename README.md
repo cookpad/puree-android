@@ -76,8 +76,8 @@ There are two types of output plugins: Non-Buffered, Buffered.
 
 You can create a plugin by inheriting Puree.Output or Puree.BufferedOutput. See example plugins below.
 
-- [OutLogcat](https://github.com/rejasupotaro/Puree/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fandroid%2Fpuree%2Fplugins%2FOutLogcat.java)
-- [OutBufferedLogcat](https://github.com/rejasupotaro/Puree/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fandroid%2Fpuree%2Fplugins%2FOutBufferedLogcat.java)
+- [OutLogcat](https://github.com/cookpad/puree-android/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fpuree%2Fplugins%2FOutLogcat.java)
+- [OutBufferedLogcat](https://github.com/cookpad/puree-android/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fpuree%2Fplugins%2FOutBufferedLogcat.java)
 
 ## Download
 
