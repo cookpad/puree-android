@@ -24,7 +24,7 @@ public class Puree {
     private static boolean isInitialized = false;
     private static Gson gson;
     private static PureeStorage storage;
-    private static Map<String, PureeOutput> outputs = new HashMap<>();
+    private static Map<String, PureeOutput> outputs = new HashMap<>(); // <type, output>
 
     public static synchronized void initialize(PureeConfiguration conf) {
         if (isInitialized) {
