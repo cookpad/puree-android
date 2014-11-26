@@ -27,8 +27,7 @@ android {
 }
 
 android.libraryVariants.all { variant ->
-    def name = variant.buildType.name
-    if (name.equals(com.android.builder.core.BuilderConstants.DEBUG)) {
+    if (variant.buildType.isDebuggable()) {
         return; // Skip debug builds.
     }
     task("javadoc${variant.name.capitalize()}", type: Javadoc) {
