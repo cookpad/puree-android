@@ -36,8 +36,8 @@ public class Puree {
         storage = new PureeDbHelper(conf.getApplicationContext());
         outputs = conf.getOutputs();
 
-        for (String type : outputs.keySet()) {
-            outputs.get(type).initialize(storage);
+        for (PureeOutput output: outputs.values()) {
+            output.initialize(storage);
         }
 
         isInitialized = true;
