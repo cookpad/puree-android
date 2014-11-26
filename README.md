@@ -59,6 +59,7 @@ Call `Puree.send` in an arbitary timing.
 
 ```java
 Puree.send(new ClickLog("MainActivity", "Hello"), OutLogcat.TYPE);
+// => {"page":"MainActivity","label":"Hello"}
 ```
 
 ### Create output plugins
