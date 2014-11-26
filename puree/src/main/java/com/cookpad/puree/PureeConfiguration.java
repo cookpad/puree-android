@@ -25,21 +25,21 @@ public class PureeConfiguration {
         return outputs;
     }
 
-    public PureeConfiguration(Context applicationContext,
+    public PureeConfiguration(Context context,
                               Gson gson,
                               Map<String, PureeOutput> outputs) {
-        this.applicationContext = applicationContext;
+        this.applicationContext = context.getApplicationContext();
         this.gson = gson;
         this.outputs = outputs;
     }
 
     public static class Builder {
-        private Context applicationContext;
+        private Context context;
         private Gson gson = new Gson();
         private Map<String, PureeOutput> outputs = new HashMap<>();
 
-        public Builder(Context applicationContext) {
-            this.applicationContext = applicationContext;
+        public Builder(Context context) {
+            this.context = context;
         }
 
         public Builder gson(Gson gson) {
@@ -57,7 +57,7 @@ public class PureeConfiguration {
 
         public PureeConfiguration build() {
             return new PureeConfiguration(
-                    applicationContext,
+                    context,
                     gson,
                     outputs);
         }
