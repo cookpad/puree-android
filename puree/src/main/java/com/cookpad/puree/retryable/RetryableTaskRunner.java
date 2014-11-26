@@ -6,10 +6,10 @@ public class RetryableTaskRunner {
     private Handler handler;
     private boolean hasAlreadyStarted;
     private Runnable callback;
-    private BuckoffCounter buckoffCounter;
+    private BackoffCounter backoffCounter;
 
     public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount) {
-        this.buckoffCounter = new BuckoffCounter(intervalMillis, maxRetryCount);
+        this.backoffCounter = new BackoffCounter(intervalMillis, maxRetryCount);
         this.handler = new Handler();
         this.hasAlreadyStarted = false;
 
@@ -25,24 +25,24 @@ public class RetryableTaskRunner {
         if (hasAlreadyStarted) {
             return;
         }
-        buckoffCounter.resetRetryCount();
+        backoffCounter.resetRetryCount();
         startDelayed();
     }
 
     private synchronized void startDelayed() {
         handler.removeCallbacks(callback);
-        handler.postDelayed(callback, buckoffCounter.time());
+        handler.postDelayed(callback, backoffCounter.time());
         hasAlreadyStarted = true;
     }
 
     public synchronized void reset() {
         hasAlreadyStarted = false;
-        buckoffCounter.resetRetryCount();
+        backoffCounter.resetRetryCount();
     }
 
     public synchronized void retryLater() {
-        if (buckoffCounter.isRemainingRetryCount()) {
-            buckoffCounter.incrementRetryCount();
+        if (backoffCounter.isRemainingRetryCount()) {
+            backoffCounter.incrementRetryCount();
             startDelayed();
         } else {
             reset();
