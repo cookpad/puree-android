@@ -51,7 +51,9 @@ public class PureeConfiguration {
             for (PureeFilter filter : filters) {
                 output.registerFilter(filter);
             }
-            outputs.put(output.type(), output);
+            if (outputs.put(output.type(), output) != null) {
+                throw new IllegalStateException("duplicate PureeOutput for type: " + output.type());
+            }
             return this;
         }
 
