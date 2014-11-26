@@ -8,7 +8,7 @@ Puree is a log collector which provides some features like below
 - Filtering: Enable to interrupt process before sending log. You can add common params to logs, or the sampling of logs.
 - Buffering: Store logs to buffer until log was sent.
 - Batching: Enable to send logs by 1 request.
-- Retrying: Retry to send logs after buckoff time automatically if sending logs fails.
+- Retrying: Retry to send logs after backoff time automatically if sending logs fails.
 
 ![](./images/overview.png)
 
