@@ -32,10 +32,10 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
 
     public Records select(String type, int logsPerRequest) {
         String query = "SELECT * FROM " + TABLE_NAME +
-                " WHERE " + COLUMN_NAME_TYPE + " = '" + type + "'" +
+                " WHERE " + COLUMN_NAME_TYPE + " = ?" +
                 " ORDER BY id ASC" +
                 " LIMIT " + logsPerRequest;
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{type});
 
         try {
             return recordsFromCursor(cursor);
