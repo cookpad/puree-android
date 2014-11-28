@@ -38,13 +38,12 @@ public abstract class PureeOutput {
     }
 
     protected JSONObject applyFilters(JSONObject jsonLog) throws JSONException {
-        if (filters == null || filters.isEmpty()) {
-            return jsonLog;
-        }
-
-        JSONObject filteredLog = new JSONObject();
+        JSONObject filteredLog = jsonLog;
         for (PureeFilter filter : filters) {
-            filteredLog = filter.apply(jsonLog);
+            filteredLog = filter.apply(filteredLog);
+            if (filteredLog == null) {
+                return null;
+            }
         }
         return filteredLog;
     }
