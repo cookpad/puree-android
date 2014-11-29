@@ -93,5 +93,5 @@ buildscript {
     ...
 
 // app/build.gradle
-compile 'com.cookpad:puree:1.1.0'
+compile 'com.cookpad:puree:1.2.0'
 ```
