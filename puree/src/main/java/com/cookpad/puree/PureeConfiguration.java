@@ -13,9 +13,6 @@ public class PureeConfiguration {
     private Gson gson;
     private Map<String, PureeOutput> outputs = new HashMap<>();
 
-    PureeConfiguration() {
-    }
-
     public Context getApplicationContext() {
         return applicationContext;
     }
@@ -28,7 +25,7 @@ public class PureeConfiguration {
         return outputs;
     }
 
-    public PureeConfiguration(Context context,
+    PureeConfiguration(Context context,
                               Gson gson,
                               Map<String, PureeOutput> outputs) {
         this.applicationContext = context.getApplicationContext();
