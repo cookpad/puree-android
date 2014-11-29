@@ -20,7 +20,12 @@ public abstract class PureeOutput {
 
     public void initialize(PureeStorage storage) {
         this.storage = storage;
-        this.conf = configure(new OutputConfiguration());
+        OutputConfiguration defaultConfiguration = new OutputConfiguration();
+        this.conf = configure(defaultConfiguration);
+
+        if (conf == null) {
+            conf = defaultConfiguration;
+        }
     }
 
     public void receive(JSONObject jsonLog) {
