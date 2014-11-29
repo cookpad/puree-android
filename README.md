@@ -79,6 +79,7 @@ You can create a plugin by inheriting Puree.Output or Puree.BufferedOutput. See 
 
 - [OutLogcat](https://github.com/cookpad/puree-android/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fpuree%2Fplugins%2FOutLogcat.java)
 - [OutBufferedLogcat](https://github.com/cookpad/puree-android/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fpuree%2Fplugins%2FOutBufferedLogcat.java)
+- [OutFakeApi](https://github.com/cookpad/puree-android/blob/master/demo%2Fsrc%2Fmain%2Fjava%2Fcom%2Fexample%2Fpuree%2Flogs%2Fplugins%2FOutFakeApi.java)
 
 ## Download
 
