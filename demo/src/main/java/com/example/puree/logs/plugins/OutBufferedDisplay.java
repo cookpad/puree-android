@@ -3,7 +3,7 @@ package com.example.puree.logs.plugins;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.cookpad.puree.OutputConfiguration;
+import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeBufferedOutput;
 import com.cookpad.puree.async.AsyncResult;
 

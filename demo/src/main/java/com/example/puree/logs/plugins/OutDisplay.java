@@ -1,6 +1,6 @@
 package com.example.puree.logs.plugins;
 
-import com.cookpad.puree.OutputConfiguration;
+import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeOutput;
 
 import org.json.JSONObject;

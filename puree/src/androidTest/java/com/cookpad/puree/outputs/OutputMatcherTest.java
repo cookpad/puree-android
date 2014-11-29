@@ -2,8 +2,6 @@ package com.cookpad.puree.outputs;
 
 import android.test.AndroidTestCase;
 
-import com.cookpad.puree.OutputConfiguration;
-
 import org.json.JSONObject;
 
 import java.util.ArrayList;

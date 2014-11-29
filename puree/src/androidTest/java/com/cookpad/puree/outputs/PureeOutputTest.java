@@ -2,7 +2,6 @@ package com.cookpad.puree.outputs;
 
 import android.test.AndroidTestCase;
 
-import com.cookpad.puree.OutputConfiguration;
 import com.cookpad.puree.PureeFilter;
 
 import org.json.JSONException;

@@ -1,10 +1,8 @@
 package com.cookpad.puree.outputs;
 
-import com.cookpad.puree.OutputConfiguration;
 import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.storage.PureeStorage;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

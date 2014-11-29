@@ -1,9 +1,12 @@
-package com.cookpad.puree;
+package com.cookpad.puree.outputs;
 
 public class OutputConfiguration {
     private int flushIntervalMillis = 2 * 60 * 1000; // 2 minutes
     private int logsPerRequest = 100;
     private int maxRetryCount = 5;
+
+    OutputConfiguration() {
+    }
 
     public int getFlushIntervalMillis() {
         return flushIntervalMillis;
