@@ -16,7 +16,7 @@ Puree helps you unify your logging infrastructure.
 
 ## Usage
 
-### Initializing
+### Initialize
 
 Configure Puree on application created.
 
@@ -37,7 +37,7 @@ public class DemoApplication extends Application {
 }
 ```
 
-### Sending logs
+### Send logs
 
 Log class should extend JsonConvertible.
 
@@ -55,7 +55,7 @@ public class ClickLog extends JsonConvertible {
 }
 ```
 
-Call `Puree.send` in an arbitary timing.
+Call `Puree.send` in an arbitrary timing.
 
 ```java
 Puree.send(new ClickLog("MainActivity", "Hello"), OutLogcat.TYPE);
@@ -64,22 +64,114 @@ Puree.send(new ClickLog("MainActivity", "Hello"), OutLogcat.TYPE);
 
 ### Create output plugins
 
-
 There are two types of output plugins: Non-Buffered, Buffered.
 
 - Non-Buffered output plugins do not buffer data and immediately write out results.
-
-![](./images/output_plugin.png)
-
 - Buffered output plugins store logs to local storage temporary.
 
-![](./images/buffered_output_plugin.png)
+If you don't need buffering, you can use PureeOutput.
 
-You can create a plugin by inheriting Puree.Output or Puree.BufferedOutput. See example plugins below.
+```java
+public class OutLogcat extends PureeOutput {
+    @Override
+    public String type() {
+        return "out_logcat";
+    }
 
-- [OutLogcat](https://github.com/cookpad/puree-android/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fpuree%2Fplugins%2FOutLogcat.java)
-- [OutBufferedLogcat](https://github.com/cookpad/puree-android/blob/master/plugins%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcookpad%2Fpuree%2Fplugins%2FOutBufferedLogcat.java)
-- [OutFakeApi](https://github.com/cookpad/puree-android/blob/master/demo%2Fsrc%2Fmain%2Fjava%2Fcom%2Fexample%2Fpuree%2Flogs%2Fplugins%2FOutFakeApi.java)
+    @Override
+    public OutputConfiguration configure(OutputConfiguration conf) {
+        return conf;
+    }
+
+    @Override
+    public void emit(JSONObject jsonLog) {
+        Log.d(type(), jsonLog.toString());
+    }
+}
+```
+
+If you need beffering, you can use PureeBufferedOutput.
+
+```java
+public class OutFakeApi extends PureeBufferedOutput {
+    public static final String TYPE = "out_fake_api";
+
+    private static final FakeApiClient CLIENT = new FakeApiClient();
+
+    @Override
+    public String type() {
+        return TYPE;
+    }
+
+    @Override
+    public OutputConfiguration configure(OutputConfiguration conf) {
+        // you can change settings of this plugin
+        // set interval of sending logs. defaults to 2 * 60 * 1000 (2 minutes).
+        conf.setFlushIntervalMillis(1000);
+        // set num of logs per request. defaults to 100.
+        conf.setLogsPerRequest(10);
+        // set retry count. if fail to send logs, logs will be sending at next time. defaults to 5.
+        conf.setMaxRetryCount(3);
+        return conf;
+    }
+
+    @Override
+    public void emit(JSONArray jsonArray, final AsyncResult result) {
+        // you have to call result.success or result.fail()
+        // to notify whether if puree can clear logs from buffer
+        CLIENT.sendLog(jsonArray, new FakeApiClient.Callback() {
+            @Override
+            public void success() {
+                result.success();
+            }
+
+            @Override
+            public void fail() {
+                result.fail();
+            }
+        });
+    }
+}
+```
+
+### Create filters
+
+If you need to add common params to each logs, you can use PureeFilter.
+
+```java
+public class AddEventTimeFilter implements PureeFilter {
+    public JSONObject apply(JSONObject jsonLog) throws JSONException {
+        jsonLog.put("event_time", System.currentTimeMillis());
+        return jsonLog;
+    }
+}
+```
+
+Puree do nothing if `PureeFilter#apply` returns null.
+
+```java
+public class SamplingFilter implements PureeFilter {
+    private final float samplingRate;
+
+    public SamplingFilter(float samplingRate) {
+        this.samplingRate = samplingRate;
+    }
+
+    @Override
+    public JSONObject apply(JSONObject jsonLog) throws JSONException {
+        return (samplingRate < Math.random() ? null : jsonLog);
+    }
+}
+```
+
+Register filters when initializing Puree.
+
+```java
+new PureeConfiguration.Builder(context)
+        .registerOutput(new OutLogcat(), addEventTimeFilter)
+        .registerOutput(new OutFakeApi(), addEventTimeFilter, samplingFilter)
+        .build();
+```
 
 ## Download
 

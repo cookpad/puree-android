@@ -8,9 +8,7 @@ import com.cookpad.puree.outputs.PureeOutput;
 import org.json.JSONObject;
 
 public class OutLogcat extends PureeOutput {
-    public static final String TYPE = "logcat";
-
-    private static final String TAG = OutLogcat.class.getSimpleName();
+    public static final String TYPE = "out_logcat";
 
     @Override
     public String type() {
@@ -24,6 +22,6 @@ public class OutLogcat extends PureeOutput {
 
     @Override
     public void emit(JSONObject jsonLog) {
-        Log.d(TAG, jsonLog.toString());
+        Log.d(TYPE, jsonLog.toString());
     }
 }
