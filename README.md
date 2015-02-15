@@ -73,9 +73,11 @@ If you don't need buffering, you can use PureeOutput.
 
 ```java
 public class OutLogcat extends PureeOutput {
+    public static final String TYPE = "out_logcat";
+
     @Override
     public String type() {
-        return "out_logcat";
+        return TYPE;
     }
 
     @Override
@@ -85,7 +87,7 @@ public class OutLogcat extends PureeOutput {
 
     @Override
     public void emit(JSONObject jsonLog) {
-        Log.d(type(), jsonLog.toString());
+        Log.d(TYPE, jsonLog.toString());
     }
 }
 ```
