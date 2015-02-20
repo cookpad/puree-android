@@ -8,13 +8,11 @@ import com.example.puree.FakeApiClient;
 import org.json.JSONArray;
 
 public class OutFakeApi extends PureeBufferedOutput {
-    public static final String TYPE = "out_fake_api";
-
     private static final FakeApiClient CLIENT = new FakeApiClient();
 
     @Override
     public String type() {
-        return TYPE;
+        return "out_fake_api";
     }
 
     @Override

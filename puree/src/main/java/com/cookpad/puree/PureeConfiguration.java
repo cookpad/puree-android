@@ -5,13 +5,15 @@ import android.content.Context;
 import com.cookpad.puree.outputs.PureeOutput;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PureeConfiguration {
     private Context applicationContext;
     private Gson gson;
-    private Map<String, PureeOutput> outputs = new HashMap<>();
+    private Map<Key, List<PureeOutput>> sourceOutputMap;
 
     public Context getApplicationContext() {
         return applicationContext;
@@ -21,22 +23,22 @@ public class PureeConfiguration {
         return gson;
     }
 
-    public Map<String, PureeOutput> getOutputs() {
-        return outputs;
+    public Map<Key, List<PureeOutput>> getSourceOutputMap() {
+        return sourceOutputMap;
     }
 
     PureeConfiguration(Context context,
-                              Gson gson,
-                              Map<String, PureeOutput> outputs) {
+                       Gson gson,
+                       Map<Key, List<PureeOutput>> sourceOutputMap) {
         this.applicationContext = context.getApplicationContext();
         this.gson = gson;
-        this.outputs = outputs;
+        this.sourceOutputMap = sourceOutputMap;
     }
 
     public static class Builder {
         private Context context;
         private Gson gson = new Gson();
-        private Map<String, PureeOutput> outputs = new HashMap<>();
+        private Map<Key, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
         public Builder(Context context) {
             this.context = context;
@@ -47,21 +49,29 @@ public class PureeConfiguration {
             return this;
         }
 
-        public Builder registerOutput(PureeOutput output, PureeFilter... filters) {
-            for (PureeFilter filter : filters) {
+        public Source source(Class<?> clazz) {
+            Key key = Key.from(clazz);
+            return new Source(this, key);
+        }
+
+        void registerOutput(Key key, PureeOutput output, PureeFilter filter) {
+            if (filter != null) {
                 output.registerFilter(filter);
             }
-            if (outputs.put(output.type(), output) != null) {
-                throw new IllegalStateException("duplicate PureeOutput for type: " + output.type());
+
+            List<PureeOutput> outputs = sourceOutputMap.get(key);
+            if (outputs == null) {
+                outputs = new ArrayList<>();
             }
-            return this;
+            outputs.add(output);
+            sourceOutputMap.put(key, outputs);
         }
 
         public PureeConfiguration build() {
             return new PureeConfiguration(
                     context,
                     gson,
-                    outputs);
+                    sourceOutputMap);
         }
     }
 }

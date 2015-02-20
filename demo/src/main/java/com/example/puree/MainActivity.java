@@ -1,7 +1,7 @@
 package com.example.puree;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cookpad.puree.Puree;
-import com.cookpad.puree.plugins.OutLogcat;
 import com.example.puree.logs.ClickLog;
 import com.example.puree.logs.PvLog;
 import com.example.puree.logs.plugins.OutBufferedDisplay;
@@ -20,8 +19,8 @@ import org.json.JSONObject;
 
 public class MainActivity extends ActionBarActivity {
     private TextView logDisplayTextView;
-    private Button logDisplayButton;
-    private Button logBufferedDisplayButton;
+    private Button button1;
+    private Button button2;
 
     private final OutDisplay.Callback outDisplayCallback = new OutDisplay.Callback() {
         @Override
@@ -57,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
         findViews();
         OutDisplay.register(outDisplayCallback);
         OutBufferedDisplay.register(outBufferedDisplayCallback);
-        Puree.send(new PvLog(this), OutLogcat.TYPE);
+        Puree.send(new PvLog(this));
         setupViews();
     }
 
@@ -70,21 +69,21 @@ public class MainActivity extends ActionBarActivity {
 
     private void findViews() {
         logDisplayTextView = (TextView) findViewById(R.id.log_display);
-        logDisplayButton = (Button) findViewById(R.id.display_button);
-        logBufferedDisplayButton = (Button) findViewById(R.id.buffered_display_button);
+        button1 = (Button) findViewById(R.id.button1);
+        button2 = (Button) findViewById(R.id.button2);
     }
 
     private void setupViews() {
-        logDisplayButton.setOnClickListener(new View.OnClickListener() {
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Puree.send(new ClickLog("MainActivity", "track"), OutDisplay.TYPE);
+                Puree.send(new ClickLog("MainActivity", "BUTTON 1"));
             }
         });
-        logBufferedDisplayButton.setOnClickListener(new View.OnClickListener() {
+        button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Puree.send(new ClickLog("MainActivity", "track"), OutBufferedDisplay.TYPE);
+                Puree.send(new ClickLog("MainActivity", "BUTTON 2"));
             }
         });
     }

@@ -12,8 +12,6 @@ import org.json.JSONArray;
 import java.lang.ref.WeakReference;
 
 public class OutBufferedDisplay extends PureeBufferedOutput {
-    public static final String TYPE = "buffered_display";
-
     private static WeakReference<Callback> callbackRef = new WeakReference<>(null);
 
     public static void register(Callback callback) {
@@ -26,7 +24,7 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
 
     @Override
     public String type() {
-        return TYPE;
+        return "out_buffered_display";
     }
 
     @Override
