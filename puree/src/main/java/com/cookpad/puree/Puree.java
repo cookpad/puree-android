@@ -55,7 +55,7 @@ public class Puree {
         }
 
         for (PureeOutput output : OutputMatcher.matchWith(outputs, types)) {
-            output.receive(log.toJSON(gson));
+            output.receive(log.toJson(gson));
         }
     }
 
