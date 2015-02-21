@@ -54,9 +54,11 @@ public class PureeConfiguration {
             return new Source(this, key);
         }
 
-        void registerOutput(Key key, PureeOutput output, PureeFilter filter) {
-            if (filter != null) {
-                output.registerFilter(filter);
+        void registerOutput(Key key, PureeOutput output, List<PureeFilter> filters) {
+            if (filters != null) {
+                for (PureeFilter filter : filters) {
+                    output.registerFilter(filter);
+                }
             }
 
             List<PureeOutput> outputs = sourceOutputMap.get(key);

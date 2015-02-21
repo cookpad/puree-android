@@ -4,8 +4,12 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeOutput;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,5 +33,54 @@ public class PureeConfigurationTest {
 
         Map<Key, List<PureeOutput>> sourceOutputMap = conf.getSourceOutputMap();
         assertThat(sourceOutputMap.size(), is(0));
+    }
+
+    @Test
+    public void build() {
+        Context context = InstrumentationRegistry.getContext();
+        PureeConfiguration conf = new PureeConfiguration.Builder(context)
+                .source(FooLog.class).filter(new FooFilter()).filter(new BarFilter()).to(new OutFoo())
+                .source(BarLog.class).filters(new FooFilter(), new BarFilter()).to(new OutFoo())
+                .build();
+
+        Map<Key, List<PureeOutput>> sourceOutputMap = conf.getSourceOutputMap();
+        assertThat(sourceOutputMap.size(), is(2));
+    }
+
+    private static class FooLog extends JsonConvertible {
+    }
+
+    private static class BarLog extends JsonConvertible {
+    }
+
+    private static class FooFilter implements PureeFilter {
+        @Override
+        public JSONObject apply(JSONObject jsonLog) throws JSONException {
+            return null;
+        }
+    }
+
+    private static class BarFilter implements PureeFilter {
+        @Override
+        public JSONObject apply(JSONObject jsonLog) throws JSONException {
+            return null;
+        }
+    }
+
+    private static class OutFoo extends PureeOutput {
+        @Override
+        public String type() {
+            return null;
+        }
+
+        @Override
+        public OutputConfiguration configure(OutputConfiguration conf) {
+            return null;
+        }
+
+        @Override
+        public void emit(JSONObject jsonLog) {
+
+        }
     }
 }
