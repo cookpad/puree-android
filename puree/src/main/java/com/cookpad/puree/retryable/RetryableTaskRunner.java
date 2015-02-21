@@ -9,8 +9,12 @@ public class RetryableTaskRunner {
     private BackoffCounter backoffCounter;
 
     public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount) {
+        this(task, intervalMillis, maxRetryCount, new Handler());
+    }
+
+    public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount, Handler handler) {
         this.backoffCounter = new BackoffCounter(intervalMillis, maxRetryCount);
-        this.handler = new Handler();
+        this.handler = handler;
         this.hasAlreadyStarted = false;
 
         this.callback = new Runnable() {

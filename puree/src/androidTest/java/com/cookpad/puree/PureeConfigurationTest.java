@@ -1,15 +1,23 @@
 package com.cookpad.puree;
 
-import android.test.AndroidTestCase;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.cookpad.puree.PureeConfiguration;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class PureeConfigurationTest extends AndroidTestCase {
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
-    public void testCheckDefaultValues() {
-        PureeConfiguration conf = new PureeConfiguration.Builder(getContext())
+@RunWith(AndroidJUnit4.class)
+public class PureeConfigurationTest {
+    @Test
+    public void checkDefaultValue() {
+        Context context = InstrumentationRegistry.getContext();
+        PureeConfiguration conf = new PureeConfiguration.Builder(context)
                 .build();
-        assertNotNull(conf.getApplicationContext());
-        assertNotNull(conf.getGson());
+        assertThat(conf.getApplicationContext(), notNullValue());
+        assertThat(conf.getGson(), notNullValue());
     }
 }
