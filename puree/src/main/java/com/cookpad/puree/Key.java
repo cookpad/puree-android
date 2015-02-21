@@ -7,7 +7,7 @@ public class Key {
         return id;
     }
 
-    public Key(Class<?> clazz) {
+    private Key(Class<? extends JsonConvertible> clazz) {
         this.id = clazz.getName();
     }
 
@@ -25,7 +25,7 @@ public class Key {
         return id.hashCode();
     }
 
-    public static Key from(Class<?> clazz) {
+    public static Key from(Class<? extends JsonConvertible> clazz) {
         return new Key(clazz);
     }
 }

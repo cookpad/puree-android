@@ -49,7 +49,7 @@ public class PureeConfiguration {
             return this;
         }
 
-        public Source source(Class<?> clazz) {
+        public Source source(Class<? extends JsonConvertible> clazz) {
             Key key = Key.from(clazz);
             return new Source(this, key);
         }
