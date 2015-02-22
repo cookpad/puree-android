@@ -69,7 +69,7 @@ public class Puree {
     }
 
     public static void dump() {
-        LogDumper.outLogcat(getBufferedLogs());
+        LogDumper.out(getBufferedLogs());
     }
 
     /**
