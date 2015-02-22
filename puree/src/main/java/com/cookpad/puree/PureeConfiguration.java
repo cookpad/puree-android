@@ -36,6 +36,7 @@ public class PureeConfiguration {
         this.sourceOutputMap = sourceOutputMap;
     }
 
+    /** Print mapping of SOURCE -> FILTER... OUTPUT. */
     public void printMapping() {
         Log.i(TAG, "# SOURCE -> FILTER... -> OUTPUT");
         for (Key key : sourceOutputMap.keySet()) {
@@ -56,15 +57,18 @@ public class PureeConfiguration {
         private Gson gson = new Gson();
         private Map<Key, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
+        /** Start building a new {@link com.cookpad.puree.PureeConfiguration} instance. */
         public Builder(Context context) {
             this.context = context;
         }
 
+        /** Specify the {@link com.google.gson.Gson} to serialize logs. */
         public Builder gson(Gson gson) {
             this.gson = gson;
             return this;
         }
 
+        /** Specify the source class of log. */
         public Source source(Class<? extends JsonConvertible> clazz) {
             Key key = Key.from(clazz);
             return new Source(this, key);
@@ -85,6 +89,7 @@ public class PureeConfiguration {
             sourceOutputMap.put(key, outputs);
         }
 
+        /** Create the {@link com.cookpad.puree.PureeConfiguration} instance. */
         public PureeConfiguration build() {
             return new PureeConfiguration(context, gson, sourceOutputMap);
         }

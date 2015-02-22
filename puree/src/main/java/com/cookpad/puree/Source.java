@@ -16,16 +16,19 @@ public class Source {
         this.key = key;
     }
 
+    /** Specify the {@link com.cookpad.puree.PureeFilter}. */
     public Source filter(PureeFilter filter) {
         filters.add(filter);
         return this;
     }
 
+    /** Specify the {@link com.cookpad.puree.PureeFilter}. */
     public Source filters(PureeFilter... filters) {
         this.filters.addAll(Arrays.asList(filters));
         return this;
     }
 
+    /** Specify the {@link com.cookpad.puree.outputs.PureeOutput} that is responded to source. */
     public PureeConfiguration.Builder to(PureeOutput output) {
         builder.registerOutput(key, output, filters);
         return builder;

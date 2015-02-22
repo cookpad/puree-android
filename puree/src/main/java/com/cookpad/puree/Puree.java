@@ -42,6 +42,9 @@ public class Puree {
         isInitialized = true;
     }
 
+    /**
+     * Try to send log. This log is sent immediately or put into buffer (it's depending on output plugin).
+     */
     public static void send(JsonConvertible log) {
         checkIfPureeHasInitialized();
 
@@ -52,6 +55,9 @@ public class Puree {
         }
     }
 
+    /**
+     * Try to flush all logs that are in buffer.
+     */
     public static void flush() {
         checkIfPureeHasInitialized();
         for (Key key : sourceOutputMap.keySet()) {
@@ -66,11 +72,17 @@ public class Puree {
         LogDumper.outLogcat(getBufferedLogs());
     }
 
+    /**
+     * Get all logs that are in buffer.
+     */
     public static Records getBufferedLogs() {
         checkIfPureeHasInitialized();
         return storage.selectAll();
     }
 
+    /**
+     * Delete all logs that are in buffer.
+     */
     public static void clear() {
         checkIfPureeHasInitialized();
         storage.clear();
