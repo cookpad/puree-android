@@ -30,8 +30,8 @@ public class DemoApplication extends Application {
     public static PureeConfiguration buildConfiguration(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
         return new PureeConfiguration.Builder(context)
-                .registerOutput(new OutLogcat())
-                .registerOutput(new OutBufferedLogcat(), addEventTimeFilter)
+                .source(ClickLog.class).to(new OutLogcat())
+                .source(ClickLog.class).filter(addEventTimeListener).to(new OutBufferedLogcat())
                 .build();
     }
 }
@@ -58,7 +58,7 @@ public class ClickLog extends JsonConvertible {
 Call `Puree.send` in an arbitrary timing.
 
 ```java
-Puree.send(new ClickLog("MainActivity", "Hello"), OutLogcat.TYPE);
+Puree.send(new ClickLog("MainActivity", "Hello"));
 // => {"page":"MainActivity","label":"Hello"}
 ```
 
@@ -73,7 +73,7 @@ If you don't need buffering, you can use PureeOutput.
 
 ```java
 public class OutLogcat extends PureeOutput {
-    public static final String TYPE = "out_logcat";
+    private static final String TYPE = "out_logcat";
 
     @Override
     public String type() {
@@ -96,7 +96,7 @@ If you need beffering, you can use PureeBufferedOutput.
 
 ```java
 public class OutFakeApi extends PureeBufferedOutput {
-    public static final String TYPE = "out_fake_api";
+    private static final String TYPE = "out_fake_api";
 
     private static final FakeApiClient CLIENT = new FakeApiClient();
 
@@ -170,8 +170,8 @@ Register filters when initializing Puree.
 
 ```java
 new PureeConfiguration.Builder(context)
-        .registerOutput(new OutLogcat(), addEventTimeFilter)
-        .registerOutput(new OutFakeApi(), addEventTimeFilter, samplingFilter)
+        .source(ClickLog.class).to(new OutLogcat())
+        .source(ClickLog.class).filters(addEventTimeFilter).filter(samplingFilter).to(new OutFakeApi())
         .build();
 ```
 
