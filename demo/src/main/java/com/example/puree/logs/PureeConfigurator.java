@@ -17,11 +17,13 @@ public class PureeConfigurator {
 
     public static PureeConfiguration buildConf(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
-        return new PureeConfiguration.Builder(context)
+        PureeConfiguration conf = new PureeConfiguration.Builder(context)
                 .source(ClickLog.class).to(new OutDisplay())
                 .source(ClickLog.class).filter(addEventTimeFilter).to(new OutBufferedLogcat())
                 .source(PvLog.class).filter(addEventTimeFilter).to(new OutLogcat())
 //                .registerOutput(new OutDisplay(), new SamplingFilter(0.5F)) // you can sampling logs
                 .build();
+        conf.printMapping();
+        return conf;
     }
 }
