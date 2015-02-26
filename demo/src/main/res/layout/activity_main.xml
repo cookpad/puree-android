@@ -11,22 +11,22 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/display_button"
+            android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/clickable_button_background"
-            android:text="display"
+            android:text="BUTTON 1"
             android:textColor="@android:color/white" />
 
         <Button
-            android:id="@+id/buffered_display_button"
+            android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:background="@drawable/clickable_button_background"
-            android:text="buffered display"
+            android:text="BUTTON 2"
             android:textColor="@android:color/white" />
     </LinearLayout>
 

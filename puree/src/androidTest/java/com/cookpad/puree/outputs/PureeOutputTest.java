@@ -1,17 +1,24 @@
 package com.cookpad.puree.outputs;
 
-import android.test.AndroidTestCase;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.cookpad.puree.PureeFilter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class PureeOutputTest extends AndroidTestCase {
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
-    public void testFilter_discardLog() {
+@RunWith(AndroidJUnit4.class)
+public class PureeOutputTest {
+    @Test
+    public void discardLog() {
         final PureeOutput output = new PureeOutput() {
             @Override
             public void emit(JSONObject jsonLog) {
@@ -46,6 +53,7 @@ public class PureeOutputTest extends AndroidTestCase {
         output.receive(new JSONObject());
     }
 
+    @Test
     public void testFilter_multipleModifications() throws JSONException {
 
         final AtomicReference<JSONObject> result = new AtomicReference<>();
@@ -87,9 +95,9 @@ public class PureeOutputTest extends AndroidTestCase {
         output.receive(new JSONObject());
 
         final JSONObject resultObject = result.get();
-        assertTrue("value from \"filter1\" not found", resultObject.has("filter1"));
-        assertEquals("", "foo", resultObject.getString("filter1"));
-        assertTrue("value from \"filter2\" not found", resultObject.has("filter2"));
-        assertEquals("bar", resultObject.getString("filter2"));
+        assertThat(resultObject.has("filter1"), is(true));
+        assertThat(resultObject.getString("filter1"), is("foo"));
+        assertThat(resultObject.has("filter2"), is(true));
+        assertThat(resultObject.getString("filter2"), is("bar"));
     }
 }

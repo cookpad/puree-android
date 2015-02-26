@@ -18,6 +18,10 @@ public abstract class PureeOutput {
         filters.add(filter);
     }
 
+    public List<PureeFilter> getFilters() {
+        return filters;
+    }
+
     public void initialize(PureeStorage storage) {
         this.storage = storage;
         OutputConfiguration defaultConfiguration = new OutputConfiguration();

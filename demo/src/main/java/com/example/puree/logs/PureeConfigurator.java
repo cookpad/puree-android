@@ -8,7 +8,6 @@ import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.plugins.OutBufferedLogcat;
 import com.cookpad.puree.plugins.OutLogcat;
 import com.example.puree.AddEventTimeFilter;
-import com.example.puree.logs.plugins.OutBufferedDisplay;
 import com.example.puree.logs.plugins.OutDisplay;
 
 public class PureeConfigurator {
@@ -18,12 +17,13 @@ public class PureeConfigurator {
 
     public static PureeConfiguration buildConf(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
-        return new PureeConfiguration.Builder(context)
-                .registerOutput(new OutLogcat(), addEventTimeFilter)
-                .registerOutput(new OutBufferedLogcat(), addEventTimeFilter)
-                .registerOutput(new OutDisplay())
+        PureeConfiguration conf = new PureeConfiguration.Builder(context)
+                .source(ClickLog.class).to(new OutDisplay())
+                .source(ClickLog.class).filter(addEventTimeFilter).to(new OutBufferedLogcat())
+                .source(PvLog.class).filter(addEventTimeFilter).to(new OutLogcat())
 //                .registerOutput(new OutDisplay(), new SamplingFilter(0.5F)) // you can sampling logs
-                .registerOutput(new OutBufferedDisplay())
                 .build();
+        conf.printMapping();
+        return conf;
     }
 }
