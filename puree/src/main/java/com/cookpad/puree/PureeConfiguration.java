@@ -53,7 +53,7 @@ public class PureeConfiguration {
         }
 
         /**
-         * Specify the {@link com.google.gson.Gson} to serialize logs.
+         * Specify the {@link com.cookpad.puree.JsonStringifier} to serialize logs.
          */
         public Builder jsonStringifier(JsonStringifier jsonStringifier) {
             this.jsonStringifier = jsonStringifier;
