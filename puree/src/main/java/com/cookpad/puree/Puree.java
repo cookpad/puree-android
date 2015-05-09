@@ -8,7 +8,6 @@ import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeDbHelper;
 import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
-import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,7 @@ public class Puree {
     private static final String TAG = Puree.class.getSimpleName();
 
     private static boolean isInitialized = false;
-    private static Gson gson;
+    private static JsonStringifier jsonStringifier;
     private static PureeStorage storage;
     private static Map<Key, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
@@ -28,7 +27,7 @@ public class Puree {
             return;
         }
 
-        gson = conf.getGson();
+        jsonStringifier = conf.getJsonStringifier();
         storage = new PureeDbHelper(conf.getApplicationContext());
         sourceOutputMap = conf.getSourceOutputMap();
 
@@ -51,7 +50,7 @@ public class Puree {
         Key key = Key.from(log.getClass());
         List<PureeOutput> outputs = sourceOutputMap.get(key);
         for (PureeOutput output : outputs) {
-            output.receive(log.toJson(gson));
+            output.receive(log.toJson(jsonStringifier));
         }
     }
 

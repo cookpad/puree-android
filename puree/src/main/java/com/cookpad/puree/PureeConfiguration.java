@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.outputs.PureeOutput;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,24 +12,24 @@ import java.util.Map;
 
 public class PureeConfiguration {
     private Context applicationContext;
-    private Gson gson;
+    private JsonStringifier jsonStringifier;
     private Map<Key, List<PureeOutput>> sourceOutputMap;
 
     public Context getApplicationContext() {
         return applicationContext;
     }
 
-    public Gson getGson() {
-        return gson;
+    public JsonStringifier getJsonStringifier() {
+        return jsonStringifier;
     }
 
     public Map<Key, List<PureeOutput>> getSourceOutputMap() {
         return sourceOutputMap;
     }
 
-    PureeConfiguration(Context context, Gson gson, Map<Key, List<PureeOutput>> sourceOutputMap) {
+    PureeConfiguration(Context context, JsonStringifier jsonStringifier, Map<Key, List<PureeOutput>> sourceOutputMap) {
         this.applicationContext = context.getApplicationContext();
-        this.gson = gson;
+        this.jsonStringifier = jsonStringifier;
         this.sourceOutputMap = sourceOutputMap;
     }
 
@@ -43,7 +42,7 @@ public class PureeConfiguration {
 
     public static class Builder {
         private Context context;
-        private Gson gson = new Gson();
+        private JsonStringifier jsonStringifier;
         private Map<Key, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
         /**
@@ -56,8 +55,8 @@ public class PureeConfiguration {
         /**
          * Specify the {@link com.google.gson.Gson} to serialize logs.
          */
-        public Builder gson(Gson gson) {
-            this.gson = gson;
+        public Builder jsonStringifier(JsonStringifier jsonStringifier) {
+            this.jsonStringifier = jsonStringifier;
             return this;
         }
 
@@ -88,7 +87,7 @@ public class PureeConfiguration {
          * Create the {@link com.cookpad.puree.PureeConfiguration} instance.
          */
         public PureeConfiguration build() {
-            return new PureeConfiguration(context, gson, sourceOutputMap);
+            return new PureeConfiguration(context, jsonStringifier, sourceOutputMap);
         }
     }
 }
