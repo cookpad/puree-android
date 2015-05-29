@@ -1,13 +1,13 @@
 package com.cookpad.puree.internal;
 
-import android.util.Log;
-
 import com.cookpad.puree.Key;
 import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.Records;
 
 import org.json.JSONException;
+
+import android.util.Log;
 
 import java.util.List;
 import java.util.Map;

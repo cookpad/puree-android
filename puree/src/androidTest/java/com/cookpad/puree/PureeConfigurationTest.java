@@ -1,26 +1,27 @@
 package com.cookpad.puree;
 
+import com.cookpad.puree.outputs.OutputConfiguration;
+import com.cookpad.puree.outputs.PureeOutput;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.cookpad.puree.outputs.OutputConfiguration;
-import com.cookpad.puree.outputs.PureeOutput;
-
-import org.hamcrest.Matchers;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+@ParametersAreNonnullByDefault
 @RunWith(AndroidJUnit4.class)
 public class PureeConfigurationTest {
     @Test
@@ -62,6 +63,34 @@ public class PureeConfigurationTest {
             assertThat(filters.get(0).getClass().getName(), is(FooFilter.class.getName()));
         }
     }
+
+    @Test
+    public void build2() {
+        Context context = InstrumentationRegistry.getContext();
+        PureeConfiguration conf = new PureeConfiguration.Builder(context)
+                .register(FooLog.class, new OutFoo())
+                .register(FooLog.class, new OutFoo().withFilters(new FooFilter()))
+                .register(FooLog.class, new OutBar().withFilters(new FooFilter(), new BarFilter()))
+                .register(BarLog.class, new OutFoo().withFilters(new FooFilter()))
+                .build();
+
+        Map<Key, List<PureeOutput>> sourceOutputMap = conf.getSourceOutputMap();
+        assertThat(sourceOutputMap.size(), is(2));
+
+        {
+            List<PureeOutput> outputs = sourceOutputMap.get(Key.from(FooLog.class));
+            assertThat(outputs.size(), is(3));
+        }
+        {
+            List<PureeOutput> outputs = sourceOutputMap.get(Key.from(BarLog.class));
+            assertThat(outputs.size(), is(1));
+            assertThat(outputs.get(0).getClass().getName(), is(OutFoo.class.getName()));
+            List<PureeFilter> filters = outputs.get(0).getFilters();
+            assertThat(filters.size(), is(1));
+            assertThat(filters.get(0).getClass().getName(), is(FooFilter.class.getName()));
+        }
+    }
+
 
     private static class FooLog extends JsonConvertible {
     }

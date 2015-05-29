@@ -1,5 +1,8 @@
 package com.cookpad.puree.outputs;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class OutputConfiguration {
     private int flushIntervalMillis = 2 * 60 * 1000; // 2 minutes
     private int logsPerRequest = 100;
