@@ -1,0 +1,9 @@
+language: android
+jdk:
+    - oraclejdk8
+before_install:
+    - export TERM=dumb # to get clean gradle output
+    - echo yes | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-22.0.1,android-22,extra-android-m2repository,extra-google-m2repository
+    - ./gradlew puree:dependencies
+script:
+    - ./gradlew check
