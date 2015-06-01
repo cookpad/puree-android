@@ -7,6 +7,9 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class OutDisplay extends PureeOutput {
     public static final String TYPE = "display";
 

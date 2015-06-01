@@ -18,7 +18,7 @@ Puree helps you unify your logging infrastructure.
 
 ### Initialize
 
-Configure Puree on application created.
+Configure Puree with `PureeConfiguration` in `Application#onCreate()`.
 
 ```java
 public class DemoApplication extends Application {
@@ -30,8 +30,8 @@ public class DemoApplication extends Application {
     public static PureeConfiguration buildConfiguration(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
         return new PureeConfiguration.Builder(context)
-                .source(ClickLog.class).to(new OutLogcat())
-                .source(ClickLog.class).filter(addEventTimeListener).to(new OutBufferedLogcat())
+                .register(ClickLog.class, new OutLogcat())
+                .register(ClickLog.class, new OutBufferedLogcat().withFilters(addEventTimeListener))
                 .build();
     }
 }

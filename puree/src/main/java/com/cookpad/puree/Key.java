@@ -1,7 +1,8 @@
 package com.cookpad.puree;
 
 public class Key {
-    private String id;
+
+    private final String id;
 
     public String getId() {
         return id;

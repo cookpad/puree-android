@@ -30,7 +30,7 @@ public class Source {
 
     /** Specify the {@link com.cookpad.puree.outputs.PureeOutput} that is responded to source. */
     public PureeConfiguration.Builder to(PureeOutput output) {
-        builder.registerOutput(key, output, filters);
+        builder.register(key, output.withFilters(filters));
         return builder;
     }
 }
