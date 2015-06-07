@@ -1,4 +1,4 @@
-Puree [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Puree-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1170)
+Puree [![Build Status](https://travis-ci.org/cookpad/puree-android.svg?branch=master)](https://travis-ci.org/cookpad/puree-android)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Puree-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1170)
 ====
 
 ## Description
@@ -18,7 +18,7 @@ Puree helps you unify your logging infrastructure.
 
 ### Initialize
 
-Configure Puree on application created.
+Configure Puree with `PureeConfiguration` in `Application#onCreate()`.
 
 ```java
 public class DemoApplication extends Application {
@@ -30,8 +30,8 @@ public class DemoApplication extends Application {
     public static PureeConfiguration buildConfiguration(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
         return new PureeConfiguration.Builder(context)
-                .source(ClickLog.class).to(new OutLogcat())
-                .source(ClickLog.class).filter(addEventTimeListener).to(new OutBufferedLogcat())
+                .register(ClickLog.class, new OutLogcat())
+                .register(ClickLog.class, new OutBufferedLogcat().withFilters(addEventTimeListener))
                 .build();
     }
 }

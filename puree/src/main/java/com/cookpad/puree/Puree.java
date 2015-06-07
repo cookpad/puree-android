@@ -1,13 +1,13 @@
 package com.cookpad.puree;
 
-import android.util.Log;
-
 import com.cookpad.puree.exceptions.PureeNotInitializedException;
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeDbHelper;
 import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
+
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +19,7 @@ public class Puree {
     private static boolean isInitialized = false;
     private static JsonStringifier jsonStringifier;
     private static PureeStorage storage;
+
     private static Map<Key, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
     public static synchronized void initialize(PureeConfiguration conf) {

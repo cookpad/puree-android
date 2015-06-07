@@ -1,7 +1,5 @@
 package com.example.puree.logs;
 
-import android.content.Context;
-
 import com.cookpad.puree.JsonConvertible;
 import com.cookpad.puree.JsonStringifier;
 import com.cookpad.puree.Puree;
@@ -10,8 +8,11 @@ import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.plugins.OutBufferedLogcat;
 import com.cookpad.puree.plugins.OutLogcat;
 import com.example.puree.AddEventTimeFilter;
+import com.example.puree.logs.filters.SamplingFilter;
 import com.example.puree.logs.plugins.OutDisplay;
 import com.google.gson.Gson;
+
+import android.content.Context;
 
 public class PureeConfigurator {
     public static void configure(Context context) {
@@ -20,11 +21,12 @@ public class PureeConfigurator {
 
     public static PureeConfiguration buildConf(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
+        PureeFilter samplingFilter = new SamplingFilter(1.0f);
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
-                .source(ClickLog.class).to(new OutDisplay())
-                .source(ClickLog.class).filter(addEventTimeFilter).to(new OutBufferedLogcat())
-                .source(PvLog.class).filter(addEventTimeFilter).to(new OutLogcat())
-//                .registerOutput(new OutDisplay(), new SamplingFilter(0.5F)) // you can sampling logs
+                .register(ClickLog.class, new OutDisplay().withFilters(addEventTimeFilter))
+                .register(ClickLog.class,
+                        new OutBufferedLogcat().withFilters(addEventTimeFilter, samplingFilter))
+                .register(PvLog.class, new OutLogcat().withFilters(addEventTimeFilter))
                 .jsonStringifier(new JsonStringifier() {
                     private final Gson gson = new Gson();
                     @Override

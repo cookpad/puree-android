@@ -1,13 +1,17 @@
 package com.cookpad.puree.plugins;
 
-import android.util.Log;
-
+import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeBufferedOutput;
-import com.cookpad.puree.async.AsyncResult;
 
 import org.json.JSONArray;
 
+import android.util.Log;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+
+@ParametersAreNonnullByDefault
 public class OutBufferedLogcat extends PureeBufferedOutput {
     public static final String TYPE = "buffered_logcat";
 

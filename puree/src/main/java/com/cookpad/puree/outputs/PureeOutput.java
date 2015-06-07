@@ -7,8 +7,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public abstract class PureeOutput {
     protected OutputConfiguration conf;
     protected PureeStorage storage;
@@ -17,6 +22,17 @@ public abstract class PureeOutput {
     public void registerFilter(PureeFilter filter) {
         filters.add(filter);
     }
+
+    public PureeOutput withFilters(PureeFilter... filters) {
+        Collections.addAll(this.filters, filters);
+        return this;
+    }
+
+    public PureeOutput withFilters(Collection<PureeFilter> filters) {
+        this.filters.addAll(filters);
+        return this;
+    }
+
 
     public List<PureeFilter> getFilters() {
         return filters;

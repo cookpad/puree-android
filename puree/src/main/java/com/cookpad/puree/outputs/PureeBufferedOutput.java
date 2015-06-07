@@ -11,6 +11,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public abstract class PureeBufferedOutput extends PureeOutput {
     private RetryableTaskRunner retryableTaskRunner;
 

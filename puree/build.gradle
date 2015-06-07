@@ -39,7 +39,8 @@ android.libraryVariants.all { variant ->
     task("javadoc${variant.name.capitalize()}", type: Javadoc) {
         description "Generates Javadoc for $variant.name."
         source = variant.javaCompile.source
-        ext.androidJar = System.getenv("ANDROID_HOME") + "/platforms/${android.compileSdkVersion}/android.jar"
+        ext.androidJar = System.getenv("ANDROID_HOME") +
+                "/platforms/${android.compileSdkVersion}/android.jar"
         classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
     }
 
@@ -51,7 +52,7 @@ android.libraryVariants.all { variant ->
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.code.findbugs:jsr305:3.0.0'
 
     androidTestCompile 'com.google.code.gson:gson:2.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.0'
@@ -85,7 +86,8 @@ publishing {
             pom.withXml {
                 Node root = asNode()
                 root.appendNode('name', 'puree')
-                root.appendNode('description', 'Puree is a data collector for unified logging layer for Android.')
+                root.appendNode('description',
+                        'Puree is a data collector for unified logging layer for Android.')
                 root.appendNode('url', 'https://github.com/cookpad/puree-android')
 
                 def issues = root.appendNode('issueManagement')
@@ -99,7 +101,8 @@ publishing {
 
                 def license = root.appendNode('licenses').appendNode('license')
                 license.appendNode('name', 'MIT')
-                license.appendNode('url', 'https://raw.githubusercontent.com/cookpad/puree-android/master/LICENSE.txt')
+                license.appendNode('url',
+                        'https://raw.githubusercontent.com/cookpad/puree-android/master/LICENSE.txt')
                 license.appendNode('distribution', 'repo')
             }
         }
