@@ -2,6 +2,7 @@ package com.cookpad.puree;
 
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeOutput;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,11 +20,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @ParametersAreNonnullByDefault
 @RunWith(AndroidJUnit4.class)
 public class PureeConfigurationTest {
+
     @Test
     public void checkDefaultValue() {
         Context context = InstrumentationRegistry.getContext();
@@ -31,7 +35,7 @@ public class PureeConfigurationTest {
                 .build();
 
         assertThat(conf.getApplicationContext(), notNullValue());
-        assertThat(conf.getGson(), notNullValue());
+        assertThat(conf.getJsonStringifier(), nullValue());
 
         Map<Key, List<PureeOutput>> sourceOutputMap = conf.getSourceOutputMap();
         assertThat(sourceOutputMap.size(), is(0));
@@ -45,6 +49,14 @@ public class PureeConfigurationTest {
                 .source(FooLog.class).filters(new FooFilter()).to(new OutFoo())
                 .source(FooLog.class).filter(new FooFilter()).filter(new BarFilter()).to(new OutBar())
                 .source(BarLog.class).filter(new FooFilter()).to(new OutFoo())
+                .jsonStringifier(new JsonStringifier() {
+                    private final Gson gson = new Gson();
+
+                    @Override
+                    public String toJson(JsonConvertible jsonConvertible) {
+                        return gson.toJson(jsonConvertible);
+                    }
+                })
                 .build();
 
         Map<Key, List<PureeOutput>> sourceOutputMap = conf.getSourceOutputMap();
