@@ -52,6 +52,9 @@ public class Puree {
 
         Key key = Key.from(log.getClass());
         List<PureeOutput> outputs = sourceOutputMap.get(key);
+        if (outputs == null) {
+            throw new IllegalStateException("No output plugin found for " + key);
+        }
         for (PureeOutput output : outputs) {
             output.receive(log.toJson(gson));
         }
@@ -75,7 +78,7 @@ public class Puree {
     }
 
     /**
-     * Get all logs that are in buffer.
+     * Get all logs that are in buffer.w
      */
     public static Records getBufferedLogs() {
         checkIfPureeHasInitialized();

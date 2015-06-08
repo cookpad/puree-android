@@ -29,4 +29,9 @@ public class Key {
     public static Key from(Class<? extends JsonConvertible> clazz) {
         return new Key(clazz);
     }
+
+    @Override
+    public String toString() {
+        return "Key{" + id + "}";
+    }
 }

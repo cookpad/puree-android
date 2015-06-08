@@ -10,11 +10,23 @@ import com.cookpad.puree.retryable.RetryableTaskRunner;
 import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
 
+import android.os.Handler;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public abstract class PureeBufferedOutput extends PureeOutput {
     private RetryableTaskRunner retryableTaskRunner;
+
+    private final Handler handler;
+
+    public PureeBufferedOutput(Handler handler) {
+        this.handler = handler;
+    }
+
+    public PureeBufferedOutput() {
+        this(new Handler());
+    }
 
     @Override
     public void initialize(PureeStorage storage) {
@@ -24,7 +36,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
             public void run() {
                 flush();
             }
-        }, conf.getFlushIntervalMillis(), conf.getMaxRetryCount());
+        }, conf.getFlushIntervalMillis(), conf.getMaxRetryCount(), handler);
     }
 
     @Override
