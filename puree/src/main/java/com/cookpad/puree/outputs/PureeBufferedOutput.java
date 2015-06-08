@@ -1,15 +1,14 @@
 package com.cookpad.puree.outputs;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import com.cookpad.puree.async.AsyncFlushTask;
 import com.cookpad.puree.async.AsyncInsertTask;
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.retryable.RetryableTaskRunner;
 import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -29,18 +28,14 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     }
 
     @Override
-    public void receive(JSONObject jsonLog) {
+    public void receive(JsonObject jsonLog) {
         new AsyncInsertTask(this, type(), jsonLog).execute();
         retryableTaskRunner.tryToStart();
     }
 
-    public void insertSync(String type, JSONObject jsonLog) {
-        try {
-            JSONObject filteredLog = applyFilters(jsonLog);
-            storage.insert(type, filteredLog);
-        } catch (JSONException e) {
-            // do nothing
-        }
+    public void insertSync(String type, JsonObject jsonLog) {
+        JsonObject filteredLog = applyFilters(jsonLog);
+        storage.insert(type, filteredLog);
     }
 
     @Override
@@ -55,7 +50,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         }
 
         while (!records.isEmpty()) {
-            final JSONArray jsonLogs = records.getJsonLogs();
+            final JsonArray jsonLogs = records.getJsonLogs();
             boolean isSuccess = flushChunkOfLogs(jsonLogs);
             if (isSuccess) {
                 retryableTaskRunner.reset();
@@ -72,7 +67,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         return storage.select(type(), conf.getLogsPerRequest());
     }
 
-    public boolean flushChunkOfLogs(final JSONArray jsonLogs) {
+    public boolean flushChunkOfLogs(final JsonArray jsonLogs) {
         try {
             AsyncResult asyncResult = new AsyncResult();
             emit(jsonLogs, asyncResult);
@@ -82,9 +77,9 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         }
     }
 
-    public abstract void emit(JSONArray jsonArray, final AsyncResult result);
+    public abstract void emit(JsonArray jsonArray, final AsyncResult result);
 
-    public void emit(JSONObject jsonLog) {
+    public void emit(JsonObject jsonLog) {
         // do nothing
     }
 }

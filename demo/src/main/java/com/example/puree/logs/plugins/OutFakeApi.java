@@ -1,12 +1,16 @@
 package com.example.puree.logs.plugins;
 
+import com.google.gson.JsonArray;
+
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeBufferedOutput;
 import com.example.puree.FakeApiClient;
 
-import org.json.JSONArray;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class OutFakeApi extends PureeBufferedOutput {
     private static final FakeApiClient CLIENT = new FakeApiClient();
 
@@ -15,6 +19,7 @@ public class OutFakeApi extends PureeBufferedOutput {
         return "out_fake_api";
     }
 
+    @Nonnull
     @Override
     public OutputConfiguration configure(OutputConfiguration conf) {
         // you can change settings of this plugin
@@ -25,7 +30,7 @@ public class OutFakeApi extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(JSONArray jsonArray, final AsyncResult result) {
+    public void emit(JsonArray jsonArray, final AsyncResult result) {
         // you have to call result.success or result.fail()
         // to notify whether if puree can clear logs from buffer
         CLIENT.sendLog(jsonArray, new FakeApiClient.Callback() {

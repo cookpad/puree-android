@@ -1,10 +1,10 @@
 package com.cookpad.puree;
 
+import com.google.gson.JsonObject;
+
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeOutput;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,11 +15,11 @@ import android.support.test.runner.AndroidJUnit4;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 @ParametersAreNonnullByDefault
 @RunWith(AndroidJUnit4.class)
@@ -100,48 +100,53 @@ public class PureeConfigurationTest {
 
     private static class FooFilter implements PureeFilter {
         @Override
-        public JSONObject apply(JSONObject jsonLog) throws JSONException {
+        public JsonObject apply(JsonObject jsonLog) {
             return null;
         }
     }
 
     private static class BarFilter implements PureeFilter {
+
         @Override
-        public JSONObject apply(JSONObject jsonLog) throws JSONException {
+        public JsonObject apply(JsonObject jsonLog) {
             return null;
         }
     }
 
     private static class OutFoo extends PureeOutput {
+
         @Override
         public String type() {
             return null;
         }
 
+        @Nonnull
         @Override
         public OutputConfiguration configure(OutputConfiguration conf) {
-            return null;
+            return conf;
         }
 
         @Override
-        public void emit(JSONObject jsonLog) {
+        public void emit(JsonObject jsonLog) {
 
         }
     }
 
     private static class OutBar extends PureeOutput {
+
         @Override
         public String type() {
             return null;
         }
 
+        @Nonnull
         @Override
         public OutputConfiguration configure(OutputConfiguration conf) {
-            return null;
+            return conf;
         }
 
         @Override
-        public void emit(JSONObject jsonLog) {
+        public void emit(JsonObject jsonLog) {
 
         }
     }

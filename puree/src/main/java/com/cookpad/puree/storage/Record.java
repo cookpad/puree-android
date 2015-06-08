@@ -1,31 +1,32 @@
 package com.cookpad.puree.storage;
 
-import android.database.Cursor;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.database.Cursor;
 
 public class Record {
     private int id;
     private String type;
-    private JSONObject jsonLog;
+
+    private JsonObject jsonLog;
 
     public int getId() {
         return id;
     }
 
-    public JSONObject getJsonLog() {
+    public JsonObject getJsonLog() {
         return jsonLog;
     }
 
-    public Record(Cursor cursor) throws JSONException {
+    public Record(Cursor cursor, Gson gson) {
         this(
                 cursor.getInt(0),
                 cursor.getString(1),
-                new JSONObject(cursor.getString(2)));
+                (JsonObject) gson.toJsonTree(cursor.getString(2)));
     }
 
-    public Record(int id, String type, JSONObject jsonLog) {
+    public Record(int id, String type, JsonObject jsonLog) {
         this.id = id;
         this.type = type;
         this.jsonLog = jsonLog;

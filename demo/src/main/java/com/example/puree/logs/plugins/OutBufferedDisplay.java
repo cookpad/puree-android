@@ -1,16 +1,20 @@
 package com.example.puree.logs.plugins;
 
+import com.google.gson.JsonArray;
+
+import com.cookpad.puree.async.AsyncResult;
+import com.cookpad.puree.outputs.OutputConfiguration;
+import com.cookpad.puree.outputs.PureeBufferedOutput;
+
 import android.os.Handler;
 import android.os.Looper;
 
-import com.cookpad.puree.outputs.OutputConfiguration;
-import com.cookpad.puree.outputs.PureeBufferedOutput;
-import com.cookpad.puree.async.AsyncResult;
-
-import org.json.JSONArray;
-
 import java.lang.ref.WeakReference;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class OutBufferedDisplay extends PureeBufferedOutput {
     private static WeakReference<Callback> callbackRef = new WeakReference<>(null);
 
@@ -27,6 +31,7 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
         return "out_buffered_display";
     }
 
+    @Nonnull
     @Override
     public OutputConfiguration configure(OutputConfiguration conf) {
         conf.setFlushIntervalMillis(3000);
@@ -34,7 +39,7 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(final JSONArray jsonLogs, final AsyncResult result) {
+    public void emit(final JsonArray jsonLogs, final AsyncResult result) {
         final Callback callback = callbackRef.get();
         if (callback == null) {
             result.success();
@@ -49,7 +54,8 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
         });
     }
 
-    public static interface Callback {
-        public void onEmit(JSONArray jsonLogs);
+    public interface Callback {
+
+        void onEmit(JsonArray jsonLogs);
     }
 }

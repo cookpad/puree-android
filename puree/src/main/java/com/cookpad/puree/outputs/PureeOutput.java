@@ -1,16 +1,16 @@
 package com.cookpad.puree.outputs;
 
+import com.google.gson.JsonObject;
+
 import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.storage.PureeStorage;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -42,26 +42,19 @@ public abstract class PureeOutput {
         this.storage = storage;
         OutputConfiguration defaultConfiguration = new OutputConfiguration();
         this.conf = configure(defaultConfiguration);
-
-        if (conf == null) {
-            conf = defaultConfiguration;
-        }
     }
 
-    public void receive(JSONObject jsonLog) {
-        try {
-            final JSONObject filteredLog = applyFilters(jsonLog);
-            if (filteredLog == null) {
-                return;
-            }
-
-            emit(filteredLog);
-        } catch (JSONException ignored) {
+    public void receive(JsonObject jsonLog) {
+        final JsonObject filteredLog = applyFilters(jsonLog);
+        if (filteredLog == null) {
+            return;
         }
+
+        emit(filteredLog);
     }
 
-    protected JSONObject applyFilters(JSONObject jsonLog) throws JSONException {
-        JSONObject filteredLog = jsonLog;
+    protected JsonObject applyFilters(JsonObject jsonLog) {
+        JsonObject filteredLog = jsonLog;
         for (PureeFilter filter : filters) {
             filteredLog = filter.apply(filteredLog);
             if (filteredLog == null) {
@@ -77,8 +70,9 @@ public abstract class PureeOutput {
 
     public abstract String type();
 
+    @Nonnull
     public abstract OutputConfiguration configure(OutputConfiguration conf);
 
-    public abstract void emit(JSONObject jsonLog);
+    public abstract void emit(JsonObject jsonLog);
 }
 

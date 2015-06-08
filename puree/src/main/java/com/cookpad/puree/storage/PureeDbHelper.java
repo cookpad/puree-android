@@ -1,13 +1,13 @@
 package com.cookpad.puree.storage;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     private static final String DATABASE_NAME = "puree.db";
@@ -16,14 +16,17 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     private static final String COLUMN_NAME_LOG = "log";
     private static final int DATABASE_VERSION = 1;
 
+    private final Gson gson;
+
     private SQLiteDatabase db;
 
-    public PureeDbHelper(Context context) {
+    public PureeDbHelper(Context context, Gson gson) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.gson = gson;
         db = getWritableDatabase();
     }
 
-    public void insert(String type, JSONObject jsonLog) {
+    public void insert(String type, JsonObject jsonLog) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_TYPE, type);
         contentValues.put(COLUMN_NAME_LOG, jsonLog.toString());
@@ -59,12 +62,8 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     private Records recordsFromCursor(Cursor cursor) {
         Records records = new Records();
         while (cursor.moveToNext()) {
-            try {
-                Record record = new Record(cursor);
-                records.add(record);
-            } catch (JSONException e) {
-                // continue
-            }
+            Record record = new Record(cursor, gson);
+            records.add(record);
         }
         return records;
     }

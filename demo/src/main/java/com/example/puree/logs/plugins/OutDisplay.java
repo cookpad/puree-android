@@ -1,12 +1,13 @@
 package com.example.puree.logs.plugins;
 
+import com.google.gson.JsonObject;
+
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeOutput;
 
-import org.json.JSONObject;
-
 import java.lang.ref.WeakReference;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -28,13 +29,14 @@ public class OutDisplay extends PureeOutput {
         return "display";
     }
 
+    @Nonnull
     @Override
     public OutputConfiguration configure(OutputConfiguration conf) {
         return conf;
     }
 
     @Override
-    public void emit(JSONObject jsonLog) {
+    public void emit(JsonObject jsonLog) {
         Callback callback = callbackRef.get();
         if (callback == null) {
             return;
@@ -42,7 +44,8 @@ public class OutDisplay extends PureeOutput {
         callback.onEmit(jsonLog);
     }
 
-    public static interface Callback {
-        public void onEmit(JSONObject jsonLog);
+    public interface Callback {
+
+        void onEmit(JsonObject jsonLog);
     }
 }
