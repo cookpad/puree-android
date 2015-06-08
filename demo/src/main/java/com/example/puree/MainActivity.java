@@ -1,13 +1,5 @@
 package com.example.puree;
 
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
 import com.cookpad.puree.Puree;
 import com.example.puree.logs.ClickLog;
 import com.example.puree.logs.PvLog;
@@ -17,7 +9,15 @@ import com.example.puree.logs.plugins.OutDisplay;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class MainActivity extends ActionBarActivity {
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
     private TextView logDisplayTextView;
     private Button button1;
     private Button button2;
