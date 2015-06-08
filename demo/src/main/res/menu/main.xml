@@ -1,17 +1,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity" >
-    <item android:id="@+id/action_dump"
-        android:title="@string/action_dump"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
-    <item android:id="@+id/action_clear"
-        android:title="@string/action_clear"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".MainActivity"
+        >
+    <item
+            android:id="@+id/action_benchmark"
+            android:orderInCategory="100"
+            android:title="@string/action_benchmark"
+            app:showAsAction="ifRoom"
+            />
+
+    <item
+            android:id="@+id/action_dump"
+            android:orderInCategory="100"
+            android:title="@string/action_dump"
+            app:showAsAction="ifRoom"
+            />
+    <item
+            android:id="@+id/action_clear"
+            android:orderInCategory="100"
+            android:title="@string/action_clear"
+            app:showAsAction="ifRoom"
+            />
+    <item
+            android:id="@+id/action_settings"
+            android:orderInCategory="100"
+            android:title="@string/action_settings"
+            app:showAsAction="never"
+            />
 </menu>

@@ -6,5 +6,8 @@
     <string name="action_dump">Dump</string>
     <string name="action_clear">Clear</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_benchmark">Benchmark</string>
+    <string name="label_benchmark">Send 100 logs with PureeBufferedOutput</string>
+    <string name="action_benchmark">BENCHMARK</string>
 
 </resources>
