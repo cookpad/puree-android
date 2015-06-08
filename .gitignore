@@ -1,7 +1,8 @@
 *.iml
 *.iws
 *.ipr
-.idea/
+.idea/*
+!.idea/codeStyleSettings.xml
 .gradle/
 local.properties
 gradle.properties
