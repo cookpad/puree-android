@@ -31,7 +31,7 @@ public class Puree {
         }
 
         gson = conf.getGson();
-        storage = new PureeDbHelper(conf.getApplicationContext(), gson);
+        storage = new PureeDbHelper(conf.getApplicationContext());
         sourceOutputMap = conf.getSourceOutputMap();
 
         for (Key key : sourceOutputMap.keySet()) {

@@ -13,4 +13,5 @@ secret.gradle
 *~
 *.swp
 .DS_Store
-build
+build/
+captures/

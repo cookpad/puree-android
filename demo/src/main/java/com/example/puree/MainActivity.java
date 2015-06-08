@@ -9,6 +9,7 @@ import com.example.puree.logs.PvLog;
 import com.example.puree.logs.plugins.OutBufferedDisplay;
 import com.example.puree.logs.plugins.OutDisplay;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -98,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (item.getItemId()) {
+            case R.id.action_benchmark:
+                startActivity(new Intent(this, BenchmarkActivity.class));
+                return true;
             case R.id.action_dump:
                 Puree.dump();
                 return true;

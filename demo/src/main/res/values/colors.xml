@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dark_gray">#181818</color>
+    <color name="activity_background">#181818</color>
     <color name="terminal_background">#0b212f</color>
     <color name="terminal_text_color">#5ff8f8</color>
     <color name="clickable_button_background">#505050</color>

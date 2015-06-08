@@ -68,6 +68,7 @@ public abstract class PureeOutput {
         // do nothing because PureeOutput don't have any buffers.
     }
 
+    @Nonnull
     public abstract String type();
 
     @Nonnull

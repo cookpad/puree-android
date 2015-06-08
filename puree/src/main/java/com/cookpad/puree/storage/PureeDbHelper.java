@@ -1,7 +1,7 @@
 package com.cookpad.puree.storage;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,6 +9,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     private static final String DATABASE_NAME = "puree.db";
     private static final String TABLE_NAME = "logs";
@@ -16,13 +19,12 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     private static final String COLUMN_NAME_LOG = "log";
     private static final int DATABASE_VERSION = 1;
 
-    private final Gson gson;
+    private final JsonParser jsonParser = new JsonParser();
 
     private SQLiteDatabase db;
 
-    public PureeDbHelper(Context context, Gson gson) {
+    public PureeDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.gson = gson;
         db = getWritableDatabase();
     }
 
@@ -62,11 +64,24 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     private Records recordsFromCursor(Cursor cursor) {
         Records records = new Records();
         while (cursor.moveToNext()) {
-            Record record = new Record(cursor, gson);
+            Record record = buildRecord(cursor);
             records.add(record);
         }
         return records;
     }
+
+    private Record buildRecord(Cursor cursor) {
+        return new Record(
+                cursor.getInt(0),
+                cursor.getString(1),
+                parseJsonString(cursor.getString(2)));
+
+    }
+
+    private JsonObject parseJsonString(String jsonString) {
+        return (JsonObject) jsonParser.parse(jsonString);
+    }
+
 
     @Override
     public void delete(Records records) {

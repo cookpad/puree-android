@@ -7,6 +7,7 @@ import com.cookpad.puree.plugins.OutBufferedLogcat;
 import com.cookpad.puree.plugins.OutLogcat;
 import com.example.puree.AddEventTimeFilter;
 import com.example.puree.logs.filters.SamplingFilter;
+import com.example.puree.logs.plugins.OutBufferedVoid;
 import com.example.puree.logs.plugins.OutDisplay;
 
 import android.content.Context;
@@ -24,6 +25,7 @@ public class PureeConfigurator {
                 .register(ClickLog.class,
                         new OutBufferedLogcat().withFilters(addEventTimeFilter, samplingFilter))
                 .register(PvLog.class, new OutLogcat().withFilters(addEventTimeFilter))
+                .register(BenchmarkLog.class, new OutBufferedVoid().withFilters(addEventTimeFilter))
                 .build();
         conf.printMapping();
         return conf;
