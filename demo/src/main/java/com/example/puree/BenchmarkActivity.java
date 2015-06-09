@@ -16,7 +16,6 @@ public class BenchmarkActivity extends AppCompatActivity {
 
     ArrayList<SendLogs> tasks = new ArrayList<>();
 
-
     ArrayAdapter<String> listAdapter;
 
     ListView listView;
