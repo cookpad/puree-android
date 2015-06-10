@@ -30,6 +30,7 @@ public class PureeOutputTest {
                 return conf;
             }
 
+            @Nonnull
             @Override
             public String type() {
                 return "output";

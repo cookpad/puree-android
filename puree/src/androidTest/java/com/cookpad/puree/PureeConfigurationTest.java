@@ -115,9 +115,10 @@ public class PureeConfigurationTest {
 
     private static class OutFoo extends PureeOutput {
 
+        @Nonnull
         @Override
         public String type() {
-            return null;
+            return "out_foo";
         }
 
         @Nonnull
@@ -134,9 +135,10 @@ public class PureeConfigurationTest {
 
     private static class OutBar extends PureeOutput {
 
+        @Nonnull
         @Override
         public String type() {
-            return null;
+            return "out_bar";
         }
 
         @Nonnull
