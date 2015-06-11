@@ -3,7 +3,6 @@ package com.cookpad.puree;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import com.cookpad.puree.exceptions.PureeNotInitializedException;
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeDbHelper;
@@ -97,7 +96,11 @@ public class Puree {
 
     private static synchronized void checkIfPureeHasInitialized() {
         if (!isInitialized) {
-            throw new PureeNotInitializedException();
+            throw new NotInitializedException();
         }
+    }
+
+    public static class NotInitializedException extends IllegalStateException {
+
     }
 }
