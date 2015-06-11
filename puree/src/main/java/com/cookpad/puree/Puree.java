@@ -26,7 +26,7 @@ public class Puree {
 
     public static synchronized void initialize(PureeConfiguration conf) {
         if (isInitialized) {
-            Log.w(TAG, "Puree has already initialized");
+            Log.w(TAG, "Puree has already been initialized");
             return;
         }
 
@@ -34,8 +34,7 @@ public class Puree {
         storage = new PureeDbHelper(conf.getApplicationContext());
         sourceOutputMap = conf.getSourceOutputMap();
 
-        for (Key key : sourceOutputMap.keySet()) {
-            List<PureeOutput> outputs = sourceOutputMap.get(key);
+        for (List<PureeOutput> outputs : sourceOutputMap.values()) {
             for (PureeOutput output : outputs) {
                 output.initialize(storage);
             }
@@ -66,8 +65,7 @@ public class Puree {
      */
     public static void flush() {
         checkIfPureeHasInitialized();
-        for (Key key : sourceOutputMap.keySet()) {
-            List<PureeOutput> outputs = sourceOutputMap.get(key);
+        for (List<PureeOutput> outputs : sourceOutputMap.values()) {
             for (PureeOutput output : outputs) {
                 output.flush();
             }
