@@ -74,14 +74,14 @@ public class PureeConfiguration {
          * Specify a source class of logs, which returns {@link Source} an
          * {@link Source#to(PureeOutput)} must be called to register an output plugin.
          */
-        public Source source(Class<? extends JsonConvertible> logClass) {
+        public Source source(Class<? extends PureeLog> logClass) {
             return new Source(this, Key.from(logClass));
         }
 
         /**
          * @return the builder itself
          */
-        public Builder register(Class<? extends JsonConvertible> logClass, PureeOutput output) {
+        public Builder register(Class<? extends PureeLog> logClass, PureeOutput output) {
             return register(Key.from(logClass), output);
         }
 

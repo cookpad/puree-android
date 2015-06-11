@@ -8,8 +8,10 @@ public class FakeApiClient {
     private static final String TAG = FakeApiClient.class.getSimpleName();
 
     public interface Callback {
-        public void success();
-        public void fail();
+
+        void success();
+
+        void fail();
     }
 
     public void sendLog(final JsonArray jsonLogs, final Callback callback) {

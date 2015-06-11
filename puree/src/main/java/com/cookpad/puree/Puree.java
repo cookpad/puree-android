@@ -1,6 +1,7 @@
 package com.cookpad.puree;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import com.cookpad.puree.exceptions.PureeNotInitializedException;
 import com.cookpad.puree.internal.LogDumper;
@@ -47,7 +48,7 @@ public class Puree {
     /**
      * Try to send log. This log is sent immediately or put into buffer (it's depending on output plugin).
      */
-    public static void send(JsonConvertible log) {
+    public static void send(PureeLog log) {
         checkIfPureeHasInitialized();
 
         Key key = Key.from(log.getClass());
@@ -56,7 +57,8 @@ public class Puree {
             throw new IllegalStateException("No output plugin found for " + key);
         }
         for (PureeOutput output : outputs) {
-            output.receive(log.toJson(gson));
+            JsonObject jsonLog = (JsonObject) gson.toJsonTree(log);
+            output.receive(jsonLog);
         }
     }
 

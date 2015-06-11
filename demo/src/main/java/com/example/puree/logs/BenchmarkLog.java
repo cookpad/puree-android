@@ -2,9 +2,9 @@ package com.example.puree.logs;
 
 import com.google.gson.annotations.SerializedName;
 
-import com.cookpad.puree.JsonConvertible;
+import com.cookpad.puree.PureeLog;
 
-public class BenchmarkLog extends JsonConvertible {
+public class BenchmarkLog implements PureeLog {
 
     @SerializedName("page")
     private String page;

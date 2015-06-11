@@ -1,7 +1,7 @@
 Puree [![Build Status](https://travis-ci.org/cookpad/puree-android.svg?branch=master)](https://travis-ci.org/cookpad/puree-android)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Puree-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1170)
 ====
 
-## Description
+# Description
 
 Puree is a log collector which provides the following features:
 
@@ -38,12 +38,13 @@ public class DemoApplication extends Application {
 }
 ```
 
-### Definition of Logs
+### Definition of PureeLog objects
 
-A Log class is required to extend `JsonConvertible`, which is serialized by `Gson`.
+A log class is required to implement `PureeLog`, which is a marker interface just like as `Serializable`,
+to serialize logs with `Gson`.
 
 ```java
-public class ClickLog extends JsonConvertible {
+public class ClickLog implements PureeLog {
     @SerializedName("page")
     private String page;
     @SerializedName("label")
@@ -56,14 +57,14 @@ public class ClickLog extends JsonConvertible {
 }
 ```
 
-`Puree.send()` takes an instance of such a log:
+You can use `Puree.send()` to send these logs to registered output plugins:
 
 ```java
 Puree.send(new ClickLog("MainActivity", "Hello"));
 // => {"page":"MainActivity","label":"Hello"}
 ```
 
-### Definition of Output Plugins
+### Definition of PureeOutput plugins
 
 There are two types of output plugins: non-buffered and buffered.
 
@@ -176,7 +177,7 @@ new PureeConfiguration.Builder(context)
         .build();
 ```
 
-## Download
+## Installation
 
 This is published on `jcenter` and you can use Puree as:
 
@@ -194,3 +195,17 @@ dependencies {
     compile 'com.cookpad:puree:3.0.0'
 }
 ```
+
+# See Also
+
+* [Puree - mobile application log collector - Cookpad Developers' blog (Japanese)](http://techlife.cookpad.com/entry/2014/11/25/132008)
+* https://github.com/cookpad/puree-ios - Puree for iOS
+
+# Copyright
+
+Copyright (c) 2014 Cookpad Inc. https://github.com/cookpad
+
+See [LICENSE.txt](LICENSE.txt) for the license.
+
+
+

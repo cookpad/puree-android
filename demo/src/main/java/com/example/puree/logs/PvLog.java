@@ -1,12 +1,13 @@
 package com.example.puree.logs;
 
+import com.google.gson.annotations.SerializedName;
+
+import com.cookpad.puree.PureeLog;
+
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
-import com.cookpad.puree.JsonConvertible;
-import com.google.gson.annotations.SerializedName;
-
-public class PvLog extends JsonConvertible {
+public class PvLog implements PureeLog {
     @SerializedName("screen_name")
     private String sceenName;
 

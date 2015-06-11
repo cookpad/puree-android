@@ -3,9 +3,9 @@ package com.cookpad.puree.outputs;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import com.cookpad.puree.JsonConvertible;
 import com.cookpad.puree.Puree;
 import com.cookpad.puree.PureeConfiguration;
+import com.cookpad.puree.PureeLog;
 import com.cookpad.puree.async.AsyncResult;
 
 import org.junit.After;
@@ -34,7 +34,7 @@ public class PureeBufferedOutputTest {
 
     BufferedOutput output;
 
-    static class PvLog extends JsonConvertible {
+    static class PvLog implements PureeLog {
 
         String name;
 

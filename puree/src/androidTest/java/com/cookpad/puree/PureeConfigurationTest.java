@@ -92,10 +92,10 @@ public class PureeConfigurationTest {
     }
 
 
-    private static class FooLog extends JsonConvertible {
+    private static class FooLog implements PureeLog {
     }
 
-    private static class BarLog extends JsonConvertible {
+    private static class BarLog implements PureeLog {
     }
 
     private static class FooFilter implements PureeFilter {
