@@ -2,6 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
+def GROUP_ID = 'com.cookpad.puree'
+def ARTIFACT_ID = 'puree'
+def VERSION = "3.0.0"
+
+println "building ${GROUP_ID}:${ARTIFACT_ID}:${VERSION}"
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
@@ -10,7 +16,7 @@ android {
         minSdkVersion 10
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName VERSION
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -73,14 +79,12 @@ artifacts {
     archives androidSourcesJar
 }
 
-version = "2.0.0"
-
 publishing {
     publications {
         mavenAndroid(MavenPublication) {
-            groupId 'com.cookpad'
-            artifactId 'puree'
-            version version
+            groupId GROUP_ID
+            artifactId ARTIFACT_ID
+            version VERSION
             artifact androidJar
             artifact androidSourcesJar
             pom.withXml {
