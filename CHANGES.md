@@ -1,4 +1,4 @@
-# v3.0.0
+# v3.0.0 2015/6/16
 
 Puree v3 is not compatible with v2, which uses [Gson](https://github.com/google/gson) for the fundamental JSON framework,
  instead of [org.json.JSONObject](http://developer.android.com/reference/org/json/package-summary.html) used before v3.
