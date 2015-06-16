@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.async.AsyncRunnableTask;
-import com.cookpad.puree.retryable.RetryableTaskRunner;
+import com.cookpad.puree.internal.RetryableTaskRunner;
 import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
 

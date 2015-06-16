@@ -1,12 +1,14 @@
 package com.cookpad.puree.retryable;
 
-import android.support.test.runner.AndroidJUnit4;
+import com.cookpad.puree.internal.BackoffCounter;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import android.support.test.runner.AndroidJUnit4;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class BackoffCounterTest {

@@ -1,5 +1,7 @@
 package com.cookpad.puree.retryable;
 
+import com.cookpad.puree.internal.RetryableTaskRunner;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
