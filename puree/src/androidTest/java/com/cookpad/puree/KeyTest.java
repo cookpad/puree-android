@@ -1,12 +1,12 @@
 package com.cookpad.puree;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import android.support.test.runner.AndroidJUnit4;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class KeyTest {
@@ -36,9 +36,9 @@ public class KeyTest {
         }
     }
 
-    private static class FooLog extends JsonConvertible {
+    private static class FooLog implements PureeLog {
     }
 
-    private static class BarLog extends JsonConvertible {
+    private static class BarLog implements PureeLog {
     }
 }

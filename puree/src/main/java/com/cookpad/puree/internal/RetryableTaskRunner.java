@@ -1,11 +1,15 @@
-package com.cookpad.puree.retryable;
+package com.cookpad.puree.internal;
 
 import android.os.Handler;
 
 public class RetryableTaskRunner {
+
     private Handler handler;
+
     private boolean hasAlreadyStarted;
+
     private Runnable callback;
+
     private BackoffCounter backoffCounter;
 
     public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount) {

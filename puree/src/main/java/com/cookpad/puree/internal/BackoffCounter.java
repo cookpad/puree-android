@@ -1,8 +1,11 @@
-package com.cookpad.puree.retryable;
+package com.cookpad.puree.internal;
 
 public class BackoffCounter {
+
     private final int baseTimeMillis;
+
     private final int maxRetryCount;
+
     private int retryCount = 0;
 
     public int getRetryCount() {

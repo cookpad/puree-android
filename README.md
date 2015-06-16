@@ -1,14 +1,14 @@
 Puree [![Build Status](https://travis-ci.org/cookpad/puree-android.svg?branch=master)](https://travis-ci.org/cookpad/puree-android)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Puree-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1170)
 ====
 
-## Description
+# Description
 
-Puree is a log collector which provides some features like below
+Puree is a log collector which provides the following features:
 
 - Filtering: Enable to interrupt process before sending log. You can add common params to logs, or the sampling of logs.
-- Buffering: Store logs to buffer until log was sent.
-- Batching: Enable to send logs by 1 request.
-- Retrying: Retry to send logs after backoff time automatically if sending logs fails.
+- Buffering: Store logs to buffers and send them later.
+- Batching: Send logs in a single request with `PureeBufferedOutput`.
+- Retrying: Retry to send logs after backoff time if sending logs fails.
 
 ![](./images/overview.png)
 
@@ -18,7 +18,8 @@ Puree helps you unify your logging infrastructure.
 
 ### Initialize
 
-Configure Puree with `PureeConfiguration` in `Application#onCreate()`.
+Configure Puree with `PureeConfiguration` in `Application#onCreate()`, which registers
+pairs of what and where.
 
 ```java
 public class DemoApplication extends Application {
@@ -37,12 +38,13 @@ public class DemoApplication extends Application {
 }
 ```
 
-### Send logs
+### Definition of PureeLog objects
 
-Log class should extend JsonConvertible.
+A log class is required to implement `PureeLog`, which is a marker interface just like as `Serializable`,
+to serialize logs with `Gson`.
 
 ```java
-public class ClickLog extends JsonConvertible {
+public class ClickLog implements PureeLog {
     @SerializedName("page")
     private String page;
     @SerializedName("label")
@@ -55,21 +57,21 @@ public class ClickLog extends JsonConvertible {
 }
 ```
 
-Call `Puree.send` in an arbitrary timing.
+You can use `Puree.send()` to send these logs to registered output plugins:
 
 ```java
 Puree.send(new ClickLog("MainActivity", "Hello"));
 // => {"page":"MainActivity","label":"Hello"}
 ```
 
-### Create output plugins
+### Definition of PureeOutput plugins
 
-There are two types of output plugins: Non-Buffered, Buffered.
+There are two types of output plugins: non-buffered and buffered.
 
-- Non-Buffered output plugins do not buffer data and immediately write out results.
-- Buffered output plugins store logs to local storage temporary.
+- `PureeOutput`: Non-buffered output plugins write logs immediately.
+- `PureeBufferedOutput`: Buffered output plugins enqueue logs to a local storage and then flush them in background tasks.
 
-If you don't need buffering, you can use PureeOutput.
+If you don't need buffering, you can use `PureeOutput`.
 
 ```java
 public class OutLogcat extends PureeOutput {
@@ -86,13 +88,13 @@ public class OutLogcat extends PureeOutput {
     }
 
     @Override
-    public void emit(JSONObject jsonLog) {
+    public void emit(JsonObject jsonLog) {
         Log.d(TYPE, jsonLog.toString());
     }
 }
 ```
 
-If you need beffering, you can use PureeBufferedOutput.
+If you need beffering, you can use `PureeBufferedOutput`.
 
 ```java
 public class OutFakeApi extends PureeBufferedOutput {
@@ -118,7 +120,7 @@ public class OutFakeApi extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(JSONArray jsonArray, final AsyncResult result) {
+    public void emit(JsonArray jsonArray, final AsyncResult result) {
         // you have to call result.success or result.fail()
         // to notify whether if puree can clear logs from buffer
         CLIENT.sendLog(jsonArray, new FakeApiClient.Callback() {
@@ -136,20 +138,20 @@ public class OutFakeApi extends PureeBufferedOutput {
 }
 ```
 
-### Create filters
+### Definition of Filters
 
-If you need to add common params to each logs, you can use PureeFilter.
+If you need to add common params to each logs, you can use `PureeFilter`:
 
 ```java
 public class AddEventTimeFilter implements PureeFilter {
-    public JSONObject apply(JSONObject jsonLog) throws JSONException {
+    public JsonObject apply(JsonObject jsonLog) {
         jsonLog.put("event_time", System.currentTimeMillis());
         return jsonLog;
     }
 }
 ```
 
-Puree do nothing if `PureeFilter#apply` returns null.
+You can make `PureeFilter#apply()` to return `null` to skip sending logs:
 
 ```java
 public class SamplingFilter implements PureeFilter {
@@ -160,33 +162,50 @@ public class SamplingFilter implements PureeFilter {
     }
 
     @Override
-    public JSONObject apply(JSONObject jsonLog) throws JSONException {
+    public JsonObject apply(JsonObject jsonLog) {
         return (samplingRate < Math.random() ? null : jsonLog);
     }
 }
 ```
 
-Register filters when initializing Puree.
+Then register filters to output plugins on initializing Puree.
 
 ```java
 new PureeConfiguration.Builder(context)
-        .source(ClickLog.class).to(new OutLogcat())
-        .source(ClickLog.class).filters(addEventTimeFilter).filter(samplingFilter).to(new OutFakeApi())
+        .register(ClickLog.class, new OutLogcat())
+        .register(ClickLog.class, new OutFakeApi().withFilters(addEventTimeFilter, samplingFilter)
         .build();
 ```
 
-## Download
+## Installation
 
-Reference on jcenter as
+This is published on `jcenter` and you can use Puree as:
 
-```
+```groovy
 // build.gradle
 buildscript {
     repositories {
         jcenter()
     }
     ...
+}
 
 // app/build.gradle
-compile 'com.cookpad:puree:2.0.0'
+dependencies {
+    compile 'com.cookpad:puree:3.0.0'
+}
 ```
+
+# See Also
+
+* [Puree - mobile application log collector - Cookpad Developers' blog (Japanese)](http://techlife.cookpad.com/entry/2014/11/25/132008)
+* https://github.com/cookpad/puree-ios - Puree for iOS
+
+# Copyright
+
+Copyright (c) 2014 Cookpad Inc. https://github.com/cookpad
+
+See [LICENSE.txt](LICENSE.txt) for the license.
+
+
+

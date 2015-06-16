@@ -1,10 +1,13 @@
 package com.example.puree.logs.filters;
 
+import com.google.gson.JsonObject;
+
 import com.cookpad.puree.PureeFilter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class SamplingFilter implements PureeFilter {
     private final float samplingRate;
 
@@ -12,8 +15,9 @@ public class SamplingFilter implements PureeFilter {
         this.samplingRate = samplingRate;
     }
 
+    @Nullable
     @Override
-    public JSONObject apply(JSONObject jsonLog) throws JSONException {
+    public JsonObject apply(JsonObject jsonLog) {
         return (samplingRate < Math.random() ? null : jsonLog);
     }
 }

@@ -1,13 +1,16 @@
 package com.example.puree;
 
+import com.google.gson.JsonObject;
+
 import com.cookpad.puree.PureeFilter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class AddEventTimeFilter implements PureeFilter {
-    public JSONObject apply(JSONObject jsonLog) throws JSONException {
-        jsonLog.put("event_time", System.currentTimeMillis());
+
+    public JsonObject apply(JsonObject jsonLog) {
+        jsonLog.addProperty("event_time", System.currentTimeMillis());
         return jsonLog;
     }
 }

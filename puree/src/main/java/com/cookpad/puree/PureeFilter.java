@@ -1,8 +1,13 @@
 package com.cookpad.puree;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public interface PureeFilter {
-    public JSONObject apply(JSONObject jsonLog) throws JSONException;
+
+    @Nullable
+    JsonObject apply(JsonObject jsonLog);
 }

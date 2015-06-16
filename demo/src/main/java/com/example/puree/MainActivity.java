@@ -1,14 +1,15 @@
 package com.example.puree;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import com.cookpad.puree.Puree;
 import com.example.puree.logs.ClickLog;
 import com.example.puree.logs.PvLog;
 import com.example.puree.logs.plugins.OutBufferedDisplay;
 import com.example.puree.logs.plugins.OutDisplay;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -24,14 +25,14 @@ public class MainActivity extends AppCompatActivity {
 
     private final OutDisplay.Callback outDisplayCallback = new OutDisplay.Callback() {
         @Override
-        public void onEmit(JSONObject jsonLog) {
+        public void onEmit(JsonObject jsonLog) {
             preprendOutput(jsonLog.toString());
         }
     };
 
     private final OutBufferedDisplay.Callback outBufferedDisplayCallback = new OutBufferedDisplay.Callback() {
         @Override
-        public void onEmit(JSONArray jsonLogs) {
+        public void onEmit(JsonArray jsonLogs) {
             preprendOutput(jsonLogs.toString());
         }
     };
@@ -98,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (item.getItemId()) {
+            case R.id.action_benchmark:
+                startActivity(new Intent(this, BenchmarkActivity.class));
+                return true;
             case R.id.action_dump:
                 Puree.dump();
                 return true;

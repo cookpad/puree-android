@@ -1,8 +1,8 @@
 package com.cookpad.puree;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
-import com.cookpad.puree.exceptions.PureeNotInitializedException;
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeDbHelper;
@@ -26,7 +26,7 @@ public class Puree {
 
     public static synchronized void initialize(PureeConfiguration conf) {
         if (isInitialized) {
-            Log.w(TAG, "Puree has already initialized");
+            Log.w(TAG, "Puree has already been initialized");
             return;
         }
 
@@ -34,8 +34,7 @@ public class Puree {
         storage = new PureeDbHelper(conf.getApplicationContext());
         sourceOutputMap = conf.getSourceOutputMap();
 
-        for (Key key : sourceOutputMap.keySet()) {
-            List<PureeOutput> outputs = sourceOutputMap.get(key);
+        for (List<PureeOutput> outputs : sourceOutputMap.values()) {
             for (PureeOutput output : outputs) {
                 output.initialize(storage);
             }
@@ -47,13 +46,17 @@ public class Puree {
     /**
      * Try to send log. This log is sent immediately or put into buffer (it's depending on output plugin).
      */
-    public static void send(JsonConvertible log) {
+    public static void send(PureeLog log) {
         checkIfPureeHasInitialized();
 
         Key key = Key.from(log.getClass());
         List<PureeOutput> outputs = sourceOutputMap.get(key);
+        if (outputs == null) {
+            throw new IllegalStateException("No output plugin found for " + key);
+        }
         for (PureeOutput output : outputs) {
-            output.receive(log.toJson(gson));
+            JsonObject jsonLog = (JsonObject) gson.toJsonTree(log);
+            output.receive(jsonLog);
         }
     }
 
@@ -62,8 +65,7 @@ public class Puree {
      */
     public static void flush() {
         checkIfPureeHasInitialized();
-        for (Key key : sourceOutputMap.keySet()) {
-            List<PureeOutput> outputs = sourceOutputMap.get(key);
+        for (List<PureeOutput> outputs : sourceOutputMap.values()) {
             for (PureeOutput output : outputs) {
                 output.flush();
             }
@@ -75,7 +77,7 @@ public class Puree {
     }
 
     /**
-     * Get all logs that are in buffer.
+     * Get all logs that are in buffer.w
      */
     public static Records getBufferedLogs() {
         checkIfPureeHasInitialized();
@@ -92,7 +94,11 @@ public class Puree {
 
     private static synchronized void checkIfPureeHasInitialized() {
         if (!isInitialized) {
-            throw new PureeNotInitializedException();
+            throw new NotInitializedException();
         }
+    }
+
+    public static class NotInitializedException extends IllegalStateException {
+
     }
 }

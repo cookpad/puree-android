@@ -1,16 +1,15 @@
 package com.cookpad.puree;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+/**
+ * This class is obsolete. Use {@link PureeLog} instead.
+ */
+@Deprecated
+public abstract class JsonConvertible implements PureeLog {
 
-public abstract class JsonConvertible {
-    public JSONObject toJson(Gson gson) {
-        try {
-            return new JSONObject(gson.toJson(this));
-        } catch (JSONException e) {
-            return new JSONObject();
-        }
+    public JsonObject toJson(Gson gson) {
+        throw new UnsupportedOperationException("Puree's JsonConvertible is obsolete. Use PureeLog instead.");
     }
 }

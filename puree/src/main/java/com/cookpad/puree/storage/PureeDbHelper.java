@@ -1,14 +1,21 @@
 package com.cookpad.puree.storage;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import com.cookpad.puree.internal.ProcessName;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     private static final String DATABASE_NAME = "puree.db";
     private static final String TABLE_NAME = "logs";
@@ -16,14 +23,26 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     private static final String COLUMN_NAME_LOG = "log";
     private static final int DATABASE_VERSION = 1;
 
-    private SQLiteDatabase db;
+    private final JsonParser jsonParser = new JsonParser();
+
+    private final SQLiteDatabase db;
+
+    static String databaseName(Context context) {
+        // do not share the database file in multi processes
+        String processName = ProcessName.getAndroidProcessName(context);
+        if (TextUtils.isEmpty(processName)) {
+            return DATABASE_NAME;
+        } else {
+            return processName + "." + DATABASE_NAME;
+        }
+    }
 
     public PureeDbHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, databaseName(context), null, DATABASE_VERSION);
         db = getWritableDatabase();
     }
 
-    public void insert(String type, JSONObject jsonLog) {
+    public void insert(String type, JsonObject jsonLog) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_TYPE, type);
         contentValues.put(COLUMN_NAME_LOG, jsonLog.toString());
@@ -59,15 +78,24 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     private Records recordsFromCursor(Cursor cursor) {
         Records records = new Records();
         while (cursor.moveToNext()) {
-            try {
-                Record record = new Record(cursor);
-                records.add(record);
-            } catch (JSONException e) {
-                // continue
-            }
+            Record record = buildRecord(cursor);
+            records.add(record);
         }
         return records;
     }
+
+    private Record buildRecord(Cursor cursor) {
+        return new Record(
+                cursor.getInt(0),
+                cursor.getString(1),
+                parseJsonString(cursor.getString(2)));
+
+    }
+
+    private JsonObject parseJsonString(String jsonString) {
+        return (JsonObject) jsonParser.parse(jsonString);
+    }
+
 
     @Override
     public void delete(Records records) {
@@ -94,5 +122,12 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.e("PureeDbHelper", "unexpected onUpgrade(db, " + oldVersion + ", " + newVersion + ")");
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        db.close();
+        super.finalize();
     }
 }

@@ -8,7 +8,7 @@ public class Key {
         return id;
     }
 
-    private Key(Class<? extends JsonConvertible> clazz) {
+    private Key(Class<? extends PureeLog> clazz) {
         this.id = clazz.getName();
     }
 
@@ -26,7 +26,12 @@ public class Key {
         return id.hashCode();
     }
 
-    public static Key from(Class<? extends JsonConvertible> clazz) {
+    public static Key from(Class<? extends PureeLog> clazz) {
         return new Key(clazz);
+    }
+
+    @Override
+    public String toString() {
+        return "Key{" + id + "}";
     }
 }
