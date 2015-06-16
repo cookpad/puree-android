@@ -3,11 +3,14 @@ package com.cookpad.puree.storage;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import com.cookpad.puree.internal.ProcessName;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,10 +25,20 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
 
     private final JsonParser jsonParser = new JsonParser();
 
-    private SQLiteDatabase db;
+    private final SQLiteDatabase db;
+
+    static String databaseName(Context context) {
+        // do not share the database file in multi processes
+        String processName = ProcessName.getAndroidProcessName(context);
+        if (TextUtils.isEmpty(processName)) {
+            return DATABASE_NAME;
+        } else {
+            return processName + "." + DATABASE_NAME;
+        }
+    }
 
     public PureeDbHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, databaseName(context), null, DATABASE_VERSION);
         db = getWritableDatabase();
     }
 
@@ -110,5 +123,11 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.e("PureeDbHelper", "unexpected onUpgrade(db, " + oldVersion + ", " + newVersion + ")");
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        db.close();
+        super.finalize();
     }
 }
