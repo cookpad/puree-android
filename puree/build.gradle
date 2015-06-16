@@ -6,6 +6,7 @@ def GROUP_ID = 'com.cookpad.puree'
 def ARTIFACT_ID = 'puree'
 def VERSION = "3.0.0"
 
+project.version = VERSION
 println "building ${GROUP_ID}:${ARTIFACT_ID}:${VERSION}"
 
 android {
@@ -126,6 +127,7 @@ bintray {
     key = bintrayApiKeyProperty
     publications = ['mavenAndroid']
     dryRun = false
+    publish = true
     pkg {
         repo = 'maven'
         name = 'puree'
