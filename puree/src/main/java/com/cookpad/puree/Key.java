@@ -1,5 +1,6 @@
 package com.cookpad.puree;
 
+@Deprecated
 public class Key {
 
     private final String id;

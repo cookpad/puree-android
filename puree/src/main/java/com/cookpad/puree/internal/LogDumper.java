@@ -1,6 +1,5 @@
 package com.cookpad.puree.internal;
 
-import com.cookpad.puree.Key;
 import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.Records;
@@ -32,12 +31,12 @@ public class LogDumper {
         }
     }
 
-    public static void out(Map<Key, List<PureeOutput>> sourceOutputMap) {
+    public static void out(Map<Class<?>, List<PureeOutput>> sourceOutputMap) {
         Log.i(TAG, "# SOURCE -> FILTER... -> OUTPUT");
-        for (Key key : sourceOutputMap.keySet()) {
+        for (Class<?> key : sourceOutputMap.keySet()) {
             StringBuilder builder;
             for (PureeOutput output : sourceOutputMap.get(key)) {
-                builder = new StringBuilder(key.getId());
+                builder = new StringBuilder(key.getSimpleName());
                 for (PureeFilter filter : output.getFilters()) {
                     builder.append(" -> ").append(filter.getClass().getSimpleName());
                 }

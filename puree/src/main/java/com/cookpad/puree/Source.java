@@ -8,12 +8,13 @@ import java.util.List;
 
 public class Source {
     private PureeConfiguration.Builder builder;
-    private Key key;
+
+    private Class<?> logClass;
     private List<PureeFilter> filters = new ArrayList<>();
 
-    public Source(PureeConfiguration.Builder builder, Key key) {
+    public Source(PureeConfiguration.Builder builder, Class<?> logClass) {
         this.builder = builder;
-        this.key = key;
+        this.logClass = logClass;
     }
 
     /** Specify the {@link com.cookpad.puree.PureeFilter}. */
@@ -30,7 +31,7 @@ public class Source {
 
     /** Specify the {@link com.cookpad.puree.outputs.PureeOutput} that is responded to source. */
     public PureeConfiguration.Builder to(PureeOutput output) {
-        builder.register(key, output.withFilters(filters));
+        builder.register(logClass, output.withFilters(filters));
         return builder;
     }
 }

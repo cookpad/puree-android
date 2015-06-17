@@ -21,7 +21,7 @@ public class PureeConfiguration {
 
     private final Gson gson;
 
-    private final Map<Key, List<PureeOutput>> sourceOutputMap;
+    private final Map<Class<?>, List<PureeOutput>> sourceOutputMap;
 
     public Context getApplicationContext() {
         return applicationContext;
@@ -31,11 +31,15 @@ public class PureeConfiguration {
         return gson;
     }
 
-    public Map<Key, List<PureeOutput>> getSourceOutputMap() {
+    public Map<Class<?>, List<PureeOutput>> getSourceOutputMap() {
         return sourceOutputMap;
     }
 
-    PureeConfiguration(Context context, Gson gson, Map<Key, List<PureeOutput>> sourceOutputMap) {
+    public List<PureeOutput> getRegisteredOutputPlugins(Class<? extends PureeLog> logClass) {
+        return sourceOutputMap.get(logClass);
+    }
+
+    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap) {
         this.applicationContext = context.getApplicationContext();
         this.gson = gson;
         this.sourceOutputMap = sourceOutputMap;
@@ -53,7 +57,7 @@ public class PureeConfiguration {
 
         private Gson gson;
 
-        private Map<Key, List<PureeOutput>> sourceOutputMap = new HashMap<>();
+        private Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
         /**
          * Start building a new {@link com.cookpad.puree.PureeConfiguration} instance.
@@ -75,23 +79,16 @@ public class PureeConfiguration {
          * {@link Source#to(PureeOutput)} must be called to register an output plugin.
          */
         public Source source(Class<? extends PureeLog> logClass) {
-            return new Source(this, Key.from(logClass));
+            return new Source(this, logClass);
         }
 
-        /**
-         * @return the builder itself
-         */
-        public Builder register(Class<? extends PureeLog> logClass, PureeOutput output) {
-            return register(Key.from(logClass), output);
-        }
-
-        Builder register(Key key, PureeOutput output) {
-            List<PureeOutput> outputs = sourceOutputMap.get(key);
+        public Builder register(Class<?> logClass, PureeOutput output) {
+            List<PureeOutput> outputs = sourceOutputMap.get(logClass);
             if (outputs == null) {
                 outputs = new ArrayList<>();
             }
             outputs.add(output);
-            sourceOutputMap.put(key, outputs);
+            sourceOutputMap.put(logClass, outputs);
             return this;
         }
 
