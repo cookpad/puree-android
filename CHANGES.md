@@ -1,3 +1,13 @@
+# v3.1.0 2015/06/17
+
+* Add `Puree.serializeLog` and `Puree.getRegisteredOutputPllugins` to test the use of Puree
+  * https://github.com/cookpad/puree-android/pull/34
+* Optimize internals
+  * https://github.com/cookpad/puree-android/pull/35
+
+* https://github.com/cookpad/puree-android/compare/v2.0.0...v3.1.0
+
+
 # v3.0.0 2015/6/16
 
 Puree v3 is not compatible with v2, which uses [Gson](https://github.com/google/gson) for the fundamental JSON framework,
