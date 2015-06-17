@@ -1,6 +1,5 @@
 package com.cookpad.puree;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import com.cookpad.puree.internal.LogDumper;
@@ -11,20 +10,17 @@ import com.cookpad.puree.storage.Records;
 
 import android.util.Log;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 public class Puree {
     private static final String TAG = Puree.class.getSimpleName();
 
     private static boolean isInitialized = false;
-    private static Gson gson;
     private static PureeStorage storage;
 
-    private static Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
+    private static PureeLogRegistry registry;
 
     public static synchronized void initialize(PureeConfiguration conf) {
         if (isInitialized) {
@@ -32,31 +28,18 @@ public class Puree {
             return;
         }
 
-        gson = conf.getGson();
         storage = new PureeDbHelper(conf.getApplicationContext());
-        sourceOutputMap = conf.getSourceOutputMap();
+        registry = new PureeLogRegistry(conf);
 
-        for (List<PureeOutput> outputs : sourceOutputMap.values()) {
-            for (PureeOutput output : outputs) {
-                output.initialize(storage);
+        registry.forEachOutput(new PureeLogRegistry.Consumer<PureeOutput>() {
+            @Override
+            public void accept(@Nonnull PureeOutput value) {
+                value.initialize(storage);
             }
-        }
+        });
 
         isInitialized = true;
     }
-
-    /**
-     * Serialize a {@link PureeLog} into {@link JsonObject} with {@link Gson}
-     */
-    public static JsonObject serializeLog(PureeLog log) {
-        return (JsonObject) gson.toJsonTree(log);
-    }
-
-    @Nullable
-    public static List<PureeOutput> getRegisteredOutputPlugins(PureeLog log) {
-        return sourceOutputMap.get(log.getClass());
-    }
-
 
     /**
      * Try to send log. This log is sent immediately or put into buffer (it's depending on output plugin).
@@ -64,12 +47,9 @@ public class Puree {
     public static void send(PureeLog log) {
         checkIfPureeHasInitialized();
 
-        List<PureeOutput> outputs = getRegisteredOutputPlugins(log);
-        if (outputs == null) {
-            throw new IllegalStateException("No output plugin registered for " + log);
-        }
+        List<PureeOutput> outputs = registry.getRegisteredOutputPlugins(log);
         for (PureeOutput output : outputs) {
-            JsonObject jsonLog = serializeLog(log);
+            JsonObject jsonLog = registry.serializeLog(log);
             output.receive(jsonLog);
         }
     }
@@ -79,11 +59,13 @@ public class Puree {
      */
     public static void flush() {
         checkIfPureeHasInitialized();
-        for (List<PureeOutput> outputs : sourceOutputMap.values()) {
-            for (PureeOutput output : outputs) {
-                output.flush();
+
+        registry.forEachOutput(new PureeLogRegistry.Consumer<PureeOutput>() {
+            @Override
+            public void accept(@Nonnull PureeOutput value) {
+                value.flush();
             }
-        }
+        });
     }
 
     public static void dump() {
