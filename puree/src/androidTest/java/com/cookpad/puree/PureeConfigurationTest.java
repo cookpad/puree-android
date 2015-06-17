@@ -33,7 +33,7 @@ public class PureeConfigurationTest {
         assertThat(conf.getApplicationContext(), notNullValue());
         assertThat(conf.getGson(), notNullValue());
 
-        Map<Key, List<PureeOutput>> sourceOutputMap = conf.getSourceOutputMap();
+        Map<?, ?> sourceOutputMap = conf.getSourceOutputMap();
         assertThat(sourceOutputMap.size(), is(0));
     }
 
@@ -47,15 +47,13 @@ public class PureeConfigurationTest {
                 .source(BarLog.class).filter(new FooFilter()).to(new OutFoo())
                 .build();
 
-        Map<Key, List<PureeOutput>> sourceOutputMap = conf.getSourceOutputMap();
-        assertThat(sourceOutputMap.size(), is(2));
-
         {
-            List<PureeOutput> outputs = sourceOutputMap.get(Key.from(FooLog.class));
+            List<PureeOutput> outputs = conf.getRegisteredOutputPlugins(FooLog.class);
+            assertThat(outputs, is(not(nullValue())));
             assertThat(outputs.size(), is(3));
         }
         {
-            List<PureeOutput> outputs = sourceOutputMap.get(Key.from(BarLog.class));
+            List<PureeOutput> outputs = conf.getRegisteredOutputPlugins(BarLog.class);
             assertThat(outputs.size(), is(1));
             assertThat(outputs.get(0).getClass().getName(), is(OutFoo.class.getName()));
             List<PureeFilter> filters = outputs.get(0).getFilters();
@@ -74,15 +72,12 @@ public class PureeConfigurationTest {
                 .register(BarLog.class, new OutFoo().withFilters(new FooFilter()))
                 .build();
 
-        Map<Key, List<PureeOutput>> sourceOutputMap = conf.getSourceOutputMap();
-        assertThat(sourceOutputMap.size(), is(2));
-
         {
-            List<PureeOutput> outputs = sourceOutputMap.get(Key.from(FooLog.class));
+            List<PureeOutput> outputs = conf.getRegisteredOutputPlugins(FooLog.class);
             assertThat(outputs.size(), is(3));
         }
         {
-            List<PureeOutput> outputs = sourceOutputMap.get(Key.from(BarLog.class));
+            List<PureeOutput> outputs = conf.getRegisteredOutputPlugins(BarLog.class);
             assertThat(outputs.size(), is(1));
             assertThat(outputs.get(0).getClass().getName(), is(OutFoo.class.getName()));
             List<PureeFilter> filters = outputs.get(0).getFilters();

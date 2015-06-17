@@ -24,7 +24,7 @@ public class Puree {
     private static Gson gson;
     private static PureeStorage storage;
 
-    private static Map<Key, List<PureeOutput>> sourceOutputMap = new HashMap<>();
+    private static Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
     public static synchronized void initialize(PureeConfiguration conf) {
         if (isInitialized) {
@@ -54,7 +54,7 @@ public class Puree {
 
     @Nullable
     public static List<PureeOutput> getRegisteredOutputPlugins(PureeLog log) {
-        return sourceOutputMap.get(Key.from(log.getClass()));
+        return sourceOutputMap.get(log.getClass());
     }
 
 
