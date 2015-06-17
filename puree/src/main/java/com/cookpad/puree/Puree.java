@@ -1,40 +1,29 @@
 package com.cookpad.puree;
 
-import com.google.gson.JsonObject;
-
 import com.cookpad.puree.internal.LogDumper;
-import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.Records;
 
 import android.util.Log;
-
-import java.util.List;
 
 public class Puree {
 
     private static final String TAG = Puree.class.getSimpleName();
 
-    private static PureeLogRegistry registry;
+    private static PureeLogger logger;
 
     public static synchronized void initialize(PureeConfiguration conf) {
-        if (registry != null) {
+        if (logger != null) {
             Log.w(TAG, "Puree has already been initialized; re-initialize it with the configuration");
         }
-
-        registry = conf.createPureeLogRegistry();
+        logger = conf.createPureeLogger();
     }
 
     /**
      * Try to send log. This log is sent immediately or put into buffer (it's depending on output plugin).
      */
-    public static void send(PureeLog log) {
+    public static void send(final PureeLog log) {
         checkIfPureeHasInitialized();
-
-        List<PureeOutput> outputs = registry.getRegisteredOutputPlugins(log);
-        for (PureeOutput output : outputs) {
-            JsonObject jsonLog = registry.serializeLog(log);
-            output.receive(jsonLog);
-        }
+        logger.send(log);
     }
 
     /**
@@ -42,7 +31,7 @@ public class Puree {
      */
     public static void flush() {
         checkIfPureeHasInitialized();
-        registry.flush();
+        logger.flush();
     }
 
     public static void dump() {
@@ -54,7 +43,7 @@ public class Puree {
      */
     public static Records getBufferedLogs() {
         checkIfPureeHasInitialized();
-        return registry.getBufferedLogs();
+        return logger.getBufferedLogs();
     }
 
     /**
@@ -62,11 +51,11 @@ public class Puree {
      */
     public static void discardBufferedLogs() {
         checkIfPureeHasInitialized();
-        registry.discardBufferedLogs();
+        logger.discardBufferedLogs();
     }
 
-    private static synchronized void checkIfPureeHasInitialized() {
-        if (registry == null) {
+    private static void checkIfPureeHasInitialized() {
+        if (logger == null) {
             throw new NotInitializedException();
         }
     }

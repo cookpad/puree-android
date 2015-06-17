@@ -47,8 +47,8 @@ public class PureeConfiguration {
         return sourceOutputMap.get(logClass);
     }
 
-    public PureeLogRegistry createPureeLogRegistry() {
-        return new PureeLogRegistry(sourceOutputMap, gson, storage);
+    public PureeLogger createPureeLogger() {
+        return new PureeLogger(sourceOutputMap, gson, storage);
     }
 
     PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage) {

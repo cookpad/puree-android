@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class PureeLogRegistry {
+public class PureeLogger {
 
     final Gson gson;
 
@@ -23,18 +23,25 @@ public class PureeLogRegistry {
 
     final PureeStorage storage;
 
-    public PureeLogRegistry(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage) {
+    public PureeLogger(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage) {
         this.sourceOutputMap.putAll(sourceOutputMap);
         this.gson = gson;
         this.storage = storage;
 
-        forEachOutput(new PureeLogRegistry.Consumer<PureeOutput>() {
+        forEachOutput(new PureeLogger.Consumer<PureeOutput>() {
             @Override
             public void accept(@Nonnull PureeOutput value) {
-                value.initialize(PureeLogRegistry.this.storage);
+                value.initialize(PureeLogger.this.storage);
             }
         });
+    }
 
+    public void send(PureeLog log) {
+        List<PureeOutput> outputs = getRegisteredOutputPlugins(log);
+        for (PureeOutput output : outputs) {
+            JsonObject jsonLog = serializeLog(log);
+            output.receive(jsonLog);
+        }
     }
 
     public Records getBufferedLogs() {
@@ -46,7 +53,7 @@ public class PureeLogRegistry {
     }
 
     public void flush() {
-        forEachOutput(new PureeLogRegistry.Consumer<PureeOutput>() {
+        forEachOutput(new PureeLogger.Consumer<PureeOutput>() {
             @Override
             public void accept(@Nonnull PureeOutput value) {
                 value.flush();

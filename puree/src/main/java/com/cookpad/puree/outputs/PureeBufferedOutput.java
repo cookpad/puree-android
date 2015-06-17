@@ -41,20 +41,16 @@ public abstract class PureeBufferedOutput extends PureeOutput {
 
     @Override
     public void receive(final JsonObject jsonLog) {
-        new AsyncRunnableTask() {
 
+        new AsyncRunnableTask() {
             @Override
             public void run() {
-                insertSync(type(), jsonLog);
+                JsonObject filteredLog = applyFilters(jsonLog);
+                storage.insert(type(), filteredLog);
             }
         }.execute();
 
         flushTask.tryToStart();
-    }
-
-    public void insertSync(String type, JsonObject jsonLog) {
-        JsonObject filteredLog = applyFilters(jsonLog);
-        storage.insert(type, filteredLog);
     }
 
     @Override
@@ -66,6 +62,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
                 flushSync();
             }
         }.execute();
+
     }
 
     public void flushSync() {
