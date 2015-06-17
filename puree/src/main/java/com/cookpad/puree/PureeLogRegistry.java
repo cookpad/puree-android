@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import com.cookpad.puree.outputs.PureeOutput;
+import com.cookpad.puree.storage.PureeStorage;
+import com.cookpad.puree.storage.Records;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,11 +21,38 @@ public class PureeLogRegistry {
 
     final Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
-    public PureeLogRegistry(PureeConfiguration conf) {
-        sourceOutputMap.putAll(conf.getSourceOutputMap());
-        gson = conf.getGson();
+    final PureeStorage storage;
+
+    public PureeLogRegistry(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage) {
+        this.sourceOutputMap.putAll(sourceOutputMap);
+        this.gson = gson;
+        this.storage = storage;
+
+        forEachOutput(new PureeLogRegistry.Consumer<PureeOutput>() {
+            @Override
+            public void accept(@Nonnull PureeOutput value) {
+                value.initialize(PureeLogRegistry.this.storage);
+            }
+        });
+
     }
 
+    public Records getBufferedLogs() {
+        return storage.selectAll();
+    }
+
+    public void discardBufferedLogs() {
+        storage.clear();
+    }
+
+    public void flush() {
+        forEachOutput(new PureeLogRegistry.Consumer<PureeOutput>() {
+            @Override
+            public void accept(@Nonnull PureeOutput value) {
+                value.flush();
+            }
+        });
+    }
 
     /**
      * Serialize a {@link PureeLog} into {@link JsonObject} with {@link Gson}

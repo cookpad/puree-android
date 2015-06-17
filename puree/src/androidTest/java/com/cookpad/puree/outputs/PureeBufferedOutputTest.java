@@ -81,12 +81,12 @@ public class PureeBufferedOutputTest {
         Puree.initialize(new PureeConfiguration.Builder(context)
                 .register(PvLog.class, output)
                 .build());
-        Puree.clear();
+        Puree.discardBufferedLogs();
     }
 
     @After
     public void tearDown() throws Exception {
-        Puree.clear();
+        Puree.discardBufferedLogs();
     }
 
     @Test

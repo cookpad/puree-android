@@ -4,41 +4,24 @@ import com.google.gson.JsonObject;
 
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.outputs.PureeOutput;
-import com.cookpad.puree.storage.PureeDbHelper;
-import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
 
 import android.util.Log;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 public class Puree {
-    private static final String TAG = Puree.class.getSimpleName();
 
-    private static boolean isInitialized = false;
-    private static PureeStorage storage;
+    private static final String TAG = Puree.class.getSimpleName();
 
     private static PureeLogRegistry registry;
 
     public static synchronized void initialize(PureeConfiguration conf) {
-        if (isInitialized) {
-            Log.w(TAG, "Puree has already been initialized");
-            return;
+        if (registry != null) {
+            Log.w(TAG, "Puree has already been initialized; re-initialize it with the configuration");
         }
 
-        storage = new PureeDbHelper(conf.getApplicationContext());
-        registry = new PureeLogRegistry(conf);
-
-        registry.forEachOutput(new PureeLogRegistry.Consumer<PureeOutput>() {
-            @Override
-            public void accept(@Nonnull PureeOutput value) {
-                value.initialize(storage);
-            }
-        });
-
-        isInitialized = true;
+        registry = conf.createPureeLogRegistry();
     }
 
     /**
@@ -59,13 +42,7 @@ public class Puree {
      */
     public static void flush() {
         checkIfPureeHasInitialized();
-
-        registry.forEachOutput(new PureeLogRegistry.Consumer<PureeOutput>() {
-            @Override
-            public void accept(@Nonnull PureeOutput value) {
-                value.flush();
-            }
-        });
+        registry.flush();
     }
 
     public static void dump() {
@@ -73,23 +50,23 @@ public class Puree {
     }
 
     /**
-     * Get all logs that are in buffer.w
+     * Get all logs that in buffer.
      */
     public static Records getBufferedLogs() {
         checkIfPureeHasInitialized();
-        return storage.selectAll();
+        return registry.getBufferedLogs();
     }
 
     /**
-     * Delete all logs that are in buffer.
+     * Discards all logs in buffer.
      */
-    public static void clear() {
+    public static void discardBufferedLogs() {
         checkIfPureeHasInitialized();
-        storage.clear();
+        registry.discardBufferedLogs();
     }
 
     private static synchronized void checkIfPureeHasInitialized() {
-        if (!isInitialized) {
+        if (registry == null) {
             throw new NotInitializedException();
         }
     }

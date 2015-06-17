@@ -16,11 +16,16 @@ import android.util.Log;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
+public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage {
+
     private static final String DATABASE_NAME = "puree.db";
+
     private static final String TABLE_NAME = "logs";
+
     private static final String COLUMN_NAME_TYPE = "type";
+
     private static final String COLUMN_NAME_LOG = "log";
+
     private static final int DATABASE_VERSION = 1;
 
     private final JsonParser jsonParser = new JsonParser();
@@ -37,7 +42,7 @@ public class PureeDbHelper extends SQLiteOpenHelper implements PureeStorage {
         }
     }
 
-    public PureeDbHelper(Context context) {
+    public PureeSQLiteStorage(Context context) {
         super(context, databaseName(context), null, DATABASE_VERSION);
         db = getWritableDatabase();
     }

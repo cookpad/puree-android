@@ -32,7 +32,7 @@ public class OutFakeApi extends PureeBufferedOutput {
     @Override
     public void emit(JsonArray jsonArray, final AsyncResult result) {
         // you have to call result.success or result.fail()
-        // to notify whether if puree can clear logs from buffer
+        // to notify whether if puree can discardBufferedLogs logs from buffer
         CLIENT.sendLog(jsonArray, new FakeApiClient.Callback() {
             @Override
             public void success() {

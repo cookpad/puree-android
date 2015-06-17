@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.outputs.PureeOutput;
+import com.cookpad.puree.storage.PureeSQLiteStorage;
+import com.cookpad.puree.storage.PureeStorage;
 
 import android.content.Context;
 
@@ -17,14 +19,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class PureeConfiguration {
 
-    private final Context applicationContext;
+    private final Context context;
 
     private final Gson gson;
 
     private final Map<Class<?>, List<PureeOutput>> sourceOutputMap;
 
-    public Context getApplicationContext() {
-        return applicationContext;
+    private final PureeStorage storage;
+
+    public Context getContext() {
+        return context;
     }
 
     public Gson getGson() {
@@ -35,14 +39,23 @@ public class PureeConfiguration {
         return sourceOutputMap;
     }
 
+    public PureeStorage getStorage() {
+        return storage;
+    }
+
     public List<PureeOutput> getRegisteredOutputPlugins(Class<? extends PureeLog> logClass) {
         return sourceOutputMap.get(logClass);
     }
 
-    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap) {
-        this.applicationContext = context.getApplicationContext();
+    public PureeLogRegistry createPureeLogRegistry() {
+        return new PureeLogRegistry(sourceOutputMap, gson, storage);
+    }
+
+    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage) {
+        this.context = context;
         this.gson = gson;
         this.sourceOutputMap = sourceOutputMap;
+        this.storage = storage;
     }
 
     /**
@@ -59,11 +72,13 @@ public class PureeConfiguration {
 
         private Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
+        private PureeStorage storage;
+
         /**
          * Start building a new {@link com.cookpad.puree.PureeConfiguration} instance.
          */
         public Builder(Context context) {
-            this.context = context;
+            this.context = context.getApplicationContext();
         }
 
         /**
@@ -92,6 +107,11 @@ public class PureeConfiguration {
             return this;
         }
 
+        public Builder storage(PureeStorage storage) {
+            this.storage = storage;
+            return this;
+        }
+
         /**
          * Create the {@link com.cookpad.puree.PureeConfiguration} instance.
          */
@@ -99,7 +119,10 @@ public class PureeConfiguration {
             if (gson == null) {
                 gson = new Gson();
             }
-            return new PureeConfiguration(context, gson, sourceOutputMap);
+            if (storage == null) {
+                storage = new PureeSQLiteStorage(context);
+            }
+            return new PureeConfiguration(context, gson, sourceOutputMap, storage);
         }
     }
 }
