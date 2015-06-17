@@ -1,11 +1,17 @@
+# v3.2.0 2015/06/17
+
+* Introduce `PureeLogRegistry` and remove `Pure.serilaizeLog()` and `Puree.getRegisteredOutputPlugins()`
+
+* https://github.com/cookpad/puree-android/compare/v3.1.0...v3.2.0
+
 # v3.1.0 2015/06/17
 
-* Add `Puree.serializeLog` and `Puree.getRegisteredOutputPllugins` to test the use of Puree
+* Add `Puree.serializeLog()` and `Puree.getRegisteredOutputPlugins()` to test the use of Puree
   * https://github.com/cookpad/puree-android/pull/34
 * Optimize internals
   * https://github.com/cookpad/puree-android/pull/35
 
-* https://github.com/cookpad/puree-android/compare/v2.0.0...v3.1.0
+* https://github.com/cookpad/puree-android/compare/v3.0.0...v3.1.0
 
 
 # v3.0.0 2015/6/16
