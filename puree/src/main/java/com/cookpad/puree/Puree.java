@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 public class Puree {
     private static final String TAG = Puree.class.getSimpleName();
 
@@ -44,18 +46,30 @@ public class Puree {
     }
 
     /**
+     * Serialize a {@link PureeLog} into {@link JsonObject} with {@link Gson}
+     */
+    public static JsonObject serializeLog(PureeLog log) {
+        return (JsonObject) gson.toJsonTree(log);
+    }
+
+    @Nullable
+    public static List<PureeOutput> getRegisteredOutputPlugins(PureeLog log) {
+        return sourceOutputMap.get(Key.from(log.getClass()));
+    }
+
+
+    /**
      * Try to send log. This log is sent immediately or put into buffer (it's depending on output plugin).
      */
     public static void send(PureeLog log) {
         checkIfPureeHasInitialized();
 
-        Key key = Key.from(log.getClass());
-        List<PureeOutput> outputs = sourceOutputMap.get(key);
+        List<PureeOutput> outputs = getRegisteredOutputPlugins(log);
         if (outputs == null) {
-            throw new IllegalStateException("No output plugin found for " + key);
+            throw new IllegalStateException("No output plugin registered for " + log);
         }
         for (PureeOutput output : outputs) {
-            JsonObject jsonLog = (JsonObject) gson.toJsonTree(log);
+            JsonObject jsonLog = serializeLog(log);
             output.receive(jsonLog);
         }
     }
