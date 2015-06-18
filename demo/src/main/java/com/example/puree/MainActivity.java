@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clear() {
-        Puree.clear();
+        Puree.discardBufferedLogs();
         logDisplayTextView.setText("");
     }
 

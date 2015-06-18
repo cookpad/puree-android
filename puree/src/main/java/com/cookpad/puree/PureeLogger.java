@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import com.cookpad.puree.outputs.PureeOutput;
+import com.cookpad.puree.storage.PureeStorage;
+import com.cookpad.puree.storage.Records;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,17 +15,51 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class PureeLogRegistry {
+public class PureeLogger {
 
     final Gson gson;
 
     final Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
-    public PureeLogRegistry(PureeConfiguration conf) {
-        sourceOutputMap.putAll(conf.getSourceOutputMap());
-        gson = conf.getGson();
+    final PureeStorage storage;
+
+    public PureeLogger(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage) {
+        this.sourceOutputMap.putAll(sourceOutputMap);
+        this.gson = gson;
+        this.storage = storage;
+
+        forEachOutput(new PureeLogger.Consumer<PureeOutput>() {
+            @Override
+            public void accept(@Nonnull PureeOutput value) {
+                value.initialize(PureeLogger.this.storage);
+            }
+        });
     }
 
+    public void send(PureeLog log) {
+        List<PureeOutput> outputs = getRegisteredOutputPlugins(log);
+        for (PureeOutput output : outputs) {
+            JsonObject jsonLog = serializeLog(log);
+            output.receive(jsonLog);
+        }
+    }
+
+    public Records getBufferedLogs() {
+        return storage.selectAll();
+    }
+
+    public void discardBufferedLogs() {
+        storage.clear();
+    }
+
+    public void flush() {
+        forEachOutput(new PureeLogger.Consumer<PureeOutput>() {
+            @Override
+            public void accept(@Nonnull PureeOutput value) {
+                value.flush();
+            }
+        });
+    }
 
     /**
      * Serialize a {@link PureeLog} into {@link JsonObject} with {@link Gson}

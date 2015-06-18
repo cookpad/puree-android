@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -53,6 +54,7 @@ public abstract class PureeOutput {
         emit(filteredLog);
     }
 
+    @Nullable
     protected JsonObject applyFilters(JsonObject jsonLog) {
         JsonObject filteredLog = jsonLog;
         for (PureeFilter filter : filters) {

@@ -30,7 +30,7 @@ public class PureeConfigurationTest {
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
                 .build();
 
-        assertThat(conf.getApplicationContext(), notNullValue());
+        assertThat(conf.getContext(), notNullValue());
         assertThat(conf.getGson(), notNullValue());
 
         Map<?, ?> sourceOutputMap = conf.getSourceOutputMap();

@@ -4,11 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import com.cookpad.puree.async.AsyncResult;
-import com.cookpad.puree.async.AsyncRunnableTask;
 import com.cookpad.puree.internal.RetryableTaskRunner;
 import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -41,47 +41,46 @@ public abstract class PureeBufferedOutput extends PureeOutput {
 
     @Override
     public void receive(final JsonObject jsonLog) {
-        new AsyncRunnableTask() {
-
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void run() {
-                insertSync(type(), jsonLog);
+            protected Void doInBackground(Void... params) {
+                JsonObject filteredLog = applyFilters(jsonLog);
+                if (filteredLog != null) {
+                    storage.insert(type(), filteredLog);
+                }
+                return null;
             }
         }.execute();
 
         flushTask.tryToStart();
     }
 
-    public void insertSync(String type, JsonObject jsonLog) {
-        JsonObject filteredLog = applyFilters(jsonLog);
-        storage.insert(type, filteredLog);
-    }
-
     @Override
     public void flush() {
-        new AsyncRunnableTask() {
-
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void run() {
+            protected Void doInBackground(Void... params) {
                 flushSync();
+                return null;
             }
         }.execute();
+
     }
 
     public void flushSync() {
         Records records = getRecordsFromStorage();
 
-        while (!records.isEmpty()) {
-            final JsonArray jsonLogs = records.getJsonLogs();
-            boolean isSuccess = flushChunkOfLogs(jsonLogs);
-            if (isSuccess) {
-                flushTask.reset();
-            } else {
-                flushTask.retryLater();
-                return;
-            }
+        if (records.isEmpty()) {
+            return;
+        }
+
+        final JsonArray jsonLogs = records.getJsonLogs();
+        boolean isSuccess = flushChunkOfLogs(jsonLogs);
+        if (isSuccess) {
+            flushTask.reset();
             storage.delete(records);
-            records = getRecordsFromStorage();
+        } else {
+            flushTask.retryLater();
         }
     }
 
