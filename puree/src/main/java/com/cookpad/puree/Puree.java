@@ -15,7 +15,11 @@ public class Puree {
         if (logger != null) {
             Log.w(TAG, "Puree has already been initialized; re-initialize it with the configuration");
         }
-        logger = conf.createPureeLogger();
+        setPureeLogger(conf.createPureeLogger());
+    }
+
+    public static void setPureeLogger(PureeLogger instance) {
+        logger = instance;
     }
 
     /**
