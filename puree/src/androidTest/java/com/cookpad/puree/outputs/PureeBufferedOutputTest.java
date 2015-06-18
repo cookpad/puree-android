@@ -21,7 +21,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.test.InstrumentationRegistry;
 
-import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,7 +38,7 @@ public class PureeBufferedOutputTest {
 
     Handler handler;
 
-    ArrayList<String> logs = new ArrayList<>();
+    BlockingQueue<String> logs = new ArrayBlockingQueue<>(3);
 
     PureeLogger logger;
 
@@ -50,18 +52,10 @@ public class PureeBufferedOutputTest {
     }
 
     @ParametersAreNonnullByDefault
-    class BufferedOutput extends PureeBufferedOutput {
+    static abstract class BufferedOutputBase extends PureeBufferedOutput {
 
-        public BufferedOutput(Handler handler) {
+        public BufferedOutputBase(Handler handler) {
             super(handler);
-        }
-
-        @Override
-        public void emit(JsonArray jsonArray, AsyncResult result) {
-            for (JsonElement item : jsonArray) {
-                logs.add(item.toString());
-            }
-            result.success();
         }
 
         @Nonnull
@@ -79,7 +73,23 @@ public class PureeBufferedOutputTest {
     }
 
     @ParametersAreNonnullByDefault
-    class DiscardedBufferedOutput extends PureeBufferedOutput {
+    class BufferedOutput extends BufferedOutputBase {
+
+        public BufferedOutput(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void emit(JsonArray jsonArray, AsyncResult result) {
+            for (JsonElement item : jsonArray) {
+                logs.add(item.toString());
+            }
+            result.success();
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    class DiscardedBufferedOutput extends BufferedOutputBase {
 
         public DiscardedBufferedOutput(Handler handler) {
             super(handler);
@@ -89,20 +99,30 @@ public class PureeBufferedOutputTest {
         public void emit(JsonArray jsonArray, AsyncResult result) {
             throw new AssertionFailedError("not reached");
         }
+    }
 
-        @Nonnull
-        @Override
-        public String type() {
-            return "buffered_output";
+    @ParametersAreNonnullByDefault
+    class BufferedOutputToTestFailFirst extends BufferedOutputBase {
+
+        int counter = 0;
+
+        public BufferedOutputToTestFailFirst(Handler handler) {
+            super(handler);
         }
 
-        @Nonnull
         @Override
-        public OutputConfiguration configure(OutputConfiguration conf) {
-            conf.setFlushIntervalMillis(1);
-            return conf;
+        public void emit(JsonArray jsonArray, AsyncResult result) {
+            if (counter++ == 0) {
+                result.fail();
+            } else {
+                for (JsonElement item : jsonArray) {
+                    logs.add(item.toString());
+                }
+                result.success();
+            }
         }
     }
+
 
     @ParametersAreNonnullByDefault
     public static class DiscardFilter implements PureeFilter {
@@ -127,44 +147,60 @@ public class PureeBufferedOutputTest {
         }
     }
 
-    @Test
-    public void testPureeBufferedOutput() throws Exception {
+    void initializeLogger(PureeOutput output) {
         logger = new PureeConfiguration.Builder(context)
-                .register(PvLog.class, new BufferedOutput(handler))
+                .register(PvLog.class, output)
                 .build()
                 .createPureeLogger();
         logger.discardBufferedLogs();
+    }
 
+    @Test
+    public void testPureeBufferedOutput() throws Exception {
+        initializeLogger(new BufferedOutput(handler));
 
         logger.send(new PvLog("foo"));
         logger.send(new PvLog("bar"));
         logger.send(new PvLog("baz"));
         logger.flush();
 
-        Thread.sleep(1000);
+        Thread.sleep(100);
 
-        assertThat(logs.size(), is(3));
-        assertThat(logs.get(0), is("{\"name\":\"foo\"}"));
-        assertThat(logs.get(1), is("{\"name\":\"bar\"}"));
-        assertThat(logs.get(2), is("{\"name\":\"baz\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"foo\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));
     }
 
     @Test
     public void testPureeBufferedOutputWithDiscardFilter() throws Exception {
-        logger = new PureeConfiguration.Builder(context)
-                .register(PvLog.class, new DiscardedBufferedOutput(handler).withFilters(new DiscardFilter()))
-                .build()
-                .createPureeLogger();
-        logger.discardBufferedLogs();
+        initializeLogger(new DiscardedBufferedOutput(handler).withFilters(new DiscardFilter()));
 
         logger.send(new PvLog("foo"));
         logger.send(new PvLog("bar"));
         logger.send(new PvLog("baz"));
         logger.flush();
 
-        Thread.sleep(1000);
+        Thread.sleep(100);
 
-        assertThat(logs.size(), is(0));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));
     }
 
+    @Test
+    public void testBufferedOutputToTestFailFirst() throws Exception {
+        BufferedOutputToTestFailFirst output = new BufferedOutputToTestFailFirst(handler);
+        initializeLogger(output);
+
+        logger.send(new PvLog("foo"));
+        logger.send(new PvLog("bar"));
+        logger.send(new PvLog("baz"));
+        logger.flush();
+
+        Thread.sleep(100);
+
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"foo\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));
+    }
 }

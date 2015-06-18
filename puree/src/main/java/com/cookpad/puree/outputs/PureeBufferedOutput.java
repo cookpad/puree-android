@@ -70,17 +70,17 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     public void flushSync() {
         Records records = getRecordsFromStorage();
 
-        while (!records.isEmpty()) {
-            final JsonArray jsonLogs = records.getJsonLogs();
-            boolean isSuccess = flushChunkOfLogs(jsonLogs);
-            if (isSuccess) {
-                flushTask.reset();
-            } else {
-                flushTask.retryLater();
-                return;
-            }
+        if (records.isEmpty()) {
+            return;
+        }
+
+        final JsonArray jsonLogs = records.getJsonLogs();
+        boolean isSuccess = flushChunkOfLogs(jsonLogs);
+        if (isSuccess) {
+            flushTask.reset();
             storage.delete(records);
-            records = getRecordsFromStorage();
+        } else {
+            flushTask.retryLater();
         }
     }
 
