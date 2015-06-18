@@ -1,3 +1,11 @@
+# v3.3.0 2015/06/18
+
+* Introduce `PureeLogger`, removing `PureeLogRegistry` to mock `Puree` easily
+  * See PureeTest.java to see how to mock `Puree` static methods.
+
+* https://github.com/cookpad/puree-android/compare/v3.2.0...v3.3.0
+
+
 # v3.2.0 2015/06/17
 
 * Introduce `PureeLogRegistry` and remove `Pure.serilaizeLog()` and `Puree.getRegisteredOutputPlugins()`
