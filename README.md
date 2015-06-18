@@ -14,6 +14,26 @@ Puree is a log collector which provides the following features:
 
 Puree helps you unify your logging infrastructure.
 
+
+## Installation
+
+This is published on `jcenter` and you can use Puree as:
+
+```groovy
+// build.gradle
+buildscript {
+    repositories {
+        jcenter()
+    }
+    ...
+}
+
+// app/build.gradle
+dependencies {
+    compile 'com.cookpad.puree:puree:3.0.0'
+}
+```
+
 ## Usage
 
 ### Initialize
@@ -177,24 +197,11 @@ new PureeConfiguration.Builder(context)
         .build();
 ```
 
-## Installation
+## Testing
 
-This is published on `jcenter` and you can use Puree as:
+If you want to mock or ignore `Puree.send()` and `Puree.flush()`, you can use `Puree.setPureeLogger()` to replace the internal
+logger. See [PureeTest.java](puree/src/androidTest/java/com/cookpad/puree/PureeTest.java) for details.
 
-```groovy
-// build.gradle
-buildscript {
-    repositories {
-        jcenter()
-    }
-    ...
-}
-
-// app/build.gradle
-dependencies {
-    compile 'com.cookpad.puree:puree:3.0.0'
-}
-```
 
 # See Also
 
