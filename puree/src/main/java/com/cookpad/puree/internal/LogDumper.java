@@ -23,8 +23,9 @@ public class LogDumper {
                         + records.getJsonLogs().get(0));
             default:
                 StringBuilder builder = new StringBuilder();
-                builder.append(records.size() + " records in Puree's buffer\n");
-                for (int i = 0; i < records.size(); i++) {
+                int size = records.size();
+                builder.append(size).append(" records in Puree's buffer\n");
+                for (int i = 0; i < size; i++) {
                     builder.append(records.getJsonLogs().get(0)).append("\n");
                 }
                 Log.d(TAG, builder.substring(0, builder.length() - 1));
