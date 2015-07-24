@@ -1,9 +1,9 @@
 package com.cookpad.puree;
 
+import android.util.Log;
+
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.storage.Records;
-
-import android.util.Log;
 
 public class Puree {
 
@@ -56,6 +56,14 @@ public class Puree {
     public static void discardBufferedLogs() {
         checkIfPureeHasInitialized();
         logger.discardBufferedLogs();
+    }
+
+    /**
+     * Discard Old logs in buffer.
+     */
+    public static void discardOldBufferedLogs() {
+        checkIfPureeHasInitialized();
+        logger.discardOldBufferedLogs();
     }
 
     private static void checkIfPureeHasInitialized() {

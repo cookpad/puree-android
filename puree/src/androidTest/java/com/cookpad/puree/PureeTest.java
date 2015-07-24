@@ -1,15 +1,14 @@
 package com.cookpad.puree;
 
-import com.google.gson.Gson;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
 
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeSQLiteStorage;
+import com.google.gson.Gson;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,7 @@ public class PureeTest {
     static class DummyPureeLogger extends PureeLogger {
 
         public DummyPureeLogger(Context context) {
-            super(new HashMap<Class<?>, List<PureeOutput>>(), new Gson(), new PureeSQLiteStorage(context));
+            super(new HashMap<Class<?>, List<PureeOutput>>(), new Gson(), new PureeSQLiteStorage(context), 1000);
         }
 
 
@@ -59,5 +58,10 @@ public class PureeTest {
     @Test
     public void testDiscardBufferedLogs() throws Exception {
         Puree.discardBufferedLogs();
+    }
+
+    @Test
+    public void testDiscardOldBufferedLogs() throws Exception {
+        Puree.discardOldBufferedLogs();
     }
 }

@@ -1,13 +1,12 @@
 package com.cookpad.puree;
 
-import com.google.gson.Gson;
+import android.content.Context;
 
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeSQLiteStorage;
 import com.cookpad.puree.storage.PureeStorage;
-
-import android.content.Context;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +25,8 @@ public class PureeConfiguration {
     private final Map<Class<?>, List<PureeOutput>> sourceOutputMap;
 
     private final PureeStorage storage;
+
+    private int deleteThreshold = Integer.MAX_VALUE;
 
     public Context getContext() {
         return context;
@@ -47,15 +48,20 @@ public class PureeConfiguration {
         return sourceOutputMap.get(logClass);
     }
 
-    public PureeLogger createPureeLogger() {
-        return new PureeLogger(sourceOutputMap, gson, storage);
+    public int getDeleteThreshold() {
+        return deleteThreshold;
     }
 
-    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage) {
+    public PureeLogger createPureeLogger() {
+        return new PureeLogger(sourceOutputMap, gson, storage, deleteThreshold);
+    }
+
+    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage, int deleteThreshold) {
         this.context = context;
         this.gson = gson;
         this.sourceOutputMap = sourceOutputMap;
         this.storage = storage;
+        this.deleteThreshold = deleteThreshold;
     }
 
     /**
@@ -73,6 +79,8 @@ public class PureeConfiguration {
         private Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
         private PureeStorage storage;
+
+        private int deleteThreshold = Integer.MAX_VALUE;
 
         /**
          * Start building a new {@link com.cookpad.puree.PureeConfiguration} instance.
@@ -112,6 +120,11 @@ public class PureeConfiguration {
             return this;
         }
 
+        public Builder deleteThreshold(int deleteThreshold) {
+            this.deleteThreshold = deleteThreshold;
+            return this;
+        }
+
         /**
          * Create the {@link com.cookpad.puree.PureeConfiguration} instance.
          */
@@ -122,7 +135,7 @@ public class PureeConfiguration {
             if (storage == null) {
                 storage = new PureeSQLiteStorage(context);
             }
-            return new PureeConfiguration(context, gson, sourceOutputMap, storage);
+            return new PureeConfiguration(context, gson, sourceOutputMap, storage, deleteThreshold);
         }
     }
 }
