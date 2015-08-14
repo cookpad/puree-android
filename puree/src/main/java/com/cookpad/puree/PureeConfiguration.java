@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -26,6 +29,8 @@ public class PureeConfiguration {
     private final Map<Class<?>, List<PureeOutput>> sourceOutputMap;
 
     private final PureeStorage storage;
+
+    private final Executor executor;
 
     public Context getContext() {
         return context;
@@ -48,14 +53,16 @@ public class PureeConfiguration {
     }
 
     public PureeLogger createPureeLogger() {
-        return new PureeLogger(sourceOutputMap, gson, storage);
+        return new PureeLogger(sourceOutputMap, gson, storage, executor);
     }
 
-    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage) {
+    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage,
+            Executor executor) {
         this.context = context;
         this.gson = gson;
         this.sourceOutputMap = sourceOutputMap;
         this.storage = storage;
+        this.executor = executor;
     }
 
     /**
@@ -73,6 +80,8 @@ public class PureeConfiguration {
         private Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
         private PureeStorage storage;
+
+        private Executor executor;
 
         /**
          * Start building a new {@link com.cookpad.puree.PureeConfiguration} instance.
@@ -112,6 +121,11 @@ public class PureeConfiguration {
             return this;
         }
 
+        public Builder executor(Executor executor) {
+            this.executor = executor;
+            return this;
+        }
+
         /**
          * Create the {@link com.cookpad.puree.PureeConfiguration} instance.
          */
@@ -122,7 +136,24 @@ public class PureeConfiguration {
             if (storage == null) {
                 storage = new PureeSQLiteStorage(context);
             }
-            return new PureeConfiguration(context, gson, sourceOutputMap, storage);
+            if (executor == null) {
+                executor = newBackgroundThradExecutor();
+            }
+            return new PureeConfiguration(context, gson, sourceOutputMap, storage, executor);
+        }
+    }
+
+    static Executor newBackgroundThradExecutor() {
+        return Executors.newSingleThreadExecutor(new BackgroundThreadFactory());
+    }
+
+    static class BackgroundThreadFactory implements ThreadFactory {
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r, "puree");
+            thread.setPriority(Thread.MIN_PRIORITY);
+            return thread;
         }
     }
 }

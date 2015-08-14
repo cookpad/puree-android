@@ -68,34 +68,30 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     }
 
     public void flushSync() {
-        Records records = getRecordsFromStorage();
+        final Records records = getRecordsFromStorage();
 
         if (records.isEmpty()) {
             return;
         }
 
         final JsonArray jsonLogs = records.getJsonLogs();
-        boolean isSuccess = flushChunkOfLogs(jsonLogs);
-        if (isSuccess) {
-            flushTask.reset();
-            storage.delete(records);
-        } else {
-            flushTask.retryLater();
-        }
+
+        emit(jsonLogs, new AsyncResult() {
+            @Override
+            public void success() {
+                flushTask.reset();
+                storage.delete(records);
+            }
+
+            @Override
+            public void fail() {
+                flushTask.retryLater();
+            }
+        });
     }
 
     private Records getRecordsFromStorage() {
         return storage.select(type(), conf.getLogsPerRequest());
-    }
-
-    public boolean flushChunkOfLogs(final JsonArray jsonLogs) {
-        try {
-            AsyncResult asyncResult = new AsyncResult();
-            emit(jsonLogs, asyncResult);
-            return asyncResult.get();
-        } catch (InterruptedException e) {
-            return false;
-        }
     }
 
     public abstract void emit(JsonArray jsonArray, final AsyncResult result);

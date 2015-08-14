@@ -5,6 +5,8 @@ import com.cookpad.puree.storage.Records;
 
 import android.util.Log;
 
+import java.util.concurrent.Executor;
+
 public class Puree {
 
     private static final String TAG = Puree.class.getSimpleName();
@@ -56,6 +58,10 @@ public class Puree {
     public static void discardBufferedLogs() {
         checkIfPureeHasInitialized();
         logger.discardBufferedLogs();
+    }
+
+    public static Executor getExecutor() {
+        return logger.getExecutor();
     }
 
     private static void checkIfPureeHasInitialized() {

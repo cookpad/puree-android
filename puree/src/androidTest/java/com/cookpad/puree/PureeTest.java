@@ -13,13 +13,15 @@ import android.support.test.InstrumentationRegistry;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class PureeTest {
 
     static class DummyPureeLogger extends PureeLogger {
 
         public DummyPureeLogger(Context context) {
-            super(new HashMap<Class<?>, List<PureeOutput>>(), new Gson(), new PureeSQLiteStorage(context));
+            super(new HashMap<Class<?>, List<PureeOutput>>(), new Gson(), new PureeSQLiteStorage(context),
+                    Executors.newSingleThreadExecutor());
         }
 
 
