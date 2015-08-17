@@ -126,8 +126,8 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
         int recordSize = getRecordCount();
         if (recordSize > maxRecords) {
             String query = "SELECT * FROM " + TABLE_NAME +
-                    " ORDER BY id ASC" +
-                    " OFFSET " + maxRecords;
+                    " ORDER BY id DESC" +
+                    " LIMIT " + String.valueOf(recordSize - maxRecords);
             Cursor cursor = db.rawQuery(query, null);
             Records truncateRecords;
 
