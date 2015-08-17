@@ -3,68 +3,60 @@ package com.cookpad.puree.outputs;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import com.cookpad.puree.PureeLogger;
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.internal.RetryableTaskRunner;
-import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
 
-import android.os.AsyncTask;
-import android.os.Handler;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public abstract class PureeBufferedOutput extends PureeOutput {
 
-    private RetryableTaskRunner flushTask;
+    RetryableTaskRunner flushTask;
 
-    private final Handler handler;
-
-    public PureeBufferedOutput(Handler handler) {
-        this.handler = handler;
-    }
+    ScheduledExecutorService executor;
 
     public PureeBufferedOutput() {
-        this(new Handler());
     }
 
     @Override
-    public void initialize(PureeStorage storage) {
-        super.initialize(storage);
+    public void initialize(PureeLogger logger) {
+        super.initialize(logger);
+        executor = logger.getExecutor();
         flushTask = new RetryableTaskRunner(new Runnable() {
             @Override
             public void run() {
                 flush();
             }
-        }, conf.getFlushIntervalMillis(), conf.getMaxRetryCount(), handler);
+        }, conf.getFlushIntervalMillis(), conf.getMaxRetryCount(), executor);
     }
 
     @Override
     public void receive(final JsonObject jsonLog) {
-        new AsyncTask<Void, Void, Void>() {
+        executor.execute(new Runnable() {
             @Override
-            protected Void doInBackground(Void... params) {
+            public void run() {
                 JsonObject filteredLog = applyFilters(jsonLog);
                 if (filteredLog != null) {
                     storage.insert(type(), filteredLog);
                 }
-                return null;
             }
-        }.execute();
+        });
 
         flushTask.tryToStart();
     }
 
     @Override
     public void flush() {
-        new AsyncTask<Void, Void, Void>() {
+        executor.execute(new Runnable() {
             @Override
-            protected Void doInBackground(Void... params) {
+            public void run() {
                 flushSync();
-                return null;
             }
-        }.execute();
-
+        });
     }
 
     public void flushSync() {

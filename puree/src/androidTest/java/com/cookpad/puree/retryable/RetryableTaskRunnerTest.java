@@ -2,15 +2,14 @@ package com.cookpad.puree.retryable;
 
 import com.cookpad.puree.internal.RetryableTaskRunner;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.os.Handler;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.*;
@@ -19,17 +18,7 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class RetryableTaskRunnerTest {
 
-    private Handler handler;
-
-    @Before
-    public void setUp() throws Exception {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
-            public void run() {
-                handler = new Handler();
-            }
-        });
-    }
+    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
     @Test
     public void ensureToCallMeAfterSetTime() throws Exception {
@@ -40,7 +29,7 @@ public class RetryableTaskRunnerTest {
             public void run() {
                 latch.countDown();
             }
-        }, 10, 5, handler);
+        }, 10, 5, executor);
 
         task.tryToStart();
 

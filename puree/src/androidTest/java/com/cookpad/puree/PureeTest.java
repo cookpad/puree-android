@@ -21,7 +21,7 @@ public class PureeTest {
 
         public DummyPureeLogger(Context context) {
             super(new HashMap<Class<?>, List<PureeOutput>>(), new Gson(), new PureeSQLiteStorage(context),
-                    Executors.newSingleThreadExecutor());
+                    Executors.newScheduledThreadPool(1));
         }
 
 
@@ -33,6 +33,7 @@ public class PureeTest {
 
     static class PvLog implements PureeLog {
 
+        @SuppressWarnings("unused")
         String name = "foo";
     }
 
