@@ -205,6 +205,21 @@ new PureeConfiguration.Builder(context)
 If you want to mock or ignore `Puree.send()` and `Puree.flush()`, you can use `Puree.setPureeLogger()` to replace the internal
 logger. See [PureeTest.java](puree/src/androidTest/java/com/cookpad/puree/PureeTest.java) for details.
 
+## Release Engineering
+
+Set `bintrayUser` and `bintrayKey` in `~/.gradle/gradle.properties`
+
+```properties
+bintrayUser=BINTRAY_USER
+bintrayKey=BINTRAY_API_KEY
+```
+
+and run the following tasks:
+
+```
+./gradlew clean connectedCheck bintrayUpload --info # dry-run
+./gradlew bintrayUpload -PdryRun=false
+```
 
 # See Also
 

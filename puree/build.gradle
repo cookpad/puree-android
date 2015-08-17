@@ -121,15 +121,19 @@ def getBintrayUserProperty() {
     return hasProperty('bintrayUser') ? bintrayUser : ""
 }
 
-def getBintrayApiKeyProperty() {
-    return hasProperty('bintrayApiKey') ? bintrayApiKey : ""
+def getBintrayKeyProperty() {
+    return hasProperty('bintrayKey') ? bintrayKey : ""
+}
+
+def getBintrayDryRunProperty() {
+    return hasProperty('dryRun') ? Boolean.parseBoolean(dryRun) : true
 }
 
 bintray {
     user = bintrayUserProperty
-    key = bintrayApiKeyProperty
+    key = bintrayKeyProperty
+    dryRun = bintrayDryRunProperty
     publications = ['mavenAndroid']
-    dryRun = false
     publish = true
     pkg {
         repo = 'maven'
