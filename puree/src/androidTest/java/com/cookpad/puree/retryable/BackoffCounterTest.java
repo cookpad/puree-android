@@ -17,27 +17,27 @@ public class BackoffCounterTest {
         BackoffCounter backoffCounter = new BackoffCounter(10, 3);
 
         assertThat(backoffCounter.getRetryCount(), is(0));
-        assertThat(backoffCounter.time(), is(10));
+        assertThat(backoffCounter.timeInMillis(), is(10L));
         assertThat(backoffCounter.isRemainingRetryCount(), is(true));
 
         backoffCounter.incrementRetryCount();
         assertThat(backoffCounter.getRetryCount(), is(1));
-        assertThat(backoffCounter.time(), is(20));
+        assertThat(backoffCounter.timeInMillis(), is(20L));
         assertThat(backoffCounter.isRemainingRetryCount(), is(true));
 
         backoffCounter.incrementRetryCount();
         assertThat(backoffCounter.getRetryCount(), is(2));
-        assertThat(backoffCounter.time(), is(30));
+        assertThat(backoffCounter.timeInMillis(), is(30L));
         assertThat(backoffCounter.isRemainingRetryCount(), is(true));
 
         backoffCounter.incrementRetryCount();
         assertThat(backoffCounter.getRetryCount(), is(3));
-        assertThat(backoffCounter.time(), is(40));
+        assertThat(backoffCounter.timeInMillis(), is(40L));
         assertThat(backoffCounter.isRemainingRetryCount(), is(false));
 
         backoffCounter.resetRetryCount();
         assertThat(backoffCounter.getRetryCount(), is(0));
-        assertThat(backoffCounter.time(), is(10));
+        assertThat(backoffCounter.timeInMillis(), is(10L));
         assertThat(backoffCounter.isRemainingRetryCount(), is(true));
     }
 }

@@ -29,7 +29,7 @@ public class BackoffCounter {
         retryCount = 0;
     }
 
-    public int time() {
+    public long timeInMillis() {
         if (retryCount == 0) {
             return baseTimeMillis;
         } else {

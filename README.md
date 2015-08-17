@@ -30,7 +30,7 @@ buildscript {
 
 // app/build.gradle
 dependencies {
-    compile 'com.cookpad.puree:puree:3.3.0'
+    compile 'com.cookpad.puree:puree:4.0.0'
 }
 ```
 
@@ -42,7 +42,7 @@ Configure Puree with `PureeConfiguration` in `Application#onCreate()`, which reg
 pairs of what and where.
 
 ```java
-public class DemoApplication extends Application {
+public class MyApplication extends Application {
     @Override
     public void onCreate() {
         Puree.initialize(buildConfiguration(this));
@@ -51,12 +51,15 @@ public class DemoApplication extends Application {
     public static PureeConfiguration buildConfiguration(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
         return new PureeConfiguration.Builder(context)
+                .executor(Executors.newScheduledThreadPool(1)) // optional
                 .register(ClickLog.class, new OutLogcat())
                 .register(ClickLog.class, new OutBufferedLogcat().withFilters(addEventTimeListener))
                 .build();
     }
 }
 ```
+
+See also: [demo/PureeConfigurator.java](demo/src/main/java/com/example/puree/logs/PureeConfigurator.java)
 
 ### Definition of PureeLog objects
 
@@ -202,6 +205,21 @@ new PureeConfiguration.Builder(context)
 If you want to mock or ignore `Puree.send()` and `Puree.flush()`, you can use `Puree.setPureeLogger()` to replace the internal
 logger. See [PureeTest.java](puree/src/androidTest/java/com/cookpad/puree/PureeTest.java) for details.
 
+## Release Engineering
+
+Set `bintrayUser` and `bintrayKey` in `~/.gradle/gradle.properties`
+
+```properties
+bintrayUser=BINTRAY_USER
+bintrayKey=BINTRAY_API_KEY
+```
+
+and run the following tasks:
+
+```
+./gradlew clean connectedCheck bintrayUpload --info # dry-run
+./gradlew bintrayUpload -PdryRun=false
+```
 
 # See Also
 

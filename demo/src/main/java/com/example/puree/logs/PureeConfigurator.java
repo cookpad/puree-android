@@ -12,6 +12,8 @@ import com.example.puree.logs.plugins.OutDisplay;
 
 import android.content.Context;
 
+import java.util.concurrent.Executors;
+
 public class PureeConfigurator {
     public static void configure(Context context) {
         Puree.initialize(buildConf(context));
@@ -21,6 +23,7 @@ public class PureeConfigurator {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
         PureeFilter samplingFilter = new SamplingFilter(1.0f);
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
+                .executor(Executors.newScheduledThreadPool(1)) // optional
                 .register(ClickLog.class, new OutDisplay().withFilters(addEventTimeFilter))
                 .register(ClickLog.class,
                         new OutBufferedLogcat().withFilters(addEventTimeFilter, samplingFilter))

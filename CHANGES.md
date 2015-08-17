@@ -1,10 +1,18 @@
+
+# v4.0.0 2015/08/17
+
+* Use `ScheduledExecutorService` to run tasks in backkground, instead of `AsyncTask`.
+  The default `AsycTask` executor is executed in serial so `Puree` might affect execution of
+  other application tasks if it used `AsyncTask`.
+
+* https://github.com/cookpad/puree-android/compare/v3.3.0...v4.0.0
+
 # v3.3.0 2015/06/18
 
 * Introduce `PureeLogger`, removing `PureeLogRegistry` to mock `Puree` easily
   * See PureeTest.java to see how to mock `Puree` static methods.
 
 * https://github.com/cookpad/puree-android/compare/v3.2.0...v3.3.0
-
 
 # v3.2.0 2015/06/17
 

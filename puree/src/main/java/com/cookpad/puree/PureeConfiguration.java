@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,7 +30,7 @@ public class PureeConfiguration {
 
     private final PureeStorage storage;
 
-    private final Executor executor;
+    private final ScheduledExecutorService executor;
 
     private int deleteThresholdInRows = Integer.MAX_VALUE;
 
@@ -63,7 +63,7 @@ public class PureeConfiguration {
     }
 
     PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage,
-            Executor executor, int deleteThresholdInRows) {
+            ScheduledExecutorService executor, int deleteThresholdInRows) {
         this.context = context;
         this.gson = gson;
         this.sourceOutputMap = sourceOutputMap;
@@ -89,7 +89,7 @@ public class PureeConfiguration {
 
         private PureeStorage storage;
 
-        private Executor executor;
+        private ScheduledExecutorService executor;
 
         private int deleteThresholdInRows = Integer.MAX_VALUE;
 
@@ -131,7 +131,7 @@ public class PureeConfiguration {
             return this;
         }
 
-        public Builder executor(Executor executor) {
+        public Builder executor(ScheduledExecutorService executor) {
             this.executor = executor;
             return this;
         }
@@ -153,14 +153,14 @@ public class PureeConfiguration {
             }
 
             if (executor == null) {
-                executor = newBackgroundThradExecutor();
+                executor = newBackgroundExecutor();
             }
             return new PureeConfiguration(context, gson, sourceOutputMap, storage, executor, deleteThresholdInRows);
         }
     }
 
-    static Executor newBackgroundThradExecutor() {
-        return Executors.newSingleThreadExecutor(new BackgroundThreadFactory());
+    static ScheduledExecutorService newBackgroundExecutor() {
+        return Executors.newScheduledThreadPool(1, new BackgroundThreadFactory());
     }
 
     static class BackgroundThreadFactory implements ThreadFactory {
