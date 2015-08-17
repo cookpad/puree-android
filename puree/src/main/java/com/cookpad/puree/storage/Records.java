@@ -25,7 +25,7 @@ public class Records extends ArrayList<Record> {
      * @return a subList view of this list starting from {@code start}
      *         (inclusive), and ending with {@code end} (exclusive)
      */
-    public Records getSubList(int start, int end){
+    public Records getSubList(int start, int end) {
         ArrayList<Record> list = new ArrayList<>(this.subList(start, end));
         Records subListRecords = new Records();
         subListRecords.addAll(list);
