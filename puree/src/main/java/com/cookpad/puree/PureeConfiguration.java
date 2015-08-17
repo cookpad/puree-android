@@ -26,7 +26,7 @@ public class PureeConfiguration {
 
     private final PureeStorage storage;
 
-    private int deleteThreshold = Integer.MAX_VALUE;
+    private int deleteThresholdInRows = Integer.MAX_VALUE;
 
     public Context getContext() {
         return context;
@@ -48,20 +48,20 @@ public class PureeConfiguration {
         return sourceOutputMap.get(logClass);
     }
 
-    public int getDeleteThreshold() {
-        return deleteThreshold;
+    public int getDeleteThresholdInRows() {
+        return deleteThresholdInRows;
     }
 
     public PureeLogger createPureeLogger() {
-        return new PureeLogger(sourceOutputMap, gson, storage, deleteThreshold);
+        return new PureeLogger(sourceOutputMap, gson, storage, deleteThresholdInRows);
     }
 
-    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage, int deleteThreshold) {
+    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage, int deleteThresholdInRows) {
         this.context = context;
         this.gson = gson;
         this.sourceOutputMap = sourceOutputMap;
         this.storage = storage;
-        this.deleteThreshold = deleteThreshold;
+        this.deleteThresholdInRows = deleteThresholdInRows;
     }
 
     /**
