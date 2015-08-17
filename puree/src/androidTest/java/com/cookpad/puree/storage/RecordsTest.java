@@ -1,15 +1,15 @@
 package com.cookpad.puree.storage;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import com.google.gson.JsonObject;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import android.support.test.runner.AndroidJUnit4;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class RecordsTest {
@@ -48,15 +48,4 @@ public class RecordsTest {
         }
     }
 
-    @Test
-    public void getSubList() {
-        Records records = new Records();
-        for (int i = 0; i < 10; i++) {
-            records.add(new Record(i, "logcat_" + i, new JsonObject()));
-        }
-
-        assertThat(records.getSubList(0, 5).size(), Matchers.is(5));
-
-        assertThat(records.getSubList(0, 5).get(4).getType(), is("logcat_4"));
-    }
 }
