@@ -64,10 +64,7 @@ public class PureeLogger {
     }
 
     public void discardOldBufferedLogs() {
-        Records records = storage.selectAll();
-        if (records.size() > deleteThresholdInRows) {
-            storage.delete(records.getSubList(deleteThresholdInRows, records.size()));
-        }
+        storage.truncateBufferedLogs(deleteThresholdInRows);
     }
 
     public void flush() {
