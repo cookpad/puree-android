@@ -21,7 +21,7 @@ public class RetryableTaskRunnerTest {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
     @Test
-    public void ensureToCallMeAfterSetTime() throws Exception {
+    public void testEnsureToCallMeAfterSetTime() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
 
         RetryableTaskRunner task = new RetryableTaskRunner(new Runnable() {
@@ -33,6 +33,27 @@ public class RetryableTaskRunnerTest {
 
         task.tryToStart();
 
-        assertThat(latch.await(30, TimeUnit.MILLISECONDS), is(true));
+        assertThat(latch.await(20, TimeUnit.MILLISECONDS), is(true));
     }
+
+    @Test
+    public void testRetryLater() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(2);
+
+        RetryableTaskRunner task = new RetryableTaskRunner(new Runnable() {
+            @Override
+            public void run() {
+                latch.countDown();
+            }
+        }, 10, 5, executor);
+
+        task.tryToStart();
+
+        assertThat(latch.await(20, TimeUnit.MILLISECONDS), is(false));
+
+        task.retryLater();
+
+        assertThat(latch.await(20, TimeUnit.MILLISECONDS), is(true));
+    }
+
 }
