@@ -10,6 +10,7 @@ import com.cookpad.puree.storage.Records;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,12 +24,15 @@ public class PureeLogger {
 
     final PureeStorage storage;
 
+    final Executor executor;
+
     int deleteThresholdInRows = Integer.MAX_VALUE;
 
-    public PureeLogger(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage, int deleteThresholdInRows) {
+    public PureeLogger(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage, Executor executor, int deleteThresholdInRows) {
         this.sourceOutputMap.putAll(sourceOutputMap);
         this.gson = gson;
         this.storage = storage;
+        this.executor = executor;
         this.deleteThresholdInRows = deleteThresholdInRows;
 
         forEachOutput(new PureeLogger.Consumer<PureeOutput>() {
@@ -45,6 +49,10 @@ public class PureeLogger {
             JsonObject jsonLog = serializeLog(log);
             output.receive(jsonLog);
         }
+    }
+
+    public Executor getExecutor() {
+        return executor;
     }
 
     public Records getBufferedLogs() {

@@ -1,17 +1,21 @@
 package com.cookpad.puree;
 
-import android.content.Context;
+import com.google.gson.Gson;
 
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeSQLiteStorage;
 import com.cookpad.puree.storage.PureeStorage;
-import com.google.gson.Gson;
+
+import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -25,6 +29,8 @@ public class PureeConfiguration {
     private final Map<Class<?>, List<PureeOutput>> sourceOutputMap;
 
     private final PureeStorage storage;
+
+    private final Executor executor;
 
     private int deleteThresholdInRows = Integer.MAX_VALUE;
 
@@ -53,15 +59,18 @@ public class PureeConfiguration {
     }
 
     public PureeLogger createPureeLogger() {
-        return new PureeLogger(sourceOutputMap, gson, storage, deleteThresholdInRows);
+        return new PureeLogger(sourceOutputMap, gson, storage, executor, deleteThresholdInRows);
     }
 
-    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage, int deleteThresholdInRows) {
+    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage,
+            Executor executor, int deleteThresholdInRows) {
         this.context = context;
         this.gson = gson;
         this.sourceOutputMap = sourceOutputMap;
         this.storage = storage;
+        this.executor = executor;
         this.deleteThresholdInRows = deleteThresholdInRows;
+
     }
 
     /**
@@ -80,7 +89,9 @@ public class PureeConfiguration {
 
         private PureeStorage storage;
 
-        private int deleteThreshold = Integer.MAX_VALUE;
+        private Executor executor;
+
+        private int deleteThresholdInRows = Integer.MAX_VALUE;
 
         /**
          * Start building a new {@link com.cookpad.puree.PureeConfiguration} instance.
@@ -120,8 +131,13 @@ public class PureeConfiguration {
             return this;
         }
 
-        public Builder deleteThreshold(int deleteThreshold) {
-            this.deleteThreshold = deleteThreshold;
+        public Builder executor(Executor executor) {
+            this.executor = executor;
+            return this;
+        }
+
+        public Builder deleteThresholdInRows(int deleteThresholdInRows) {
+            this.deleteThresholdInRows = deleteThresholdInRows;
             return this;
         }
 
@@ -135,7 +151,25 @@ public class PureeConfiguration {
             if (storage == null) {
                 storage = new PureeSQLiteStorage(context);
             }
-            return new PureeConfiguration(context, gson, sourceOutputMap, storage, deleteThreshold);
+
+            if (executor == null) {
+                executor = newBackgroundThradExecutor();
+            }
+            return new PureeConfiguration(context, gson, sourceOutputMap, storage, executor, deleteThresholdInRows);
+        }
+    }
+
+    static Executor newBackgroundThradExecutor() {
+        return Executors.newSingleThreadExecutor(new BackgroundThreadFactory());
+    }
+
+    static class BackgroundThreadFactory implements ThreadFactory {
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r, "puree");
+            thread.setPriority(Thread.MIN_PRIORITY);
+            return thread;
         }
     }
 }
