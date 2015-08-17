@@ -42,7 +42,7 @@ Configure Puree with `PureeConfiguration` in `Application#onCreate()`, which reg
 pairs of what and where.
 
 ```java
-public class DemoApplication extends Application {
+public class MyApplication extends Application {
     @Override
     public void onCreate() {
         Puree.initialize(buildConfiguration(this));
@@ -51,12 +51,15 @@ public class DemoApplication extends Application {
     public static PureeConfiguration buildConfiguration(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
         return new PureeConfiguration.Builder(context)
+                .executor(Executors.newScheduledThreadPool(1)) // optional
                 .register(ClickLog.class, new OutLogcat())
                 .register(ClickLog.class, new OutBufferedLogcat().withFilters(addEventTimeListener))
                 .build();
     }
 }
 ```
+
+See also: [demo/PureeConfigurator.java](demo/src/main/java/com/example/puree/logs/PureeConfigurator.java)
 
 ### Definition of PureeLog objects
 

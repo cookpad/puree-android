@@ -17,8 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.test.InstrumentationRegistry;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -29,14 +27,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 public class PureeBufferedOutputTest {
 
     Context context;
-
-    Handler handler;
 
     BlockingQueue<String> logs = new ArrayBlockingQueue<>(3);
 
@@ -53,10 +49,6 @@ public class PureeBufferedOutputTest {
 
     @ParametersAreNonnullByDefault
     static abstract class BufferedOutputBase extends PureeBufferedOutput {
-
-        public BufferedOutputBase(Handler handler) {
-            super(handler);
-        }
 
         @Nonnull
         @Override
@@ -75,10 +67,6 @@ public class PureeBufferedOutputTest {
     @ParametersAreNonnullByDefault
     class BufferedOutput extends BufferedOutputBase {
 
-        public BufferedOutput(Handler handler) {
-            super(handler);
-        }
-
         @Override
         public void emit(JsonArray jsonArray, AsyncResult result) {
             for (JsonElement item : jsonArray) {
@@ -91,10 +79,6 @@ public class PureeBufferedOutputTest {
     @ParametersAreNonnullByDefault
     class DiscardedBufferedOutput extends BufferedOutputBase {
 
-        public DiscardedBufferedOutput(Handler handler) {
-            super(handler);
-        }
-
         @Override
         public void emit(JsonArray jsonArray, AsyncResult result) {
             throw new AssertionFailedError("not reached");
@@ -105,10 +89,6 @@ public class PureeBufferedOutputTest {
     class BufferedOutputToTestFailFirst extends BufferedOutputBase {
 
         int counter = 0;
-
-        public BufferedOutputToTestFailFirst(Handler handler) {
-            super(handler);
-        }
 
         @Override
         public void emit(JsonArray jsonArray, AsyncResult result) {
@@ -137,7 +117,6 @@ public class PureeBufferedOutputTest {
     @Before
     public void setUp() throws Exception {
         context = InstrumentationRegistry.getTargetContext();
-        handler = new Handler(Looper.getMainLooper());
     }
 
     @After
@@ -157,7 +136,7 @@ public class PureeBufferedOutputTest {
 
     @Test
     public void testPureeBufferedOutput() throws Exception {
-        initializeLogger(new BufferedOutput(handler));
+        initializeLogger(new BufferedOutput());
 
         logger.send(new PvLog("foo"));
         logger.send(new PvLog("bar"));
@@ -174,7 +153,7 @@ public class PureeBufferedOutputTest {
 
     @Test
     public void testPureeBufferedOutputWithDiscardFilter() throws Exception {
-        initializeLogger(new DiscardedBufferedOutput(handler).withFilters(new DiscardFilter()));
+        initializeLogger(new DiscardedBufferedOutput().withFilters(new DiscardFilter()));
 
         logger.send(new PvLog("foo"));
         logger.send(new PvLog("bar"));
@@ -188,7 +167,7 @@ public class PureeBufferedOutputTest {
 
     @Test
     public void testBufferedOutputToTestFailFirst() throws Exception {
-        BufferedOutputToTestFailFirst output = new BufferedOutputToTestFailFirst(handler);
+        BufferedOutputToTestFailFirst output = new BufferedOutputToTestFailFirst();
         initializeLogger(output);
 
         logger.send(new PvLog("foo"));

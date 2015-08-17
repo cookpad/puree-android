@@ -10,7 +10,7 @@ import com.cookpad.puree.storage.Records;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -24,9 +24,10 @@ public class PureeLogger {
 
     final PureeStorage storage;
 
-    final Executor executor;
+    final ScheduledExecutorService executor;
 
-    public PureeLogger(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage, Executor executor) {
+    public PureeLogger(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage,
+            ScheduledExecutorService executor) {
         this.sourceOutputMap.putAll(sourceOutputMap);
         this.gson = gson;
         this.storage = storage;
@@ -35,7 +36,7 @@ public class PureeLogger {
         forEachOutput(new PureeLogger.Consumer<PureeOutput>() {
             @Override
             public void accept(@Nonnull PureeOutput value) {
-                value.initialize(PureeLogger.this.storage);
+                value.initialize(PureeLogger.this);
             }
         });
     }
@@ -48,7 +49,11 @@ public class PureeLogger {
         }
     }
 
-    public Executor getExecutor() {
+    public PureeStorage getStorage() {
+        return storage;
+    }
+
+    public ScheduledExecutorService getExecutor() {
         return executor;
     }
 

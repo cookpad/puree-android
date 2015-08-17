@@ -25,7 +25,8 @@ public class OutFakeApi extends PureeBufferedOutput {
         // you can change settings of this plugin
         conf.setFlushIntervalMillis(1000); // set interval of sending logs. defaults to 2 * 60 * 1000 (2 minutes).
         conf.setLogsPerRequest(10);        // set num of logs per request. defaults to 100.
-        conf.setMaxRetryCount(3);          // set retry count. if fail to send logs, logs will be sending at next time. defaults to 5.
+        conf.setMaxRetryCount(
+                3);          // set retry count. if fail to send logs, logs will be sending at next timeInMillis. defaults to 5.
         return conf;
     }
 

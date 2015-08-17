@@ -3,6 +3,7 @@ package com.cookpad.puree.outputs;
 import com.google.gson.JsonObject;
 
 import com.cookpad.puree.PureeFilter;
+import com.cookpad.puree.PureeLogger;
 import com.cookpad.puree.storage.PureeStorage;
 
 import java.util.ArrayList;
@@ -39,8 +40,8 @@ public abstract class PureeOutput {
         return filters;
     }
 
-    public void initialize(PureeStorage storage) {
-        this.storage = storage;
+    public void initialize(PureeLogger logger) {
+        this.storage = logger.getStorage();
         OutputConfiguration defaultConfiguration = new OutputConfiguration();
         this.conf = configure(defaultConfiguration);
     }

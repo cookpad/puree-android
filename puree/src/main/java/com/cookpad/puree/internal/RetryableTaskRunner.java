@@ -1,50 +1,43 @@
 package com.cookpad.puree.internal;
 
-import android.os.Handler;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class RetryableTaskRunner {
 
-    private Handler handler;
-
-    private boolean hasAlreadyStarted;
-
-    private Runnable callback;
+    private Runnable task;
 
     private BackoffCounter backoffCounter;
 
-    public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount) {
-        this(task, intervalMillis, maxRetryCount, new Handler());
-    }
+    private ScheduledExecutorService executor;
 
-    public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount, Handler handler) {
+    private ScheduledFuture<?> future;
+
+    public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount, ScheduledExecutorService executor) {
         this.backoffCounter = new BackoffCounter(intervalMillis, maxRetryCount);
-        this.handler = handler;
-        this.hasAlreadyStarted = false;
-
-        this.callback = new Runnable() {
-            @Override
-            public void run() {
-                task.run();
-            }
-        };
+        this.executor = executor;
+        this.task = task;
+        this.future = null;
     }
 
     public synchronized void tryToStart() {
-        if (hasAlreadyStarted) {
+        if (future != null) {
             return;
         }
         backoffCounter.resetRetryCount();
         startDelayed();
     }
 
-    private synchronized void startDelayed() {
-        handler.removeCallbacks(callback);
-        handler.postDelayed(callback, backoffCounter.time());
-        hasAlreadyStarted = true;
+    private void startDelayed() {
+        if (future != null) {
+            future.cancel(false);
+        }
+        future = executor.schedule(task, backoffCounter.timeInMillis(), TimeUnit.MILLISECONDS);
     }
 
     public synchronized void reset() {
-        hasAlreadyStarted = false;
+        future = null;
         backoffCounter.resetRetryCount();
     }
 
