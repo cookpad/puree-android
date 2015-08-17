@@ -6,8 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 public class RetryableTaskRunner {
 
-    private boolean hasAlreadyStarted;
-
     private Runnable task;
 
     private BackoffCounter backoffCounter;
@@ -19,26 +17,27 @@ public class RetryableTaskRunner {
     public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount, ScheduledExecutorService executor) {
         this.backoffCounter = new BackoffCounter(intervalMillis, maxRetryCount);
         this.executor = executor;
-        this.hasAlreadyStarted = false;
-
         this.task = task;
+        this.future = null;
     }
 
     public synchronized void tryToStart() {
-        if (hasAlreadyStarted) {
+        if (future != null) {
             return;
         }
         backoffCounter.resetRetryCount();
         startDelayed();
     }
 
-    private synchronized void startDelayed() {
+    private void startDelayed() {
+        if (future != null) {
+            future.cancel(false);
+        }
         future = executor.schedule(task, backoffCounter.timeInMillis(), TimeUnit.MILLISECONDS);
-        hasAlreadyStarted = true;
     }
 
     public synchronized void reset() {
-        hasAlreadyStarted = false;
+        future = null;
         backoffCounter.resetRetryCount();
     }
 

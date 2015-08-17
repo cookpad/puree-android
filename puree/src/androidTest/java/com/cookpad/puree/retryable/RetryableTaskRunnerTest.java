@@ -55,5 +55,4 @@ public class RetryableTaskRunnerTest {
 
         assertThat(latch.await(20, TimeUnit.MILLISECONDS), is(true));
     }
-
 }
