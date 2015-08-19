@@ -1,4 +1,8 @@
 
+# NEXT
+
+* Remove deprecated classes
+
 # v4.0.0 2015/08/17
 
 * Use `ScheduledExecutorService` to run tasks in backkground, instead of `AsyncTask`.
