@@ -127,7 +127,8 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
         if (recordSize > maxRecords) {
             String query = "DELETE FROM " + TABLE_NAME +
                     " WHERE id IN ( SELECT id FROM " + TABLE_NAME +
-                    " ORDER BY id DESC LIMIT " + String.valueOf(recordSize - maxRecords);
+                    " ORDER BY id ASC LIMIT " + String.valueOf(recordSize - maxRecords) +
+                    ")";
             db.execSQL(query);
         }
     }

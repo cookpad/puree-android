@@ -126,7 +126,7 @@ public class PureeConfiguration {
             this.executor = executor;
             return this;
         }
-        
+
         /**
          * Create the {@link com.cookpad.puree.PureeConfiguration} instance.
          */
