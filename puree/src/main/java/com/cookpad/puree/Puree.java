@@ -62,11 +62,12 @@ public class Puree {
     }
 
     /**
-     * Discard Old logs in buffer.
+     * Truncate logs in buffer.
+     * @param truncateThresholdInRows truncate logs that are over this variable
      */
-    public static void discardOldBufferedLogs() {
+    public static void truncateBufferedLogs(int truncateThresholdInRows) {
         checkIfPureeHasInitialized();
-        logger.discardOldBufferedLogs();
+        logger.truncateBufferedLogs(truncateThresholdInRows);
     }
 
     public static Executor getExecutor() {

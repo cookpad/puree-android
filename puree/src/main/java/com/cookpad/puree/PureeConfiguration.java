@@ -32,8 +32,6 @@ public class PureeConfiguration {
 
     private final ScheduledExecutorService executor;
 
-    private int deleteThresholdInRows = Integer.MAX_VALUE;
-
     public Context getContext() {
         return context;
     }
@@ -54,22 +52,17 @@ public class PureeConfiguration {
         return sourceOutputMap.get(logClass);
     }
 
-    public int getDeleteThresholdInRows() {
-        return deleteThresholdInRows;
-    }
-
     public PureeLogger createPureeLogger() {
-        return new PureeLogger(sourceOutputMap, gson, storage, executor, deleteThresholdInRows);
+        return new PureeLogger(sourceOutputMap, gson, storage, executor);
     }
 
     PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage,
-            ScheduledExecutorService executor, int deleteThresholdInRows) {
+            ScheduledExecutorService executor) {
         this.context = context;
         this.gson = gson;
         this.sourceOutputMap = sourceOutputMap;
         this.storage = storage;
         this.executor = executor;
-        this.deleteThresholdInRows = deleteThresholdInRows;
 
     }
 
@@ -90,8 +83,6 @@ public class PureeConfiguration {
         private PureeStorage storage;
 
         private ScheduledExecutorService executor;
-
-        private int deleteThresholdInRows = Integer.MAX_VALUE;
 
         /**
          * Start building a new {@link com.cookpad.puree.PureeConfiguration} instance.
@@ -135,12 +126,7 @@ public class PureeConfiguration {
             this.executor = executor;
             return this;
         }
-
-        public Builder deleteThresholdInRows(int deleteThresholdInRows) {
-            this.deleteThresholdInRows = deleteThresholdInRows;
-            return this;
-        }
-
+        
         /**
          * Create the {@link com.cookpad.puree.PureeConfiguration} instance.
          */
@@ -155,7 +141,7 @@ public class PureeConfiguration {
             if (executor == null) {
                 executor = newBackgroundExecutor();
             }
-            return new PureeConfiguration(context, gson, sourceOutputMap, storage, executor, deleteThresholdInRows);
+            return new PureeConfiguration(context, gson, sourceOutputMap, storage, executor);
         }
     }
 

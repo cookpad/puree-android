@@ -125,21 +125,10 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
     public void truncateBufferedLogs(int maxRecords) {
         int recordSize = getRecordCount();
         if (recordSize > maxRecords) {
-            String query = "SELECT * FROM " + TABLE_NAME +
-                    " ORDER BY id DESC" +
-                    " LIMIT " + String.valueOf(recordSize - maxRecords);
-            Cursor cursor = db.rawQuery(query, null);
-            Records truncateRecords;
-
-            try {
-                truncateRecords = recordsFromCursor(cursor);
-            } finally {
-                cursor.close();
-            }
-
-            if (truncateRecords != null) {
-                delete(truncateRecords);
-            }
+            String query = "DELETE FROM " + TABLE_NAME +
+                    " WHERE id IN ( SELECT id FROM " + TABLE_NAME +
+                    " ORDER BY id DESC LIMIT " + String.valueOf(recordSize - maxRecords);
+            db.execSQL(query);
         }
     }
 

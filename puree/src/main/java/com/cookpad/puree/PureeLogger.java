@@ -26,15 +26,12 @@ public class PureeLogger {
 
     final ScheduledExecutorService executor;
 
-    int deleteThresholdInRows = Integer.MAX_VALUE;
-
     public PureeLogger(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage,
-            ScheduledExecutorService executor, int deleteThresholdInRows) {
+            ScheduledExecutorService executor) {
         this.sourceOutputMap.putAll(sourceOutputMap);
         this.gson = gson;
         this.storage = storage;
         this.executor = executor;
-        this.deleteThresholdInRows = deleteThresholdInRows;
 
         forEachOutput(new PureeLogger.Consumer<PureeOutput>() {
             @Override
@@ -68,8 +65,8 @@ public class PureeLogger {
         storage.clear();
     }
 
-    public void discardOldBufferedLogs() {
-        storage.truncateBufferedLogs(deleteThresholdInRows);
+    public void truncateBufferedLogs(int truncateThresholdInRows) {
+        storage.truncateBufferedLogs(truncateThresholdInRows);
     }
 
     public void flush() {
