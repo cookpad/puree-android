@@ -21,7 +21,7 @@ public class PureeTest {
 
         public DummyPureeLogger(Context context) {
             super(new HashMap<Class<?>, List<PureeOutput>>(), new Gson(), new PureeSQLiteStorage(context),
-                    Executors.newScheduledThreadPool(1), 1000);
+                    Executors.newScheduledThreadPool(1));
         }
 
 
@@ -64,8 +64,4 @@ public class PureeTest {
         Puree.discardBufferedLogs();
     }
 
-    @Test
-    public void testDiscardOldBufferedLogs() throws Exception {
-        Puree.discardOldBufferedLogs();
-    }
 }
