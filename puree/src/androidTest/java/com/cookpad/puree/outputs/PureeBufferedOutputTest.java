@@ -47,6 +47,34 @@ public class PureeBufferedOutputTest {
         }
     }
 
+    static class FooLog implements PureeLog {
+
+        String name;
+
+        public FooLog(String name) {
+            this.name = name;
+        }
+    }
+
+    static class BarLog implements PureeLog {
+
+        String name;
+
+        public BarLog(String name) {
+            this.name = name;
+        }
+    }
+
+    static class BazLog implements PureeLog {
+
+        String name;
+
+        public BazLog(String name) {
+            this.name = name;
+        }
+    }
+
+
     @ParametersAreNonnullByDefault
     static abstract class BufferedOutputBase extends PureeBufferedOutput {
 
@@ -59,7 +87,7 @@ public class PureeBufferedOutputTest {
         @Nonnull
         @Override
         public OutputConfiguration configure(OutputConfiguration conf) {
-            conf.setFlushIntervalMillis(1);
+            conf.setFlushIntervalMillis(10);
             return conf;
         }
     }
@@ -67,12 +95,20 @@ public class PureeBufferedOutputTest {
     @ParametersAreNonnullByDefault
     class BufferedOutput extends BufferedOutputBase {
 
+        int flushCount = 0;
+
         @Override
         public void emit(JsonArray jsonArray, AsyncResult result) {
             for (JsonElement item : jsonArray) {
                 logs.add(item.toString());
             }
             result.success();
+        }
+
+        @Override
+        public void flush() {
+            flushCount++;
+            super.flush();
         }
     }
 
@@ -195,7 +231,7 @@ public class PureeBufferedOutputTest {
     }
 
     @Test
-    public void testTrancateBufferedLogs() throws Exception {
+    public void testTruncateBufferedLogs() throws Exception {
         initializeLogger(new TruncateBufferedOutput());
 
         logger.send(new PvLog("foo"));
@@ -213,4 +249,51 @@ public class PureeBufferedOutputTest {
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));
     }
+
+    @Test
+    public void testPureeBufferedOutput_countFlush() throws Exception {
+        BufferedOutput output = new BufferedOutput();
+
+        logger = new PureeConfiguration.Builder(context)
+                .register(PvLog.class, output)
+                .register(FooLog.class, output)
+                .register(BarLog.class, output)
+                .register(BazLog.class, output)
+                .build()
+                .createPureeLogger();
+
+        logger.send(new PvLog("foo"));
+        logger.send(new PvLog("bar"));
+        logger.send(new PvLog("baz"));
+
+        logger.flush();
+
+        Thread.sleep(100);
+
+        assertThat(output.flushCount, is(lessThanOrEqualTo(2)));
+    }
+
+    @Test
+    public void testPureeBufferedOutput_countEmit() throws Exception {
+        BufferedOutput output = new BufferedOutput();
+
+        logger = new PureeConfiguration.Builder(context)
+                .register(PvLog.class, output)
+                .register(FooLog.class, output)
+                .register(BarLog.class, output)
+                .register(BazLog.class, output)
+                .build()
+                .createPureeLogger();
+
+        logger.send(new PvLog("foo"));
+        logger.send(new PvLog("bar"));
+        logger.send(new PvLog("baz"));
+
+        logger.flush();
+
+        Thread.sleep(100);
+
+        assertThat(logs.size(), is(lessThanOrEqualTo(3)));
+    }
+
 }

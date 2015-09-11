@@ -8,6 +8,7 @@ import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
@@ -106,7 +107,7 @@ public class PureeLogger {
     }
 
     public void forEachOutput(Consumer<PureeOutput> f) {
-        for (List<PureeOutput> outputs : sourceOutputMap.values()) {
+        for (List<PureeOutput> outputs : new HashSet<>(sourceOutputMap.values())) {
             for (PureeOutput output : outputs) {
                 f.accept(output);
             }
