@@ -63,4 +63,5 @@ public class PureeTest {
     public void testDiscardBufferedLogs() throws Exception {
         Puree.discardBufferedLogs();
     }
+
 }

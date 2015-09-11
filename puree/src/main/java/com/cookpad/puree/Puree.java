@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.util.concurrent.Executor;
 
+
 public class Puree {
 
     private static final String TAG = Puree.class.getSimpleName();
@@ -58,6 +59,15 @@ public class Puree {
     public static void discardBufferedLogs() {
         checkIfPureeHasInitialized();
         logger.discardBufferedLogs();
+    }
+
+    /**
+     * Truncate logs in buffer.
+     * @param truncateThresholdInRows truncate logs that are over this variable
+     */
+    public static void truncateBufferedLogs(int truncateThresholdInRows) {
+        checkIfPureeHasInitialized();
+        logger.truncateBufferedLogs(truncateThresholdInRows);
     }
 
     public static Executor getExecutor() {

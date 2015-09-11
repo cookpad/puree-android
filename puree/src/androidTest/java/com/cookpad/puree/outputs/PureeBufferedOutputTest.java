@@ -77,6 +77,17 @@ public class PureeBufferedOutputTest {
     }
 
     @ParametersAreNonnullByDefault
+    class TruncateBufferedOutput extends BufferedOutput {
+
+        @Nonnull
+        @Override
+        public OutputConfiguration configure(OutputConfiguration conf) {
+            conf.setFlushIntervalMillis(5000);
+            return conf;
+        }
+    }
+
+    @ParametersAreNonnullByDefault
     class DiscardedBufferedOutput extends BufferedOutputBase {
 
         @Override
@@ -178,6 +189,26 @@ public class PureeBufferedOutputTest {
         Thread.sleep(100);
 
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"foo\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));
+    }
+
+    @Test
+    public void testTrancateBufferedLogs() throws Exception {
+        initializeLogger(new TruncateBufferedOutput());
+
+        logger.send(new PvLog("foo"));
+        logger.send(new PvLog("bar"));
+        logger.send(new PvLog("baz"));
+
+        Thread.sleep(100);
+
+        logger.truncateBufferedLogs(2);
+
+        logger.flush();
+
+        Thread.sleep(100);
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));

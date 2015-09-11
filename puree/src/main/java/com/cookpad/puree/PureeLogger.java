@@ -65,6 +65,10 @@ public class PureeLogger {
         storage.clear();
     }
 
+    public void truncateBufferedLogs(int truncateThresholdInRows) {
+        storage.truncateBufferedLogs(truncateThresholdInRows);
+    }
+
     public void flush() {
         forEachOutput(new PureeLogger.Consumer<PureeOutput>() {
             @Override

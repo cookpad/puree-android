@@ -8,5 +8,6 @@ public interface PureeStorage {
     public Records select(String type, int logsPerRequest);
     public Records selectAll();
     public void delete(Records records);
+    public void truncateBufferedLogs(int maxRecords);
     public void clear();
 }

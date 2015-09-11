@@ -97,6 +97,18 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
 
     }
 
+    private int getRecordCount() {
+        String query = "SELECT COUNT(*) FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        int count = 0;
+        if(cursor.moveToNext()){
+            count = cursor.getInt(0);
+        }
+
+        cursor.close();
+        return count;
+    }
+
     private JsonObject parseJsonString(String jsonString) {
         return (JsonObject) jsonParser.parse(jsonString);
     }
@@ -107,6 +119,18 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
         String query = "DELETE FROM " + TABLE_NAME +
                 " WHERE id IN (" + records.getIdsAsString() + ")";
         db.execSQL(query);
+    }
+
+    @Override
+    public void truncateBufferedLogs(int maxRecords) {
+        int recordSize = getRecordCount();
+        if (recordSize > maxRecords) {
+            String query = "DELETE FROM " + TABLE_NAME +
+                    " WHERE id IN ( SELECT id FROM " + TABLE_NAME +
+                    " ORDER BY id ASC LIMIT " + String.valueOf(recordSize - maxRecords) +
+                    ")";
+            db.execSQL(query);
+        }
     }
 
     @Override

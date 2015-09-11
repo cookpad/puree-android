@@ -63,6 +63,7 @@ public class PureeConfiguration {
         this.sourceOutputMap = sourceOutputMap;
         this.storage = storage;
         this.executor = executor;
+
     }
 
     /**
@@ -136,6 +137,7 @@ public class PureeConfiguration {
             if (storage == null) {
                 storage = new PureeSQLiteStorage(context);
             }
+
             if (executor == null) {
                 executor = newBackgroundExecutor();
             }

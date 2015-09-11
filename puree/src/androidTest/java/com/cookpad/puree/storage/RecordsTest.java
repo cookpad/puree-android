@@ -47,4 +47,5 @@ public class RecordsTest {
             assertThat(records.getJsonLogs().size(), is(3));
         }
     }
+
 }
