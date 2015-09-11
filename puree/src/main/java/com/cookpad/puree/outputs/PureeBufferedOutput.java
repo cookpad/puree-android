@@ -1,20 +1,23 @@
 package com.cookpad.puree.outputs;
 
-import com.cookpad.puree.internal.PureeVerboseRunnable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import com.cookpad.puree.PureeLogger;
 import com.cookpad.puree.async.AsyncResult;
+import com.cookpad.puree.internal.PureeVerboseRunnable;
 import com.cookpad.puree.internal.RetryableTaskRunner;
 import com.cookpad.puree.storage.Records;
 
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public abstract class PureeBufferedOutput extends PureeOutput {
+
+    final AtomicBoolean lock = new AtomicBoolean(false);
 
     RetryableTaskRunner flushTask;
 
@@ -61,6 +64,9 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     }
 
     public void flushSync() {
+        if (!lock.compareAndSet(false, true)) {
+            return;
+        }
         final Records records = getRecordsFromStorage();
 
         if (records.isEmpty()) {
@@ -74,11 +80,13 @@ public abstract class PureeBufferedOutput extends PureeOutput {
             public void success() {
                 flushTask.reset();
                 storage.delete(records);
+                lock.set(false);
             }
 
             @Override
             public void fail() {
                 flushTask.retryLater();
+                lock.set(false);
             }
         });
     }
