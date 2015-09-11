@@ -1,5 +1,6 @@
 package com.cookpad.puree.outputs;
 
+import com.cookpad.puree.internal.PureeVerboseRunnable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -36,7 +37,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
 
     @Override
     public void receive(final JsonObject jsonLog) {
-        executor.execute(new Runnable() {
+        executor.execute(new PureeVerboseRunnable(new Runnable() {
             @Override
             public void run() {
                 JsonObject filteredLog = applyFilters(jsonLog);
@@ -44,19 +45,19 @@ public abstract class PureeBufferedOutput extends PureeOutput {
                     storage.insert(type(), filteredLog);
                 }
             }
-        });
+        }));
 
         flushTask.tryToStart();
     }
 
     @Override
     public void flush() {
-        executor.execute(new Runnable() {
+        executor.execute(new PureeVerboseRunnable(new Runnable() {
             @Override
             public void run() {
                 flushSync();
             }
-        });
+        }));
     }
 
     public void flushSync() {
