@@ -30,7 +30,7 @@ buildscript {
 
 // app/build.gradle
 dependencies {
-    compile 'com.cookpad.puree:puree:4.0.0'
+    compile 'com.cookpad.puree:puree:4.1.0'
 }
 ```
 
@@ -231,6 +231,3 @@ and run the following tasks:
 Copyright (c) 2014 Cookpad Inc. https://github.com/cookpad
 
 See [LICENSE.txt](LICENSE.txt) for the license.
-
-
-

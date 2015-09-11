@@ -1,7 +1,14 @@
 
-# NEXT
+# v4.1.0 2015/09/11
 
+* Avoid sending logs multiple times in Puree.flush()
+  * https://github.com/cookpad/puree-android/pull/49
+* Output errors during execution of BufferedOutput
+  * https://github.com/cookpad/puree-android/pull/47
+* Add `Puree#truncateBufferedLogs(int)`
+  * https://github.com/cookpad/puree-android/pull/43
 * Remove deprecated classes
+  * https://github.com/cookpad/puree-android/pull/46
 
 # v4.0.0 2015/08/17
 
@@ -75,4 +82,3 @@ The main development branch is here: https://github.com/cookpad/puree-android/pu
 # v0.0.6 2014/11/4
 
 * The first tagged version
-
