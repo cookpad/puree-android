@@ -1,3 +1,7 @@
+# v4.1.1 2015/09/16
+
+* Fix sending logs multiple times in PureeOutput#flushSync()
+  * https://github.com/cookpad/puree-android/pull/51
 
 # v4.1.0 2015/09/11
 
