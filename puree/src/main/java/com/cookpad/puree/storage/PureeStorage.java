@@ -10,4 +10,6 @@ public interface PureeStorage {
     public void delete(Records records);
     public void truncateBufferedLogs(int maxRecords);
     public void clear();
+    public boolean lock();
+    public void unlock();
 }
