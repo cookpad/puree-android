@@ -113,6 +113,35 @@ public class PureeBufferedOutputTest {
     }
 
     @ParametersAreNonnullByDefault
+    class BufferedOutputAsync extends BufferedOutput {
+
+        int flushCount = 0;
+
+        @Override
+        public void emit(JsonArray jsonArray, final AsyncResult result) {
+            for (final JsonElement item : jsonArray) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                        }
+                        logs.add(item.toString());
+                        result.success();
+                    }
+                }).start();
+            }
+        }
+
+        @Override
+        public void flush() {
+            flushCount++;
+            super.flush();
+        }
+    }
+
+    @ParametersAreNonnullByDefault
     class TruncateBufferedOutput extends BufferedOutput {
 
         @Nonnull
@@ -294,6 +323,37 @@ public class PureeBufferedOutputTest {
         Thread.sleep(100);
 
         assertThat(logs.size(), is(lessThanOrEqualTo(3)));
+
+    }
+
+    @Test
+    public void testPureeBufferedOutput_countEmitAsync() throws Exception {
+        BufferedOutputAsync output = new BufferedOutputAsync();
+
+        logger = new PureeConfiguration.Builder(context)
+                .register(PvLog.class, output)
+                .register(FooLog.class, output)
+                .register(BarLog.class, output)
+                .register(BazLog.class, output)
+                .build()
+                .createPureeLogger();
+
+        logger.flush();
+
+        Thread.sleep(100);
+
+        assertThat(logs.size(), is(0));
+
+        logger.send(new FooLog("foo"));
+        logger.send(new BarLog("bar"));
+        logger.send(new BazLog("baz"));
+
+        logger.flush();
+
+        Thread.sleep(1000);
+
+        assertThat(logs.size(), is(3));
+
     }
 
 }
