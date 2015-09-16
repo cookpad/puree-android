@@ -13,6 +13,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -31,6 +33,8 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
     private final JsonParser jsonParser = new JsonParser();
 
     private final SQLiteDatabase db;
+
+    private final AtomicBoolean lock = new AtomicBoolean(false);
 
     static String databaseName(Context context) {
         // do not share the database file in multi processes
@@ -101,7 +105,7 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
         String query = "SELECT COUNT(*) FROM " + TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
         int count = 0;
-        if(cursor.moveToNext()){
+        if (cursor.moveToNext()) {
             count = cursor.getInt(0);
         }
 
@@ -158,5 +162,15 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
     protected void finalize() throws Throwable {
         db.close();
         super.finalize();
+    }
+
+    @Override
+    public boolean lock() {
+        return lock.compareAndSet(false, true);
+    }
+
+    @Override
+    public void unlock() {
+        lock.set(false);
     }
 }

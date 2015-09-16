@@ -10,14 +10,11 @@ import com.cookpad.puree.internal.RetryableTaskRunner;
 import com.cookpad.puree.storage.Records;
 
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public abstract class PureeBufferedOutput extends PureeOutput {
-
-    final AtomicBoolean lock = new AtomicBoolean(false);
 
     RetryableTaskRunner flushTask;
 
@@ -64,12 +61,13 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     }
 
     public void flushSync() {
-        if (!lock.compareAndSet(false, true)) {
+        if (!storage.lock()) {
             return;
         }
         final Records records = getRecordsFromStorage();
 
         if (records.isEmpty()) {
+            storage.unlock();
             return;
         }
 
@@ -80,13 +78,13 @@ public abstract class PureeBufferedOutput extends PureeOutput {
             public void success() {
                 flushTask.reset();
                 storage.delete(records);
-                lock.set(false);
+                storage.unlock();
             }
 
             @Override
             public void fail() {
                 flushTask.retryLater();
-                lock.set(false);
+                storage.unlock();
             }
         });
     }
