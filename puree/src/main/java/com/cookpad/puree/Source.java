@@ -17,19 +17,34 @@ public class Source {
         this.logClass = logClass;
     }
 
-    /** Specify the {@link com.cookpad.puree.PureeFilter}. */
+    /**
+     * Specify the {@link com.cookpad.puree.PureeFilter}.
+     *
+     * @param filter {@link PureeFilter}.
+     * @return {@link Source}.
+     */
     public Source filter(PureeFilter filter) {
         filters.add(filter);
         return this;
     }
 
-    /** Specify the {@link com.cookpad.puree.PureeFilter}. */
+    /**
+     * Specify the {@link com.cookpad.puree.PureeFilter}.
+     *
+     * @param filters {@link PureeFilter} list.
+     * @return {@link Source}.
+     */
     public Source filters(PureeFilter... filters) {
         this.filters.addAll(Arrays.asList(filters));
         return this;
     }
 
-    /** Specify the {@link com.cookpad.puree.outputs.PureeOutput} that is responded to source. */
+    /**
+     * Specify the {@link com.cookpad.puree.outputs.PureeOutput} that is responded to source.
+     *
+     * @param output {@link com.cookpad.puree.outputs.PureeOutput}.
+     * @return {@link com.cookpad.puree.PureeConfiguration.Builder}.
+     */
     public PureeConfiguration.Builder to(PureeOutput output) {
         builder.register(logClass, output.withFilters(filters));
         return builder;

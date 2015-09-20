@@ -67,7 +67,7 @@ public class PureeConfiguration {
     }
 
     /**
-     * Print mapping of SOURCE -> FILTER... OUTPUT.
+     * Print mapping of SOURCE -&gt; FILTER... OUTPUT.
      */
     public void printMapping() {
         LogDumper.out(sourceOutputMap);
@@ -86,6 +86,8 @@ public class PureeConfiguration {
 
         /**
          * Start building a new {@link com.cookpad.puree.PureeConfiguration} instance.
+         *
+         * @param context {@link Context}.
          */
         public Builder(Context context) {
             this.context = context.getApplicationContext();
@@ -93,6 +95,9 @@ public class PureeConfiguration {
 
         /**
          * Specify the {@link com.google.gson.Gson} to serialize logs.
+         *
+         * @param gson {@link Gson}.
+         * @return {@link com.cookpad.puree.PureeConfiguration.Builder}.
          */
         public Builder gson(Gson gson) {
             this.gson = gson;
@@ -102,6 +107,9 @@ public class PureeConfiguration {
         /**
          * Specify a source class of logs, which returns {@link Source} an
          * {@link Source#to(PureeOutput)} must be called to register an output plugin.
+         *
+         * @param logClass log class.
+         * @return {@link Source}.
          */
         public Source source(Class<? extends PureeLog> logClass) {
             return new Source(this, logClass);
@@ -129,6 +137,8 @@ public class PureeConfiguration {
 
         /**
          * Create the {@link com.cookpad.puree.PureeConfiguration} instance.
+         *
+         * @return {@link com.cookpad.puree.PureeConfiguration}.
          */
         public PureeConfiguration build() {
             if (gson == null) {

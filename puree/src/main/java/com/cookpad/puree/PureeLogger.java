@@ -80,7 +80,10 @@ public class PureeLogger {
     }
 
     /**
-     * Serialize a {@link PureeLog} into {@link JsonObject} with {@link Gson}
+     * Serialize a {@link PureeLog} into {@link JsonObject} with {@link Gson}.
+     *
+     * @param log {@link PureeLog}.
+     * @return serialized json object.
      */
     @Nonnull
     public JsonObject serializeLog(PureeLog log) {
