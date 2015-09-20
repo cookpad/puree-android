@@ -49,9 +49,16 @@ android.libraryVariants.all { variant ->
     task("javadoc${variant.name.capitalize()}", type: Javadoc) {
         description "Generates Javadoc for $variant.name."
         source = variant.javaCompile.source
-        ext.androidJar = System.getenv("ANDROID_HOME") +
-                "/platforms/${android.compileSdkVersion}/android.jar"
-        classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
+
+        // Add all of your dependencies and android jars to the classpath
+        classpath += files(variant.javaCompile.classpath.files)
+        classpath += files(android.getBootClasspath())
+        exclude '**/BuildConfig.java'
+        exclude '**/R.java'
+
+        options.links("http://docs.oracle.com/javase/7/docs/api/")
+        options.linksOffline("http://d.android.com/reference</a>", "${android.sdkDirectory}/docs/reference")
+        options.charSet("utf-8")
     }
 
     task("bundleJavadoc${variant.name.capitalize()}", type: Jar) {
@@ -78,9 +85,15 @@ task androidSourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
+task androidJavadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
 artifacts {
     archives androidJar
     archives androidSourcesJar
+    archives androidJavadocJar
 }
 
 publishing {
@@ -91,6 +104,7 @@ publishing {
             version VERSION
             artifact androidJar
             artifact androidSourcesJar
+            artifact androidJavadocJar
             pom.withXml {
                 Node root = asNode()
                 root.appendNode('name', 'puree')
