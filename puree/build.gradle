@@ -57,7 +57,7 @@ android.libraryVariants.all { variant ->
         exclude '**/R.java'
 
         options.links("http://docs.oracle.com/javase/7/docs/api/")
-        options.linksOffline("http://d.android.com/reference</a>", "${android.sdkDirectory}/docs/reference")
+        options.linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference")
         options.charSet("utf-8")
     }
 
