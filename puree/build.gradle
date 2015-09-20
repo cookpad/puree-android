@@ -155,3 +155,13 @@ bintray {
         licenses = ['MIT']
     }
 }
+
+// execute shell which publishes javadoc with version info
+task deployJavadoc(type: Exec) {
+    workingDir '../'
+    executable "./deploy_javadoc.sh"
+    args VERSION
+}
+
+// call deployJavadoc after bintrayUpload task
+bintrayUpload.finalizedBy(deployJavadoc)
