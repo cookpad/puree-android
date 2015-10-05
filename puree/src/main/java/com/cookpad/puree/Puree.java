@@ -26,7 +26,11 @@ public class Puree {
     }
 
     /**
-     * Try to send log. This log is sent immediately or put into buffer (it's depending on output plugin).
+     * Try to send log.
+     * <p>
+     * This log is sent immediately or put into buffer (it's depending on output plugin).
+     *
+     * @param log {@link PureeLog}.
      */
     public static void send(final PureeLog log) {
         checkIfPureeHasInitialized();
@@ -47,6 +51,8 @@ public class Puree {
 
     /**
      * Get all logs that in buffer.
+     *
+     * @return {@link Records}.
      */
     public static Records getBufferedLogs() {
         checkIfPureeHasInitialized();
@@ -63,6 +69,7 @@ public class Puree {
 
     /**
      * Truncate logs in buffer.
+     *
      * @param truncateThresholdInRows truncate logs that are over this variable
      */
     public static void truncateBufferedLogs(int truncateThresholdInRows) {
