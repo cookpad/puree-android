@@ -117,7 +117,7 @@ public class OutLogcat extends PureeOutput {
 }
 ```
 
-If you need beffering, you can use `PureeBufferedOutput`.
+If you need buffering, you can use `PureeBufferedOutput`.
 
 ```java
 public class OutFakeApi extends PureeBufferedOutput {
