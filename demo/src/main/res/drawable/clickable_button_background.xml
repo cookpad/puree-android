@@ -1,8 +1,0 @@
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="false">
-        <color android:color="@color/clickable_button_background" />
-    </item>
-    <item android:state_pressed="true">
-        <color android:color="@color/clickable_button_background_pressed" />
-    </item>
-</selector>
