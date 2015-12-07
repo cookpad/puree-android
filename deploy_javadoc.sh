@@ -1,37 +1,30 @@
 #!/bin/bash
+# ./deploy_javadoc.sh
 
 set -ex
 
-DIR=temp-clone
+GH_PAGES_DIR=gh-pages
+
+./gradlew puree:clean puree:bundleJavadocRelease
 
 # Delete any existing temporary website clone
-rm -rf $DIR
-
-# Clone the current repo into temp folder
-git clone $REPO $DIR
-
-# Move working directory into temp folder
-cd $DIR
+rm -rf $GH_PAGES_DIR
 
 # Checkout and track the gh-pages branch
-git checkout -t origin/gh-pages
+git clone . --branch gh-pages $GH_PAGES_DIR
+cd $GH_PAGES_DIR
 
-# Delete everything
 rm -rf *
-
-# Download the latest javadoc
-curl -L "https://bintray.com/artifact/download/cookpad/maven/com/cookpad/puree/puree/${1}/puree-${1}-javadoc.jar" > javadoc.zip
-unzip javadoc.zip
-rm javadoc.zip
+unzip ../puree/build/libs/puree-*-javadoc.jar
 
 # Stage all files in git and create a commit
 git add .
-git add -u
-git commit -m "Publish javadoc at $(date)."
+git commit -m "Publish javadoc at $(LANG=en date)."
 
-# Push the new files up to GitHub
+# Push the new files up to the parent repository
 git push origin gh-pages
 
-# Delete our temp folder
 cd ..
-rm -rf $DIR
+
+# Push thew new files up to GitHub pages
+git push origin gh-pages
