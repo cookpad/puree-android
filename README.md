@@ -53,7 +53,7 @@ public class MyApplication extends Application {
         return new PureeConfiguration.Builder(context)
                 .executor(Executors.newScheduledThreadPool(1)) // optional
                 .register(ClickLog.class, new OutLogcat())
-                .register(ClickLog.class, new OutBufferedLogcat().withFilters(addEventTimeListener))
+                .register(ClickLog.class, new OutBufferedLogcat().withFilters(addEventTimeFilter))
                 .build();
     }
 }
@@ -168,7 +168,7 @@ If you need to add common params to each logs, you can use `PureeFilter`:
 ```java
 public class AddEventTimeFilter implements PureeFilter {
     public JsonObject apply(JsonObject jsonLog) {
-        jsonLog.put("event_time", System.currentTimeMillis());
+        jsonLog.addProperty("event_time", System.currentTimeMillis());
         return jsonLog;
     }
 }
