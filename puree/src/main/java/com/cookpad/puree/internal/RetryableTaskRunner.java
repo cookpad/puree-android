@@ -14,11 +14,18 @@ public class RetryableTaskRunner {
 
     private ScheduledFuture<?> future;
 
-    public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount, ScheduledExecutorService executor) {
+    private long initialDelayMillis;
+
+    public RetryableTaskRunner(final Runnable task, long initialDelayMillis, int intervalMillis, int maxRetryCount, ScheduledExecutorService executor) {
         this.backoffCounter = new BackoffCounter(intervalMillis, maxRetryCount);
         this.executor = executor;
         this.task = task;
+        this.initialDelayMillis = initialDelayMillis;
         this.future = null;
+    }
+
+    public RetryableTaskRunner(final Runnable task, int intervalMillis, int maxRetryCount, ScheduledExecutorService executor) {
+        this(task, intervalMillis, intervalMillis, maxRetryCount, executor);
     }
 
     public synchronized void tryToStart() {
@@ -33,7 +40,7 @@ public class RetryableTaskRunner {
         if (future != null) {
             future.cancel(false);
         }
-        future = executor.schedule(task, backoffCounter.timeInMillis(), TimeUnit.MILLISECONDS);
+        future = executor.scheduleWithFixedDelay(task, initialDelayMillis, backoffCounter.timeInMillis(), TimeUnit.MILLISECONDS);
     }
 
     public synchronized void reset() {
