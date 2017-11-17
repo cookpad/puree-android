@@ -76,14 +76,12 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         emit(jsonLogs, new AsyncResult() {
             @Override
             public void success() {
-                flushTask.reset();
                 storage.delete(records);
                 storage.unlock();
             }
 
             @Override
             public void fail() {
-                flushTask.retryLater();
                 storage.unlock();
             }
         });
