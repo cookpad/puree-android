@@ -1,3 +1,8 @@
+# v4.1.2 2018/10/01
+
+* Retry or reset when storage is locked, and records is empty
+  - https://github.com/cookpad/puree-android/pull/62
+
 # v4.1.1 2015/09/16
 
 * Fix sending logs multiple times in PureeOutput#flushSync()
