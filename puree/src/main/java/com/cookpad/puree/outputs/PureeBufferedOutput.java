@@ -62,7 +62,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
 
     public void flushSync() {
         if (!storage.lock()) {
-            flushTask.reset();
+            flushTask.retryLater();
             return;
         }
         final Records records = getRecordsFromStorage();
