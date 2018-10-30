@@ -11,8 +11,11 @@ object TestLibs {
     // test
     const val junit = "junit:junit:4.12"
     const val hamcrest = "org.hamcrest:hamcrest-library:1.3"
-    const val robolectricInstrumentation = "com.github.gfx.android.robolectricinstrumentation:robolectric-instrumentation:3.0.6"
+    const val robolectric = "org.robolectric:robolectric:4.0"
 
     // androidTest
-    const val androidSupportTestRunner = "com.android.support.test:runner:1.0.2"
+    const val androidXTestCore = "androidx.test:core:1.0.0"
+    const val androidXTestRunner = "androidx.test:runner:1.1.0"
+    const val androidXTestRule = "androidx.test:rules:1.1.0"
+    const val androidXTestJUnit = "androidx.test.ext:junit:1.0.0"
 }

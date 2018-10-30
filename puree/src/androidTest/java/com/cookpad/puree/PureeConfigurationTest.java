@@ -9,14 +9,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
 
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -26,7 +27,7 @@ import static org.junit.Assert.*;
 public class PureeConfigurationTest {
     @Test
     public void checkDefaultValue() {
-        Context context = InstrumentationRegistry.getContext();
+        Context context = ApplicationProvider.getApplicationContext();
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
                 .build();
 
@@ -39,7 +40,7 @@ public class PureeConfigurationTest {
 
     @Test
     public void build() {
-        Context context = InstrumentationRegistry.getContext();
+        Context context = ApplicationProvider.getApplicationContext();
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
                 .source(FooLog.class).to(new OutFoo())
                 .source(FooLog.class).filters(new FooFilter()).to(new OutFoo())
@@ -64,7 +65,7 @@ public class PureeConfigurationTest {
 
     @Test
     public void build2() {
-        Context context = InstrumentationRegistry.getContext();
+        Context context = ApplicationProvider.getApplicationContext();
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
                 .register(FooLog.class, new OutFoo())
                 .register(FooLog.class, new OutFoo().withFilters(new FooFilter()))

@@ -18,7 +18,7 @@ android {
         versionCode 1
         versionName VERSION
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
@@ -71,13 +71,16 @@ dependencies {
     api Libs.gson
     implementation Libs.jsr305
 
-    testImplementation TestLibs.junit
     testImplementation TestLibs.hamcrest
-    testImplementation TestLibs.robolectricInstrumentation
+    testImplementation TestLibs.robolectric
+    testImplementation TestLibs.androidXTestCore
+    testImplementation TestLibs.androidXTestRunner
+    testImplementation TestLibs.androidXTestJUnit
 
-    androidTestImplementation TestLibs.junit
     androidTestImplementation TestLibs.hamcrest
-    androidTestImplementation TestLibs.androidSupportTestRunner
+    androidTestImplementation TestLibs.androidXTestCore
+    androidTestImplementation TestLibs.androidXTestRunner
+    androidTestImplementation TestLibs.androidXTestJUnit
 }
 
 task androidJar(type: Jar) {

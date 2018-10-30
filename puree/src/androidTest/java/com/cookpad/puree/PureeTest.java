@@ -1,21 +1,21 @@
 package com.cookpad.puree;
 
-import com.google.gson.Gson;
+import android.content.Context;
 
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeSQLiteStorage;
+import com.google.gson.Gson;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class PureeTest {
@@ -43,7 +43,7 @@ public class PureeTest {
 
     @Before
     public void setUp() throws Exception {
-        Context context = InstrumentationRegistry.getTargetContext();
+        Context context = ApplicationProvider.getApplicationContext();
         Puree.setPureeLogger(new DummyPureeLogger(context));
     }
 
