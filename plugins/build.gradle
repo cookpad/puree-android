@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion BuildSettings.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 23
+        minSdkVersion BuildSettings.minSdkVersion
+        targetSdkVersion BuildSettings.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -25,4 +25,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':puree')
+
+    implementation Libs.jsr305
 }
