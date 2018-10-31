@@ -130,10 +130,6 @@ public class PureeBufferedOutputTest {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                        }
                         logs.add(item.toString());
                         result.success();
                     }

@@ -39,6 +39,9 @@ android {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'LICENSE.txt'
     }
+    sourceSets {
+        test.java.srcDirs += "src/androidTest/java"
+    }
 }
 
 android.libraryVariants.all { variant ->
