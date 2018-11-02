@@ -5,12 +5,12 @@ import com.cookpad.puree.internal.RetryableTaskRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;

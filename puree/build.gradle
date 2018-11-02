@@ -10,16 +10,15 @@ project.version = VERSION
 println "building ${GROUP_ID}:${ARTIFACT_ID}:${VERSION}"
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion BuildSettings.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 23
+        minSdkVersion BuildSettings.minSdkVersion
+        targetSdkVersion BuildSettings.targetSdkVersion
         versionCode 1
         versionName VERSION
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
@@ -39,6 +38,9 @@ android {
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'LICENSE.txt'
+    }
+    sourceSets {
+        test.java.srcDirs += "src/androidTest/java"
     }
 }
 
@@ -69,15 +71,19 @@ android.libraryVariants.all { variant ->
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.4'
-    compile 'com.google.code.findbugs:jsr305:3.0.1'
+    api Libs.gson
+    implementation Libs.jsr305
 
-    androidTestCompile 'com.android.support.test:runner:0.4.1'
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'com.github.gfx.android.robolectricinstrumentation:robolectric-instrumentation:3.0.6'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.hamcrest:hamcrest-library:1.3'
+    testImplementation TestLibs.hamcrest
+    testImplementation TestLibs.robolectric
+    testImplementation TestLibs.androidXTestCore
+    testImplementation TestLibs.androidXTestRunner
+    testImplementation TestLibs.androidXTestJUnit
+
+    androidTestImplementation TestLibs.hamcrest
+    androidTestImplementation TestLibs.androidXTestCore
+    androidTestImplementation TestLibs.androidXTestRunner
+    androidTestImplementation TestLibs.androidXTestJUnit
 }
 
 task androidJar(type: Jar) {

@@ -1,14 +1,15 @@
 package com.cookpad.puree.outputs;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import android.content.Context;
 
 import com.cookpad.puree.PureeConfiguration;
 import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.PureeLog;
 import com.cookpad.puree.PureeLogger;
 import com.cookpad.puree.async.AsyncResult;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import junit.framework.AssertionFailedError;
 
@@ -17,20 +18,23 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class PureeBufferedOutputTest {
@@ -126,10 +130,6 @@ public class PureeBufferedOutputTest {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                        }
                         logs.add(item.toString());
                         result.success();
                     }
@@ -195,7 +195,7 @@ public class PureeBufferedOutputTest {
 
     @Before
     public void setUp() throws Exception {
-        context = InstrumentationRegistry.getTargetContext();
+        context = ApplicationProvider.getApplicationContext();
     }
 
     @After
@@ -254,12 +254,24 @@ public class PureeBufferedOutputTest {
         logger.send(new PvLog("baz"));
         logger.flush();
 
-        Thread.sleep(100);
-
-        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"foo\"}"));
-        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
-        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
-        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                    assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"foo\"}"));
+                    assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
+                    assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
+                    assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));
+                    countDownLatch.countDown();
+                } catch (InterruptedException e) {
+                    fail();
+                    countDownLatch.countDown();
+                }
+            }
+        }).start();
+        countDownLatch.await(10, TimeUnit.SECONDS);
     }
 
     @Test

@@ -5,10 +5,10 @@ import com.cookpad.puree.internal.BackoffCounter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class BackoffCounterTest {

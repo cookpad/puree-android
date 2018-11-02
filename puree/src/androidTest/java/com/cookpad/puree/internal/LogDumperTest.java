@@ -6,10 +6,10 @@ import com.cookpad.puree.storage.Records;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import java.util.HashMap;
 import java.util.List;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class LogDumperTest {

@@ -3,10 +3,7 @@ jdk:
     - oraclejdk8
 before_install:
     - export TERM=dumb # to get clean gradle output
-    - # update Android SDK first
-    - echo yes | android update sdk --no-ui --all --filter tools
-    - # then update SDK components
-    - echo yes | android update sdk --no-ui --all --filter platform-tools,build-tools-23.0.2,android-23,extra-android-m2repository,extra-google-m2repository
+    - yes | sdkmanager "platforms;android-28"
     - ./gradlew androidDependencies
 script:
     - ./gradlew check
