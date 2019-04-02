@@ -4,7 +4,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class OutputConfiguration {
-    private long initialDelayMills = 2 * 60 * 1000; // 2 minutes;
+    private long initialDelayMillis = 2 * 60 * 1000; // 2 minutes;
     private int flushIntervalMillis = 2 * 60 * 1000; // 2 minutes
     private int logsPerRequest = 100;
     private int maxRetryCount = 5;
@@ -13,11 +13,11 @@ public class OutputConfiguration {
     }
 
     public long getInitialDelayMillis() {
-        return initialDelayMills;
+        return initialDelayMillis;
     }
 
-    public void setInitialDelayMills(long initialDelayMills) {
-        this.initialDelayMills = initialDelayMills;
+    public void setInitialDelayMillis(long initialDelayMillis) {
+        this.initialDelayMillis = initialDelayMillis;
     }
 
     public int getFlushIntervalMillis() {
