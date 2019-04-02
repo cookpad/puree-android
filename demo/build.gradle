@@ -1,13 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion BuildSettings.compileSdkVersion
 
     defaultConfig {
         applicationId "com.example.puree"
-        minSdkVersion 10
-        targetSdkVersion 23
+        minSdkVersion BuildSettings.minSdkVersion
+        targetSdkVersion BuildSettings.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -25,8 +24,10 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile project(':puree')
-    compile project(':plugins')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':puree')
+    implementation project(':plugins')
+
+    implementation Libs.appCompatV7
+    implementation Libs.jsr305
 }
