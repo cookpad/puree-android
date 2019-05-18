@@ -6,11 +6,12 @@ import com.example.puree.logs.BenchmarkLog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class BenchmarkActivity extends AppCompatActivity {
 
@@ -28,7 +29,7 @@ public class BenchmarkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_benchmark);
 
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        listView = (ListView) findViewById(android.R.id.list);
+        listView = findViewById(android.R.id.list);
         listView.setAdapter(listAdapter);
 
         for (int i = 0; i < 10; i++) {

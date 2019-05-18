@@ -11,12 +11,13 @@ import com.example.puree.logs.plugins.OutDisplay;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     private TextView logDisplayTextView;
@@ -69,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void findViews() {
-        logDisplayTextView = (TextView) findViewById(R.id.log_display);
-        button1 = (Button) findViewById(R.id.button1);
-        button2 = (Button) findViewById(R.id.button2);
+        logDisplayTextView = findViewById(R.id.log_display);
+        button1 = findViewById(R.id.button1);
+        button2 = findViewById(R.id.button2);
     }
 
     private void setupViews() {

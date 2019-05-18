@@ -1,6 +1,6 @@
 @Suppress("unused")
 object Libs {
-    const val appCompatV7 = "com.android.support:appcompat-v7:28.0.0"
+    const val appCompat = "androidx.appcompat:appcompat:1.0.2"
 
     const val gson = "com.google.code.gson:gson:2.8.2"
     const val jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
