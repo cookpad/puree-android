@@ -2,6 +2,7 @@
 object Libs {
     const val appCompat = "androidx.appcompat:appcompat:1.0.2"
 
+    const val sqlite = "androidx.sqlite:sqlite-framework:2.0.1"
     const val gson = "com.google.code.gson:gson:2.8.2"
     const val jsr305 = "com.google.code.findbugs:jsr305:3.0.2"
 }

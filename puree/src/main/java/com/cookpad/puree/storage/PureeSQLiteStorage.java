@@ -9,7 +9,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -17,8 +16,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.sqlite.db.SupportSQLiteOpenHelper;
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory;
+
 @ParametersAreNonnullByDefault
-public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage {
+public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback implements PureeStorage {
 
     private static final String DATABASE_NAME = "puree.db";
 
@@ -32,7 +35,7 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
 
     private final JsonParser jsonParser = new JsonParser();
 
-    private final SQLiteDatabase db;
+    private final SupportSQLiteOpenHelper openHelper;
 
     private final AtomicBoolean lock = new AtomicBoolean(false);
 
@@ -47,15 +50,22 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
     }
 
     public PureeSQLiteStorage(Context context) {
-        super(context, databaseName(context), null, DATABASE_VERSION);
-        db = getWritableDatabase();
+        super(DATABASE_VERSION);
+        openHelper = new FrameworkSQLiteOpenHelperFactory()
+                .create(
+                        SupportSQLiteOpenHelper.Configuration
+                                .builder(context)
+                                .name(databaseName(context))
+                                .callback(this)
+                                .build()
+                );
     }
 
     public void insert(String type, JsonObject jsonLog) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_TYPE, type);
         contentValues.put(COLUMN_NAME_LOG, jsonLog.toString());
-        db.insert(TABLE_NAME, null, contentValues);
+        openHelper.getWritableDatabase().insert(TABLE_NAME, SQLiteDatabase.CONFLICT_NONE, contentValues);
     }
 
     public Records select(String type, int logsPerRequest) {
@@ -63,7 +73,7 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
                 " WHERE " + COLUMN_NAME_TYPE + " = ?" +
                 " ORDER BY id ASC" +
                 " LIMIT " + logsPerRequest;
-        Cursor cursor = db.rawQuery(query, new String[]{type});
+        Cursor cursor = openHelper.getReadableDatabase().query(query, new String[]{type});
 
         try {
             return recordsFromCursor(cursor);
@@ -75,7 +85,7 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
     @Override
     public Records selectAll() {
         String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY id ASC";
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = openHelper.getReadableDatabase().query(query);
 
         try {
             return recordsFromCursor(cursor);
@@ -103,7 +113,7 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
 
     private int getRecordCount() {
         String query = "SELECT COUNT(*) FROM " + TABLE_NAME;
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = openHelper.getReadableDatabase().query(query);
         int count = 0;
         if (cursor.moveToNext()) {
             count = cursor.getInt(0);
@@ -120,31 +130,27 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
 
     @Override
     public void delete(Records records) {
-        String query = "DELETE FROM " + TABLE_NAME +
-                " WHERE id IN (" + records.getIdsAsString() + ")";
-        db.execSQL(query);
+        String where = "id IN (" + records.getIdsAsString() + ")";
+        openHelper.getWritableDatabase().delete(TABLE_NAME, where, null);
     }
 
     @Override
     public void truncateBufferedLogs(int maxRecords) {
         int recordSize = getRecordCount();
         if (recordSize > maxRecords) {
-            String query = "DELETE FROM " + TABLE_NAME +
-                    " WHERE id IN ( SELECT id FROM " + TABLE_NAME +
-                    " ORDER BY id ASC LIMIT " + String.valueOf(recordSize - maxRecords) +
-                    ")";
-            db.execSQL(query);
+            String where = "id IN ( SELECT id FROM " + TABLE_NAME +
+                    " ORDER BY id ASC LIMIT " + (recordSize - maxRecords) + ")";
+            openHelper.getWritableDatabase().delete(TABLE_NAME, where, null);
         }
     }
 
     @Override
     public void clear() {
-        String query = "DELETE FROM " + TABLE_NAME;
-        db.execSQL(query);
+        openHelper.getWritableDatabase().delete(TABLE_NAME, null, null);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SupportSQLiteDatabase db) {
         String query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_NAME_TYPE + " TEXT," +
@@ -154,13 +160,13 @@ public class PureeSQLiteStorage extends SQLiteOpenHelper implements PureeStorage
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
         Log.e("PureeDbHelper", "unexpected onUpgrade(db, " + oldVersion + ", " + newVersion + ")");
     }
 
     @Override
     protected void finalize() throws Throwable {
-        db.close();
+        openHelper.close();
         super.finalize();
     }
 
