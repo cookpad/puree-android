@@ -1,3 +1,8 @@
+# v4.1.4 2019/06/20
+
+* Fix classes.jar path to packaged-classes 
+  - https://github.com/cookpad/puree-android/pull/70
+
 # v4.1.3 2019/06/13
 
 * Integrate PureeSQLiteStorage with androidx.sqlite
