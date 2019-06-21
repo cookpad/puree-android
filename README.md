@@ -30,7 +30,7 @@ buildscript {
 
 // app/build.gradle
 dependencies {
-    compile 'com.cookpad.puree:puree:4.1.4'
+    compile 'com.cookpad.puree:puree:4.1.5'
 }
 ```
 
@@ -217,8 +217,8 @@ bintrayKey=BINTRAY_API_KEY
 and run the following tasks:
 
 ```
-./gradlew clean connectedCheck bintrayUpload --info # dry-run
-./gradlew bintrayUpload -PdryRun=false
+./gradlew clean connectedCheck assembleRelease bintrayUpload --info # dry-run
+./gradlew assembleRelease bintrayUpload -PdryRun=false
 ```
 
 # See Also
