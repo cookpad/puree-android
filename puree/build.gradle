@@ -4,7 +4,7 @@ apply plugin: 'com.jfrog.bintray'
 
 def GROUP_ID = 'com.cookpad.puree'
 def ARTIFACT_ID = 'puree'
-def VERSION = "4.1.5"
+def VERSION = "4.1.6"
 
 project.version = VERSION
 println "building ${GROUP_ID}:${ARTIFACT_ID}:${VERSION}"

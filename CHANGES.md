@@ -1,10 +1,8 @@
-# v4.1.5 2019/06/21
-
+# v4.1.6 2019/06/21
+* Fix empty jar artifact publishing
+  - https://github.com/cookpad/puree-android/pull/69
 * Fix classes.jar path to packaged-classes 
   - https://github.com/cookpad/puree-android/pull/70
-
-# v4.1.3 2019/06/13
-
 * Integrate PureeSQLiteStorage with androidx.sqlite
   - https://github.com/cookpad/puree-android/pull/67
 * Migrate demo to AndroidX
