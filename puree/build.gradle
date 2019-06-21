@@ -87,10 +87,6 @@ dependencies {
     androidTestImplementation TestLibs.androidXTestJUnit
 }
 
-task androidJar(type: Jar) {
-    from 'build/intermediates/packaged-classes/release'
-}
-
 task androidSourcesJar(type: Jar) {
     classifier = 'sources'
     from android.sourceSets.main.java.srcDirs
@@ -102,7 +98,6 @@ task androidJavadocJar(type: Jar) {
 }
 
 artifacts {
-    archives androidJar
     archives androidSourcesJar
     archives androidJavadocJar
 }
@@ -113,7 +108,7 @@ publishing {
             groupId GROUP_ID
             artifactId ARTIFACT_ID
             version VERSION
-            artifact androidJar
+            artifact bundleReleaseAar
             artifact androidSourcesJar
             artifact androidJavadocJar
             pom.withXml {
