@@ -132,6 +132,14 @@ publishing {
                 license.appendNode('url',
                         'https://raw.githubusercontent.com/cookpad/puree-android/master/LICENSE.txt')
                 license.appendNode('distribution', 'repo')
+                def dependencies = root.appendNode('dependencies')
+                configurations.api.allDependencies.each { dependency ->
+                    def dependencyNode = dependencies.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', dependency.group)
+                    dependencyNode.appendNode('artifactId', dependency.name)
+                    dependencyNode.appendNode('version', dependency.version)
+                    dependencyNode.appendNode('scope', "compile")
+                }
             }
         }
     }
