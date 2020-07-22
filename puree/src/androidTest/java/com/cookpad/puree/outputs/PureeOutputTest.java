@@ -1,10 +1,9 @@
 package com.cookpad.puree.outputs;
 
-import com.google.gson.JsonObject;
-
 import com.cookpad.puree.PureeFilter;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,7 +22,7 @@ public class PureeOutputTest {
     public void discardLog() {
         final PureeOutput output = new PureeOutput() {
             @Override
-            public void emit(JsonObject jsonLog) {
+            public void emit(String jsonLog) {
                 // because first filter discards log.
                 fail("log should be discarded by first filter");
             }
@@ -42,30 +41,29 @@ public class PureeOutputTest {
         };
         output.registerFilter(new PureeFilter() {
             @Override
-            public JsonObject apply(JsonObject jsonLog) {
+            public String apply(String jsonLog) {
                 // discard log
                 return null;
             }
         });
         output.registerFilter(new PureeFilter() {
             @Override
-            public JsonObject apply(JsonObject jsonLog) {
-                jsonLog.addProperty("event_time", System.currentTimeMillis());
-                return jsonLog;
+            public String apply(String jsonLog) {
+                return jsonLog + "event_time" + System.currentTimeMillis();
             }
         });
 
-        output.receive(new JsonObject());
+        output.receive("");
     }
 
     @Test
     public void testFilter_multipleModifications() throws JSONException {
 
-        final AtomicReference<JsonObject> result = new AtomicReference<>();
+        final AtomicReference<String> result = new AtomicReference<>();
 
         final PureeOutput output = new PureeOutput() {
             @Override
-            public void emit(JsonObject jsonLog) {
+            public void emit(String jsonLog) {
                 result.set(jsonLog);
             }
 
@@ -83,30 +81,38 @@ public class PureeOutputTest {
         };
         output.registerFilter(new PureeFilter() {
             @Override
-            public JsonObject apply(JsonObject jsonLog) {
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("filter1", "foo");
-                return jsonObject;
+            public String apply(String jsonLog) {
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("filter1", "foo");
+                    return jsonObject.toString();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         output.registerFilter(new PureeFilter() {
             @Override
-            public JsonObject apply(JsonObject jsonLog) {
-                final JsonObject jsonObject = new JsonObject();
-                if (jsonLog.has("filter1")) {
-                    jsonObject.addProperty("filter1", jsonLog.get("filter1").getAsString());
+            public String apply(String jsonLog) {
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonLog);
+                    if (jsonObject.has("filter1")) {
+                        jsonObject.put("filter1", jsonObject.getString("filter1"));
+                    }
+                    jsonObject.put("filter2", "bar");
+                    return jsonObject.toString();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
-                jsonLog.addProperty("filter2", "bar");
-                return jsonLog;
             }
         });
 
-        output.receive(new JsonObject());
+        output.receive("");
 
-        final JsonObject resultObject = result.get();
+        final JSONObject resultObject = new JSONObject(result.get());
         assertThat(resultObject.has("filter1"), is(true));
-        assertThat(resultObject.get("filter1").getAsString(), is("foo"));
+        assertThat(resultObject.getString("filter1"), is("foo"));
         assertThat(resultObject.has("filter2"), is(true));
-        assertThat(resultObject.get("filter2").getAsString(), is("bar"));
+        assertThat(resultObject.getString("filter2"), is("bar"));
     }
 }
