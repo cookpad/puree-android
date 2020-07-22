@@ -7,6 +7,8 @@ import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeBufferedOutput;
 import com.example.puree.FakeApiClient;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -31,10 +33,10 @@ public class OutFakeApi extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(JsonArray jsonArray, final AsyncResult result) {
+    public void emit(List<String> jsonLogs, final AsyncResult result) {
         // you have to call result.success or result.fail()
         // to notify whether if puree can clear logs from buffer
-        CLIENT.sendLog(jsonArray, new FakeApiClient.Callback() {
+        CLIENT.sendLog(jsonLogs, new FakeApiClient.Callback() {
             @Override
             public void success() {
                 result.success();

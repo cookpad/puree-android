@@ -1,10 +1,10 @@
 package com.example.puree.logs.plugins;
 
-import com.google.gson.JsonArray;
-
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeBufferedOutput;
+
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -16,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class OutBufferedVoid extends PureeBufferedOutput {
 
     @Override
-    public void emit(JsonArray jsonArray, AsyncResult result) {
+    public void emit(List<String> jsonLogs, AsyncResult result) {
         result.success();
     }
 

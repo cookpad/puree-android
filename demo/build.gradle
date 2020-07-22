@@ -28,6 +28,7 @@ dependencies {
     implementation project(':puree')
     implementation project(':plugins')
 
+    implementation Libs.gson
     implementation Libs.appCompat
     implementation Libs.jsr305
 }

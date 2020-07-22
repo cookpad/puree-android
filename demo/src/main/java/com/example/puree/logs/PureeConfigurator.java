@@ -23,6 +23,7 @@ public class PureeConfigurator {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
         PureeFilter samplingFilter = new SamplingFilter(1.0f);
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
+                .pureeSerializer(new PureeGsonSerializer())
                 .executor(Executors.newScheduledThreadPool(1)) // optional
                 .register(ClickLog.class, new OutDisplay().withFilters(addEventTimeFilter))
                 .register(ClickLog.class,

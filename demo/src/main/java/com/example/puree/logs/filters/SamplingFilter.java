@@ -1,7 +1,5 @@
 package com.example.puree.logs.filters;
 
-import com.google.gson.JsonObject;
-
 import com.cookpad.puree.PureeFilter;
 
 import javax.annotation.Nullable;
@@ -17,7 +15,7 @@ public class SamplingFilter implements PureeFilter {
 
     @Nullable
     @Override
-    public JsonObject apply(JsonObject jsonLog) {
+    public String apply(String jsonLog) {
         return (samplingRate < Math.random() ? null : jsonLog);
     }
 }
