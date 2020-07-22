@@ -29,10 +29,8 @@ public class Puree {
      * Try to send log.
      * <p>
      * This log is sent immediately or put into buffer (it's depending on output plugin).
-     *
-     * @param log {@link PureeLog}.
      */
-    public static void send(final PureeLog log) {
+    public static void send(final Object log) {
         checkIfPureeHasInitialized();
         logger.send(log);
     }

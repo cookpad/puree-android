@@ -1,8 +1,5 @@
 package com.cookpad.puree.storage;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import com.cookpad.puree.internal.ProcessName;
 
 import android.content.ContentValues;
@@ -33,8 +30,6 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
 
     private static final int DATABASE_VERSION = 1;
 
-    private final JsonParser jsonParser = new JsonParser();
-
     private final SupportSQLiteOpenHelper openHelper;
 
     private final AtomicBoolean lock = new AtomicBoolean(false);
@@ -61,10 +56,10 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
                 );
     }
 
-    public void insert(String type, JsonObject jsonLog) {
+    public void insert(String type, String jsonLog) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_TYPE, type);
-        contentValues.put(COLUMN_NAME_LOG, jsonLog.toString());
+        contentValues.put(COLUMN_NAME_LOG, jsonLog);
         openHelper.getWritableDatabase().insert(TABLE_NAME, SQLiteDatabase.CONFLICT_NONE, contentValues);
     }
 
@@ -107,7 +102,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         return new Record(
                 cursor.getInt(0),
                 cursor.getString(1),
-                parseJsonString(cursor.getString(2)));
+                cursor.getString(2));
 
     }
 
@@ -122,11 +117,6 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         cursor.close();
         return count;
     }
-
-    private JsonObject parseJsonString(String jsonString) {
-        return (JsonObject) jsonParser.parse(jsonString);
-    }
-
 
     @Override
     public void delete(Records records) {

@@ -72,7 +72,6 @@ android.libraryVariants.all { variant ->
 
 dependencies {
     api Libs.sqlite
-    api Libs.gson
     implementation Libs.jsr305
 
     testImplementation TestLibs.hamcrest

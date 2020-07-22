@@ -1,8 +1,5 @@
 package com.cookpad.puree;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeStorage;
 import com.cookpad.puree.storage.Records;
@@ -18,8 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class PureeLogger {
-
-    final Gson gson;
+    private final PureeSerializer pureeSerializer;
 
     final Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
@@ -27,10 +23,10 @@ public class PureeLogger {
 
     final ScheduledExecutorService executor;
 
-    public PureeLogger(Map<Class<?>, List<PureeOutput>> sourceOutputMap, Gson gson, PureeStorage storage,
+    public PureeLogger(Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeSerializer pureeSerializer, PureeStorage storage,
             ScheduledExecutorService executor) {
         this.sourceOutputMap.putAll(sourceOutputMap);
-        this.gson = gson;
+        this.pureeSerializer = pureeSerializer;
         this.storage = storage;
         this.executor = executor;
 
@@ -42,11 +38,10 @@ public class PureeLogger {
         });
     }
 
-    public void send(PureeLog log) {
+    public void send(Object log) {
         List<PureeOutput> outputs = getRegisteredOutputPlugins(log);
         for (PureeOutput output : outputs) {
-            JsonObject jsonLog = serializeLog(log);
-            output.receive(jsonLog);
+            output.receive(serializeLog(log));
         }
     }
 
@@ -80,23 +75,23 @@ public class PureeLogger {
     }
 
     /**
-     * Serialize a {@link PureeLog} into {@link JsonObject} with {@link Gson}.
+     * Serialize a {@link Object} into a json string representation.
      *
-     * @param log {@link PureeLog}.
+     * @param log {@link Object}.
      * @return serialized json object.
      */
     @Nonnull
-    public JsonObject serializeLog(PureeLog log) {
-        return (JsonObject) gson.toJsonTree(log);
+    public String serializeLog(Object log) {
+        return pureeSerializer.serialize(log);
     }
 
     @Nonnull
-    public List<PureeOutput> getRegisteredOutputPlugins(PureeLog log) {
+    public List<PureeOutput> getRegisteredOutputPlugins(Object log) {
         return getRegisteredOutputPlugins(log.getClass());
     }
 
     @Nonnull
-    public List<PureeOutput> getRegisteredOutputPlugins(Class<? extends PureeLog> logClass) {
+    public List<PureeOutput> getRegisteredOutputPlugins(Class<?> logClass) {
         List<PureeOutput> outputs = sourceOutputMap.get(logClass);
         if (outputs == null) {
             throw new NoRegisteredOutputPluginException("No output plugin registered for " + logClass);

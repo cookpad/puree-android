@@ -1,14 +1,12 @@
 package com.cookpad.puree.outputs;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import com.cookpad.puree.PureeLogger;
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.internal.PureeVerboseRunnable;
 import com.cookpad.puree.internal.RetryableTaskRunner;
 import com.cookpad.puree.storage.Records;
 
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,11 +34,11 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     }
 
     @Override
-    public void receive(final JsonObject jsonLog) {
+    public void receive(final String jsonLog) {
         executor.execute(new PureeVerboseRunnable(new Runnable() {
             @Override
             public void run() {
-                JsonObject filteredLog = applyFilters(jsonLog);
+                String filteredLog = applyFilters(jsonLog);
                 if (filteredLog != null) {
                     storage.insert(type(), filteredLog);
                 }
@@ -73,7 +71,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
             return;
         }
 
-        final JsonArray jsonLogs = records.getJsonLogs();
+        final List<String> jsonLogs = records.getJsonLogs();
 
         emit(jsonLogs, new AsyncResult() {
             @Override
@@ -95,9 +93,9 @@ public abstract class PureeBufferedOutput extends PureeOutput {
         return storage.select(type(), conf.getLogsPerRequest());
     }
 
-    public abstract void emit(JsonArray jsonArray, final AsyncResult result);
+    public abstract void emit(List<String> jsonLogs, final AsyncResult result);
 
-    public void emit(JsonObject jsonLog) {
+    public void emit(String jsonLog) {
         // do nothing
     }
 }

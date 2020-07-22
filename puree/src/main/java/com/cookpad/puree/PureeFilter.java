@@ -1,7 +1,5 @@
 package com.cookpad.puree;
 
-import com.google.gson.JsonObject;
-
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -9,5 +7,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface PureeFilter {
 
     @Nullable
-    JsonObject apply(JsonObject jsonLog);
+    String apply(String jsonLog);
 }

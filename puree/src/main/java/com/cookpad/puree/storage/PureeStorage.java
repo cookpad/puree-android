@@ -1,10 +1,8 @@
 package com.cookpad.puree.storage;
 
-import com.google.gson.JsonObject;
-
 public interface PureeStorage {
 
-    public void insert(String type, JsonObject jsonLog);
+    public void insert(String type, String jsonLog);
     public Records select(String type, int logsPerRequest);
     public Records selectAll();
     public void delete(Records records);
