@@ -1,7 +1,5 @@
 package com.cookpad.puree.plugins;
 
-import com.google.gson.JsonObject;
-
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeOutput;
 
@@ -24,7 +22,7 @@ public class OutLogcat extends PureeOutput {
     }
 
     @Override
-    public void emit(JsonObject jsonLog) {
-        Log.d("out_logcat", jsonLog.toString());
+    public void emit(String jsonLog) {
+        Log.d("out_logcat", jsonLog);
     }
 }
