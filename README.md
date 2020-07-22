@@ -51,6 +51,7 @@ public class MyApplication extends Application {
     public static PureeConfiguration buildConfiguration(Context context) {
         PureeFilter addEventTimeFilter = new AddEventTimeFilter();
         return new PureeConfiguration.Builder(context)
+                .pureeSerializer(new PureeGsonSerializer())
                 .executor(Executors.newScheduledThreadPool(1)) // optional
                 .register(ClickLog.class, new OutLogcat())
                 .register(ClickLog.class, new OutBufferedLogcat().withFilters(addEventTimeFilter))
@@ -62,12 +63,23 @@ public class MyApplication extends Application {
 See also: [demo/PureeConfigurator.java](demo/src/main/java/com/example/puree/logs/PureeConfigurator.java)
 
 ### Definition of PureeLog objects
-
-A log class is required to implement `PureeLog`, which is a marker interface just like as `Serializable`,
-to serialize logs with `Gson`.
+Puree requires that clients supply an implementation of `PureeSerializer` to be able to serialize the logs. For instance, this is an implementation that uses Gson parser:
 
 ```java
-public class ClickLog implements PureeLog {
+public class PureeGsonSerializer implements PureeSerializer {
+    private Gson gson = new Gson();
+
+    @Override
+    public String serialize(Object object) {
+        return gson.toJson(object);
+    }
+}
+```
+
+A log class is just a POJO whose properties are annotated following the requirements of the Json parser that you provided with PureeSerializer.
+
+```java
+public class ClickLog {
     @SerializedName("page")
     private String page;
     @SerializedName("label")
