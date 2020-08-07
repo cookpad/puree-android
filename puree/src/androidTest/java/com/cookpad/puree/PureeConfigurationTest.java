@@ -1,7 +1,5 @@
 package com.cookpad.puree;
 
-import com.google.gson.JsonObject;
-
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeOutput;
 
@@ -25,14 +23,21 @@ import static org.junit.Assert.*;
 @ParametersAreNonnullByDefault
 @RunWith(AndroidJUnit4.class)
 public class PureeConfigurationTest {
+    private PureeSerializer pureeSerializer = new PureeSerializer() {
+        @Override
+        public String serialize(Object log) {
+            return log.toString();
+        }
+    };
+
     @Test
     public void checkDefaultValue() {
         Context context = ApplicationProvider.getApplicationContext();
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
+                .pureeSerializer(pureeSerializer)
                 .build();
 
         assertThat(conf.getContext(), notNullValue());
-        assertThat(conf.getGson(), notNullValue());
 
         Map<?, ?> sourceOutputMap = conf.getSourceOutputMap();
         assertThat(sourceOutputMap.size(), is(0));
@@ -42,6 +47,7 @@ public class PureeConfigurationTest {
     public void build() {
         Context context = ApplicationProvider.getApplicationContext();
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
+                .pureeSerializer(pureeSerializer)
                 .source(FooLog.class).to(new OutFoo())
                 .source(FooLog.class).filters(new FooFilter()).to(new OutFoo())
                 .source(FooLog.class).filter(new FooFilter()).filter(new BarFilter()).to(new OutBar())
@@ -67,6 +73,7 @@ public class PureeConfigurationTest {
     public void build2() {
         Context context = ApplicationProvider.getApplicationContext();
         PureeConfiguration conf = new PureeConfiguration.Builder(context)
+                .pureeSerializer(pureeSerializer)
                 .register(FooLog.class, new OutFoo())
                 .register(FooLog.class, new OutFoo().withFilters(new FooFilter()))
                 .register(FooLog.class, new OutBar().withFilters(new FooFilter(), new BarFilter()))
@@ -88,15 +95,15 @@ public class PureeConfigurationTest {
     }
 
 
-    private static class FooLog implements PureeLog {
+    private static class FooLog {
     }
 
-    private static class BarLog implements PureeLog {
+    private static class BarLog {
     }
 
     private static class FooFilter implements PureeFilter {
         @Override
-        public JsonObject apply(JsonObject jsonLog) {
+        public String apply(String jsonLog) {
             return null;
         }
     }
@@ -104,7 +111,7 @@ public class PureeConfigurationTest {
     private static class BarFilter implements PureeFilter {
 
         @Override
-        public JsonObject apply(JsonObject jsonLog) {
+        public String apply(String jsonLog) {
             return null;
         }
     }
@@ -124,7 +131,7 @@ public class PureeConfigurationTest {
         }
 
         @Override
-        public void emit(JsonObject jsonLog) {
+        public void emit(String jsonLog) {
 
         }
     }
@@ -144,7 +151,7 @@ public class PureeConfigurationTest {
         }
 
         @Override
-        public void emit(JsonObject jsonLog) {
+        public void emit(String jsonLog) {
 
         }
     }

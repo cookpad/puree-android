@@ -1,14 +1,12 @@
 package com.cookpad.puree.storage;
 
-import com.google.gson.JsonObject;
-
 public class Record {
 
     private final int id;
 
     private final String type;
 
-    private final JsonObject jsonLog;
+    private final String jsonLog;
 
     public int getId() {
         return id;
@@ -18,11 +16,11 @@ public class Record {
         return type;
     }
 
-    public JsonObject getJsonLog() {
+    public String getJsonLog() {
         return jsonLog;
     }
 
-    public Record(int id, String type, JsonObject jsonLog) {
+    public Record(int id, String type, String jsonLog) {
         this.id = id;
         this.type = type;
         this.jsonLog = jsonLog;

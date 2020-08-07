@@ -1,14 +1,13 @@
 package com.cookpad.puree;
 
-import android.content.Context;
-
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeSQLiteStorage;
-import com.google.gson.Gson;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import android.content.Context;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,20 +20,26 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 public class PureeTest {
 
     static class DummyPureeLogger extends PureeLogger {
-
         public DummyPureeLogger(Context context) {
-            super(new HashMap<Class<?>, List<PureeOutput>>(), new Gson(), new PureeSQLiteStorage(context),
-                    Executors.newScheduledThreadPool(1));
+            super(new HashMap<Class<?>, List<PureeOutput>>(),
+                    new PureeSerializer() {
+                        @Override
+                        public String serialize(Object log) {
+                            return log.toString();
+                        }
+                    },
+                    new PureeSQLiteStorage(context),
+                    Executors.newScheduledThreadPool(1)
+            );
         }
 
-
         @Override
-        public void send(PureeLog log) {
+        public void send(Object log) {
 
         }
     }
 
-    static class PvLog implements PureeLog {
+    static class PvLog {
 
         @SuppressWarnings("unused")
         String name = "foo";

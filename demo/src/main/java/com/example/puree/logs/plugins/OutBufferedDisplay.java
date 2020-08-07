@@ -1,7 +1,5 @@
 package com.example.puree.logs.plugins;
 
-import com.google.gson.JsonArray;
-
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeBufferedOutput;
@@ -10,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -39,7 +38,7 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(final JsonArray jsonLogs, final AsyncResult result) {
+    public void emit(final List<String> jsonLogs, final AsyncResult result) {
         final Callback callback = callbackRef.get();
         if (callback == null) {
             result.success();
@@ -56,6 +55,6 @@ public class OutBufferedDisplay extends PureeBufferedOutput {
 
     public interface Callback {
 
-        void onEmit(JsonArray jsonLogs);
+        void onEmit(List<String> jsonLogs);
     }
 }

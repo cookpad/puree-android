@@ -1,7 +1,6 @@
 package com.example.puree;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import com.cookpad.puree.Puree;
 import com.example.puree.logs.ClickLog;
@@ -17,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.List;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,15 +27,21 @@ public class MainActivity extends AppCompatActivity {
 
     private final OutDisplay.Callback outDisplayCallback = new OutDisplay.Callback() {
         @Override
-        public void onEmit(JsonObject jsonLog) {
-            preprendOutput(jsonLog.toString());
+        public void onEmit(String jsonLog) {
+            preprendOutput(jsonLog);
         }
     };
 
     private final OutBufferedDisplay.Callback outBufferedDisplayCallback = new OutBufferedDisplay.Callback() {
         @Override
-        public void onEmit(JsonArray jsonLogs) {
-            preprendOutput(jsonLogs.toString());
+        public void onEmit(List<String> jsonLogs) {
+            JsonArray jsonLogsArray = new JsonArray();
+
+            for (String jsonLog: jsonLogs) {
+                jsonLogsArray.add(jsonLog);
+            }
+
+            preprendOutput(jsonLogsArray.toString());
         }
     };
 

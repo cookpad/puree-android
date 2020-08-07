@@ -1,7 +1,5 @@
 package com.cookpad.puree.storage;
 
-import com.google.gson.JsonObject;
-
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,13 +19,13 @@ public class RecordsTest {
         }
         {
             Records records = new Records();
-            records.add(new Record(0, "logcat", new JsonObject()));
+            records.add(new Record(0, "logcat", "jsonLog"));
             assertThat(records.getIdsAsString(), is("0"));
         }
         {
             Records records = new Records();
             for (int i = 0; i < 3; i++) {
-                records.add(new Record(i, "logcat", new JsonObject()));
+                records.add(new Record(i, "logcat", "jsonLog"));
             }
             assertThat(records.getIdsAsString(), is("0,1,2"));
         }
@@ -42,7 +40,7 @@ public class RecordsTest {
         {
             Records records = new Records();
             for (int i = 0; i < 3; i++) {
-                records.add(new Record(i, "logcat", new JsonObject()));
+                records.add(new Record(i, "logcat", "jsonLog"));
             }
             assertThat(records.getJsonLogs().size(), is(3));
         }

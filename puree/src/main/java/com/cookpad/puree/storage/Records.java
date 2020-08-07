@@ -1,8 +1,7 @@
 package com.cookpad.puree.storage;
 
-import com.google.gson.JsonArray;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class Records extends ArrayList<Record> {
 
@@ -18,8 +17,8 @@ public class Records extends ArrayList<Record> {
         return builder.substring(0, builder.length() - 1);
     }
 
-    public JsonArray getJsonLogs() {
-        JsonArray jsonLogs = new JsonArray();
+    public List<String> getJsonLogs() {
+        List<String> jsonLogs = new ArrayList<>();
         for (Record record : this) {
             jsonLogs.add(record.getJsonLog());
         }

@@ -1,7 +1,5 @@
 package com.cookpad.puree;
 
-import com.google.gson.Gson;
-
 import com.cookpad.puree.internal.LogDumper;
 import com.cookpad.puree.outputs.PureeOutput;
 import com.cookpad.puree.storage.PureeSQLiteStorage;
@@ -24,7 +22,7 @@ public class PureeConfiguration {
 
     private final Context context;
 
-    private final Gson gson;
+    private final PureeSerializer pureeSerializer;
 
     private final Map<Class<?>, List<PureeOutput>> sourceOutputMap;
 
@@ -36,10 +34,6 @@ public class PureeConfiguration {
         return context;
     }
 
-    public Gson getGson() {
-        return gson;
-    }
-
     public Map<Class<?>, List<PureeOutput>> getSourceOutputMap() {
         return sourceOutputMap;
     }
@@ -48,18 +42,18 @@ public class PureeConfiguration {
         return storage;
     }
 
-    public List<PureeOutput> getRegisteredOutputPlugins(Class<? extends PureeLog> logClass) {
+    public List<PureeOutput> getRegisteredOutputPlugins(Class<?> logClass) {
         return sourceOutputMap.get(logClass);
     }
 
     public PureeLogger createPureeLogger() {
-        return new PureeLogger(sourceOutputMap, gson, storage, executor);
+        return new PureeLogger(sourceOutputMap, pureeSerializer, storage, executor);
     }
 
-    PureeConfiguration(Context context, Gson gson, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeStorage storage,
-            ScheduledExecutorService executor) {
+    PureeConfiguration(Context context, Map<Class<?>, List<PureeOutput>> sourceOutputMap, PureeSerializer pureeSerializer,
+            PureeStorage storage, ScheduledExecutorService executor) {
         this.context = context;
-        this.gson = gson;
+        this.pureeSerializer = pureeSerializer;
         this.sourceOutputMap = sourceOutputMap;
         this.storage = storage;
         this.executor = executor;
@@ -76,7 +70,7 @@ public class PureeConfiguration {
     public static class Builder {
         private Context context;
 
-        private Gson gson;
+        private PureeSerializer pureeSerializer;
 
         private Map<Class<?>, List<PureeOutput>> sourceOutputMap = new HashMap<>();
 
@@ -94,15 +88,16 @@ public class PureeConfiguration {
         }
 
         /**
-         * Specify the {@link com.google.gson.Gson} to serialize logs.
+         * Specify the {@link PureeSerializer} to serialize logs.
          *
-         * @param gson {@link Gson}.
+         * @param pureeSerializer {@link PureeSerializer}.
          * @return {@link com.cookpad.puree.PureeConfiguration.Builder}.
          */
-        public Builder gson(Gson gson) {
-            this.gson = gson;
+        public Builder pureeSerializer(PureeSerializer pureeSerializer) {
+            this.pureeSerializer = pureeSerializer;
             return this;
         }
+
 
         /**
          * Specify a source class of logs, which returns {@link Source} an
@@ -111,7 +106,7 @@ public class PureeConfiguration {
          * @param logClass log class.
          * @return {@link Source}.
          */
-        public Source source(Class<? extends PureeLog> logClass) {
+        public Source source(Class<?> logClass) {
             return new Source(this, logClass);
         }
 
@@ -141,9 +136,10 @@ public class PureeConfiguration {
          * @return {@link com.cookpad.puree.PureeConfiguration}.
          */
         public PureeConfiguration build() {
-            if (gson == null) {
-                gson = new Gson();
+            if (pureeSerializer == null) {
+                throw new IllegalStateException("A PureeSerializer is required to build PureeConfiguration");
             }
+
             if (storage == null) {
                 storage = new PureeSQLiteStorage(context);
             }
@@ -151,7 +147,7 @@ public class PureeConfiguration {
             if (executor == null) {
                 executor = newBackgroundExecutor();
             }
-            return new PureeConfiguration(context, gson, sourceOutputMap, storage, executor);
+            return new PureeConfiguration(context, sourceOutputMap, pureeSerializer, storage, executor);
         }
     }
 

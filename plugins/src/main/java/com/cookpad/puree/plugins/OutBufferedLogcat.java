@@ -1,12 +1,15 @@
 package com.cookpad.puree.plugins;
 
-import com.google.gson.JsonArray;
 
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeBufferedOutput;
 
+import org.json.JSONArray;
+
 import android.util.Log;
+
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,8 +35,15 @@ public class OutBufferedLogcat extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(JsonArray jsonLogs, AsyncResult asyncResult) {
+    public void emit(List<String> jsonLogs, AsyncResult asyncResult) {
+        JSONArray jsonLogsArray = new JSONArray();
+
+        for (String jsonLog: jsonLogs) {
+            jsonLogsArray.put(jsonLog);
+        }
+
         Log.d(TAG, jsonLogs.toString());
+
         asyncResult.success();
     }
 }

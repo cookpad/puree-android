@@ -1,7 +1,5 @@
 package com.cookpad.puree.outputs;
 
-import com.google.gson.JsonObject;
-
 import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.PureeLogger;
 import com.cookpad.puree.storage.PureeStorage;
@@ -46,8 +44,8 @@ public abstract class PureeOutput {
         this.conf = configure(defaultConfiguration);
     }
 
-    public void receive(JsonObject jsonLog) {
-        final JsonObject filteredLog = applyFilters(jsonLog);
+    public void receive(String jsonLog) {
+        final String filteredLog = applyFilters(jsonLog);
         if (filteredLog == null) {
             return;
         }
@@ -56,8 +54,8 @@ public abstract class PureeOutput {
     }
 
     @Nullable
-    protected JsonObject applyFilters(JsonObject jsonLog) {
-        JsonObject filteredLog = jsonLog;
+    protected String applyFilters(String jsonLog) {
+        String filteredLog = jsonLog;
         for (PureeFilter filter : filters) {
             filteredLog = filter.apply(filteredLog);
             if (filteredLog == null) {
@@ -77,6 +75,6 @@ public abstract class PureeOutput {
     @Nonnull
     public abstract OutputConfiguration configure(OutputConfiguration conf);
 
-    public abstract void emit(JsonObject jsonLog);
+    public abstract void emit(String jsonLog);
 }
 

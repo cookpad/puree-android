@@ -1,7 +1,5 @@
 package com.example.puree.logs.plugins;
 
-import com.google.gson.JsonObject;
-
 import com.cookpad.puree.outputs.OutputConfiguration;
 import com.cookpad.puree.outputs.PureeOutput;
 
@@ -36,7 +34,7 @@ public class OutDisplay extends PureeOutput {
     }
 
     @Override
-    public void emit(JsonObject jsonLog) {
+    public void emit(String jsonLog) {
         Callback callback = callbackRef.get();
         if (callback == null) {
             return;
@@ -46,6 +44,6 @@ public class OutDisplay extends PureeOutput {
 
     public interface Callback {
 
-        void onEmit(JsonObject jsonLog);
+        void onEmit(String jsonLog);
     }
 }
