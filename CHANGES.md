@@ -1,3 +1,15 @@
+# v4.1.8 2020/12/17
+
+* Remove android:allowBackup attribution
+  - https://github.com/cookpad/puree-android/pull/76
+* Add reverse order flush option
+  - https://github.com/cookpad/puree-android/pull/79
+
+# v4.1.7 2020/08/07
+
+* Remove Gson dependency and PureeLog interface
+  - https://github.com/cookpad/puree-android/pull/77
+
 # v4.1.6 2019/06/21
 * Fix empty jar artifact publishing
   - https://github.com/cookpad/puree-android/pull/69
