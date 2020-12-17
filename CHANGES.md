@@ -1,3 +1,8 @@
+# v4.1.9 2020/12/17
+
+* Revert publishing dsl
+  - https://github.com/cookpad/puree-android/pull/81
+
 # v4.1.8 2020/12/17
 
 * Remove android:allowBackup attribution
