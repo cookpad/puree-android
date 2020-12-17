@@ -1,13 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
-
-def GROUP_ID = 'com.cookpad.puree'
-def ARTIFACT_ID = 'puree'
-def VERSION = "4.1.6"
-
-project.version = VERSION
-println "building ${GROUP_ID}:${ARTIFACT_ID}:${VERSION}"
 
 android {
     compileSdkVersion BuildSettings.compileSdkVersion
@@ -143,38 +135,3 @@ publishing {
         }
     }
 }
-
-def getBintrayUserProperty() {
-    return hasProperty('bintrayUser') ? bintrayUser : ""
-}
-
-def getBintrayKeyProperty() {
-    return hasProperty('bintrayKey') ? bintrayKey : ""
-}
-
-def getBintrayDryRunProperty() {
-    return hasProperty('dryRun') ? Boolean.parseBoolean(dryRun) : true
-}
-
-bintray {
-    user = bintrayUserProperty
-    key = bintrayKeyProperty
-    dryRun = bintrayDryRunProperty
-    publications = ['mavenAndroid']
-    publish = true
-    pkg {
-        repo = 'maven'
-        name = 'puree'
-        licenses = ['MIT']
-    }
-}
-
-// execute shell which publishes javadoc with version info
-task deployJavadoc(type: Exec) {
-    workingDir '../'
-    executable "./deploy_javadoc.sh"
-    args VERSION
-}
-
-// call deployJavadoc after bintrayUpload task
-bintrayUpload.finalizedBy(deployJavadoc)
