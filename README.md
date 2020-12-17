@@ -1,5 +1,4 @@
-Puree [![Build Status](https://travis-ci.org/cookpad/puree-android.svg?branch=master)](https://travis-ci.org/cookpad/puree-android)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Puree-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1170) [ ![Download](https://api.bintray.com/packages/cookpad/maven/puree/images/download.svg) ](https://bintray.com/cookpad/maven/puree/_latestVersion)
-====
+# Puree [![Build Status](https://travis-ci.org/cookpad/puree-android.svg?branch=master)](https://travis-ci.org/cookpad/puree-android) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Puree-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1170) [![Release](https://jitpack.io/v/cookpad/puree-android.svg)](https://jitpack.io/cookpad/puree-android)
 
 # Description
 
@@ -14,23 +13,22 @@ Puree is a log collector which provides the following features:
 
 Puree helps you unify your logging infrastructure.
 
-
 ## Installation
 
-This is published on `jcenter` and you can use Puree as:
+This is published on `jitpack` and you can use Puree as:
 
 ```groovy
 // build.gradle
 buildscript {
     repositories {
-        jcenter()
+        maven { url 'https://jitpack.io' }
     }
     ...
 }
 
 // app/build.gradle
 dependencies {
-    compile 'com.cookpad.puree:puree:4.1.6'
+    implementation "com.github.cookpad:puree-android:$latestVersion"
 }
 ```
 
@@ -63,6 +61,7 @@ public class MyApplication extends Application {
 See also: [demo/PureeConfigurator.java](demo/src/main/java/com/example/puree/logs/PureeConfigurator.java)
 
 ### Definition of PureeLog objects
+
 Puree requires that clients supply an implementation of `PureeSerializer` to be able to serialize the logs. For instance, this is an implementation that uses Gson parser:
 
 ```java
@@ -219,24 +218,14 @@ logger. See [PureeTest.java](puree/src/androidTest/java/com/cookpad/puree/PureeT
 
 ## Release Engineering
 
-Set `bintrayUser` and `bintrayKey` in `~/.gradle/gradle.properties`
-
-```properties
-bintrayUser=BINTRAY_USER
-bintrayKey=BINTRAY_API_KEY
-```
-
-and run the following tasks:
-
-```
-./gradlew clean connectedCheck assembleRelease bintrayUpload --info # dry-run
-./gradlew assembleRelease bintrayUpload -PdryRun=false
-```
+- Update `CHANGES.md`
+- `git tag $latest_version`
+- `git push origin $latest_version`
 
 # See Also
 
-* [Puree - mobile application log collector - Cookpad Developers' blog (Japanese)](http://techlife.cookpad.com/entry/2014/11/25/132008)
-* https://github.com/cookpad/puree-ios - Puree for iOS
+- [Puree - mobile application log collector - Cookpad Developers' blog (Japanese)](http://techlife.cookpad.com/entry/2014/11/25/132008)
+- https://github.com/cookpad/puree-ios - Puree for iOS
 
 # Copyright
 
