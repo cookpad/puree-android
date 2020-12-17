@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
+def VERSION = "4.1.8"
+project.version = VERSION
+
 android {
     compileSdkVersion BuildSettings.compileSdkVersion
 
