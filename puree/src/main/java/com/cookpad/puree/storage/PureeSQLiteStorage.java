@@ -32,6 +32,8 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
 
     private final SupportSQLiteOpenHelper openHelper;
 
+    private final boolean isOrderByDesc;
+
     private final AtomicBoolean lock = new AtomicBoolean(false);
 
     static String databaseName(Context context) {
@@ -45,7 +47,12 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
     }
 
     public PureeSQLiteStorage(Context context) {
+        this(context, false);
+    }
+
+    public PureeSQLiteStorage(Context context, boolean isOrderByDesc) {
         super(DATABASE_VERSION);
+        this.isOrderByDesc = isOrderByDesc;
         openHelper = new FrameworkSQLiteOpenHelperFactory()
                 .create(
                         SupportSQLiteOpenHelper.Configuration
@@ -63,10 +70,20 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         openHelper.getWritableDatabase().insert(TABLE_NAME, SQLiteDatabase.CONFLICT_NONE, contentValues);
     }
 
+    private String getOrderType() {
+        String orderType;
+        if (this.isOrderByDesc) {
+            orderType = "DESC";
+        } else {
+            orderType = "ASC";
+        }
+        return orderType;
+    }
+
     public Records select(String type, int logsPerRequest) {
         String query = "SELECT * FROM " + TABLE_NAME +
                 " WHERE " + COLUMN_NAME_TYPE + " = ?" +
-                " ORDER BY id ASC" +
+                " ORDER BY id " + getOrderType() +
                 " LIMIT " + logsPerRequest;
         Cursor cursor = openHelper.getReadableDatabase().query(query, new String[]{type});
 
@@ -79,7 +96,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
 
     @Override
     public Records selectAll() {
-        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY id ASC";
+        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY id " + getOrderType();
         Cursor cursor = openHelper.getReadableDatabase().query(query);
 
         try {

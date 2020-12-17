@@ -5,6 +5,7 @@ import com.cookpad.puree.PureeFilter;
 import com.cookpad.puree.PureeLogger;
 import com.cookpad.puree.PureeSerializer;
 import com.cookpad.puree.async.AsyncResult;
+import com.cookpad.puree.storage.PureeSQLiteStorage;
 
 import junit.framework.AssertionFailedError;
 
@@ -200,6 +201,29 @@ public class PureeBufferedOutputTest {
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"foo\"}"));
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));
+    }
+
+    @Test
+    public void testReverseOrderOption() throws Exception {
+        logger = new PureeConfiguration.Builder(context)
+                .register(PvLog.class, new BufferedOutput())
+                .pureeSerializer(pureeSerializer)
+                .storage(new PureeSQLiteStorage(context, true))
+                .build()
+                .createPureeLogger();
+        logger.discardBufferedLogs();
+
+        logger.send(new PvLog("foo"));
+        logger.send(new PvLog("bar"));
+        logger.send(new PvLog("baz"));
+        logger.flush();
+
+        Thread.sleep(100);
+
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"foo\"}"));
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is(nullValue()));
     }
 
