@@ -83,9 +83,9 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
     public Records select(String type, int logsPerRequest) {
         String query = "SELECT * FROM " + TABLE_NAME +
                 " WHERE " + COLUMN_NAME_TYPE + " = ?" +
-                " ORDER BY id ?" +
+                " ORDER BY id " + getOrderType() +
                 " LIMIT " + logsPerRequest;
-        Cursor cursor = openHelper.getReadableDatabase().query(query, new String[]{type, getOrderType()});
+        Cursor cursor = openHelper.getReadableDatabase().query(query, new String[]{type});
 
         try {
             return recordsFromCursor(cursor);
@@ -96,8 +96,8 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
 
     @Override
     public Records selectAll() {
-        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY id ?";
-        Cursor cursor = openHelper.getReadableDatabase().query(query, new String[]{getOrderType()});
+        String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY id " + getOrderType();
+        Cursor cursor = openHelper.getReadableDatabase().query(query);
 
         try {
             return recordsFromCursor(cursor);
