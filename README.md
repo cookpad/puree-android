@@ -211,6 +211,32 @@ new PureeConfiguration.Builder(context)
         .build();
 ```
 
+### Purging old logs
+To discard unnecessary recorded logs, purge age can be configured in the PureeBufferedOutput subclass.
+
+```java
+public class OutPurge extends PureeBufferedOutput {
+
+    // ..
+
+    @Override
+    public OutputConfiguration configure(OutputConfiguration conf) {
+        // set to purge buffered logs older than 2 weeks
+        conf.setPurgeAgeMillis(2 * 7 * 24 * 60 * 60 * 1000);
+        return conf;
+    }
+}
+```
+
+The configured storage must be an instance of `PureeSQLiteStorage` or a subclass of it to support purging of old logs.
+
+```java
+new PureeConfiguration.Builder(context)
+        .storage(new PureeSQLiteStorage(context))
+        .register(ClickLog.class, new OutPurge().withFilters(addEventTimeFilter, samplingFilter)
+        .build();
+```
+
 ## Testing
 
 If you want to mock or ignore `Puree.send()` and `Puree.flush()`, you can use `Puree.setPureeLogger()` to replace the internal
