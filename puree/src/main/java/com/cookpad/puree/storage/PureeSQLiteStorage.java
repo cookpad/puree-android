@@ -28,7 +28,9 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
 
     private static final String COLUMN_NAME_LOG = "log";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final String COLUMN_NAME_CREATED_AT = "created_at";
+
+    private static final int DATABASE_VERSION = 2;
 
     private final SupportSQLiteOpenHelper openHelper;
 
@@ -67,6 +69,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_TYPE, type);
         contentValues.put(COLUMN_NAME_LOG, jsonLog);
+        contentValues.put(COLUMN_NAME_CREATED_AT, System.currentTimeMillis());
         openHelper.getWritableDatabase().insert(TABLE_NAME, SQLiteDatabase.CONFLICT_NONE, contentValues);
     }
 
@@ -141,6 +144,16 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         openHelper.getWritableDatabase().delete(TABLE_NAME, where, null);
     }
 
+    public void delete(String type, long ageMillis) {
+        String where = COLUMN_NAME_TYPE + " = ? AND "
+                + COLUMN_NAME_CREATED_AT + " <= ?";
+        Object[] whereArgs = new Object[]{
+                type,
+                System.currentTimeMillis() - ageMillis
+        };
+        openHelper.getWritableDatabase().delete(TABLE_NAME, where, whereArgs);
+    }
+
     @Override
     public void truncateBufferedLogs(int maxRecords) {
         int recordSize = getRecordCount();
@@ -161,14 +174,27 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         String query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_NAME_TYPE + " TEXT," +
-                COLUMN_NAME_LOG + " TEXT" +
+                COLUMN_NAME_LOG + " TEXT," +
+                COLUMN_NAME_CREATED_AT + " INTEGER" +
                 ")";
         db.execSQL(query);
     }
 
     @Override
     public void onUpgrade(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.e("PureeDbHelper", "unexpected onUpgrade(db, " + oldVersion + ", " + newVersion + ")");
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_CREATED_AT + " INTEGER;");
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COLUMN_NAME_CREATED_AT, System.currentTimeMillis());
+            db.update(
+                    TABLE_NAME,
+                    SQLiteDatabase.CONFLICT_NONE,
+                    contentValues,
+                    COLUMN_NAME_CREATED_AT + " IS NULL",
+                    null
+            );
+        }
     }
 
     @Override
