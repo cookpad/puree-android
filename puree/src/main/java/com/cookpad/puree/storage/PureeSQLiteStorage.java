@@ -24,6 +24,8 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
 
     private static final String TABLE_NAME = "logs";
 
+    private static final String COLUMN_NAME_ID = "id";
+
     private static final String COLUMN_NAME_TYPE = "type";
 
     private static final String COLUMN_NAME_LOG = "log";
@@ -86,7 +88,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
     public Records select(String type, int logsPerRequest) {
         String query = "SELECT * FROM " + TABLE_NAME +
                 " WHERE " + COLUMN_NAME_TYPE + " = ?" +
-                " ORDER BY id " + getOrderType() +
+                " ORDER BY " + COLUMN_NAME_ID + " " + getOrderType() +
                 " LIMIT " + logsPerRequest;
         Cursor cursor = openHelper.getReadableDatabase().query(query, new String[]{type});
 
@@ -140,7 +142,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
 
     @Override
     public void delete(Records records) {
-        String where = "id IN (" + records.getIdsAsString() + ")";
+        String where = COLUMN_NAME_ID + " IN (" + records.getIdsAsString() + ")";
         openHelper.getWritableDatabase().delete(TABLE_NAME, where, null);
     }
 
@@ -158,8 +160,8 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
     public void truncateBufferedLogs(int maxRecords) {
         int recordSize = getRecordCount();
         if (recordSize > maxRecords) {
-            String where = "id IN ( SELECT id FROM " + TABLE_NAME +
-                    " ORDER BY id ASC LIMIT " + (recordSize - maxRecords) + ")";
+            String where = COLUMN_NAME_ID + " IN ( SELECT id FROM " + TABLE_NAME +
+                    " ORDER BY " + COLUMN_NAME_ID + " ASC LIMIT " + (recordSize - maxRecords) + ")";
             openHelper.getWritableDatabase().delete(TABLE_NAME, where, null);
         }
     }
@@ -172,7 +174,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
     @Override
     public void onCreate(SupportSQLiteDatabase db) {
         String query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_NAME_TYPE + " TEXT," +
                 COLUMN_NAME_LOG + " TEXT," +
                 COLUMN_NAME_CREATED_AT + " INTEGER" +
