@@ -4,7 +4,7 @@ import com.cookpad.puree.PureeLogger;
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.internal.PureeVerboseRunnable;
 import com.cookpad.puree.internal.RetryableTaskRunner;
-import com.cookpad.puree.storage.PureeSQLiteStorage;
+import com.cookpad.puree.storage.EnhancedPureeStorage;
 import com.cookpad.puree.storage.Records;
 
 import java.util.List;
@@ -98,11 +98,11 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     public abstract void emit(List<String> jsonLogs, final AsyncResult result);
 
     private void purgeRecordsFromStorage() {
-        if (!(storage instanceof PureeSQLiteStorage) || conf.getPurgeAgeMillis() == -1) {
+        if (!(storage instanceof EnhancedPureeStorage) || conf.getPurgeAgeMillis() == -1) {
             return;
         }
 
-        ((PureeSQLiteStorage) storage).delete(type(), conf.getPurgeAgeMillis());
+        ((EnhancedPureeStorage) storage).delete(type(), conf.getPurgeAgeMillis());
     }
 
     public void emit(String jsonLog) {

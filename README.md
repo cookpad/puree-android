@@ -228,7 +228,7 @@ public class OutPurge extends PureeBufferedOutput {
 }
 ```
 
-The configured storage must be an instance of `PureeSQLiteStorage` or a subclass of it to support purging of old logs.
+The configured storage must extend `EnhancedPureeStorage` to support purging of old logs. The default `PureeSQLiteStorage` can be used to enable this feature.
 
 ```java
 new PureeConfiguration.Builder(context)

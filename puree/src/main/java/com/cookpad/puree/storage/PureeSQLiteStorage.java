@@ -18,7 +18,7 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper;
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory;
 
 @ParametersAreNonnullByDefault
-public class PureeSQLiteStorage implements PureeStorage {
+public class PureeSQLiteStorage extends EnhancedPureeStorage {
 
     private static final String DATABASE_NAME = "puree.db";
 
@@ -155,6 +155,7 @@ public class PureeSQLiteStorage implements PureeStorage {
         openHelper.getWritableDatabase().delete(TABLE_NAME, where, null);
     }
 
+    @Override
     public void delete(String type, long ageMillis) {
         String where = COLUMN_NAME_TYPE + " = ? AND "
                 + COLUMN_NAME_CREATED_AT + " <= ?";
