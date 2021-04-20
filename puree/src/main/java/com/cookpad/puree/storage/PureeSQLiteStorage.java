@@ -18,7 +18,7 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper;
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory;
 
 @ParametersAreNonnullByDefault
-public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback implements PureeStorage {
+public class PureeSQLiteStorage implements PureeStorage {
 
     private static final String DATABASE_NAME = "puree.db";
 
@@ -55,14 +55,23 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
     }
 
     public PureeSQLiteStorage(Context context, boolean isOrderByDesc) {
-        super(DATABASE_VERSION);
         this.isOrderByDesc = isOrderByDesc;
         openHelper = new FrameworkSQLiteOpenHelperFactory()
                 .create(
                         SupportSQLiteOpenHelper.Configuration
                                 .builder(context)
                                 .name(databaseName(context))
-                                .callback(this)
+                                .callback(new SupportSQLiteOpenHelper.Callback(DATABASE_VERSION) {
+                                    @Override
+                                    public void onCreate(SupportSQLiteDatabase db) {
+                                        onCreateDb(db);
+                                    }
+
+                                    @Override
+                                    public void onUpgrade(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
+                                        onUpgradeDb(db, oldVersion, newVersion);
+                                    }
+                                })
                                 .build()
                 );
     }
@@ -171,8 +180,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         openHelper.getWritableDatabase().delete(TABLE_NAME, null, null);
     }
 
-    @Override
-    public void onCreate(SupportSQLiteDatabase db) {
+    private void onCreateDb(SupportSQLiteDatabase db) {
         String query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_NAME_TYPE + " TEXT," +
@@ -182,8 +190,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         db.execSQL(query);
     }
 
-    @Override
-    public void onUpgrade(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgradeDb(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_CREATED_AT + " INTEGER;");
 
