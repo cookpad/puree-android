@@ -6,6 +6,9 @@ import com.cookpad.puree.PureeLogger;
 import com.cookpad.puree.PureeSerializer;
 import com.cookpad.puree.async.AsyncResult;
 import com.cookpad.puree.storage.PureeSQLiteStorage;
+import com.cookpad.puree.storage.PureeStorage;
+import com.cookpad.puree.storage.Record;
+import com.cookpad.puree.storage.Records;
 
 import junit.framework.AssertionFailedError;
 
@@ -16,7 +19,11 @@ import org.junit.runner.RunWith;
 
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
@@ -58,6 +65,87 @@ public class PureeBufferedOutputTest {
         }
     }
 
+    static class InMemoryPureeStorage implements PureeStorage {
+        private static class Entry {
+            int id;
+            String type;
+            String jsonLog;
+
+            Entry(int id, String type, String jsonLog) {
+                this.id = id;
+                this.type = type;
+                this.jsonLog = jsonLog;
+            }
+        }
+
+        private int id = 0;
+        private List<Entry> entries = new ArrayList<>();
+
+        @Override
+        public void insert(String type, String jsonLog) {
+            entries.add(new Entry(id++, type, jsonLog));
+        }
+
+        @Override
+        public Records select(String type, int logsPerRequest) {
+            Records records = new Records();
+            int read = 0;
+            while (read < entries.size() && records.size() < logsPerRequest) {
+                Entry entry = entries.get(read);
+                records.add(new Record(entry.id, entry.type, entry.jsonLog));
+                read++;
+            }
+
+            return records;
+        }
+
+        @Override
+        public Records selectAll() {
+            Records records = new Records();
+            for (Entry entry : entries) {
+                records.add(new Record(entry.id, entry.type, entry.jsonLog));
+            }
+            return records;
+        }
+
+        @Override
+        public void delete(Records records) {
+            Set<Integer> ids = new HashSet<>();
+            for (Record record : records) {
+                ids.add(record.getId());
+            }
+            Iterator<Entry> iterator = entries.iterator();
+            while (iterator.hasNext()) {
+                Entry entry = iterator.next();
+                if (ids.contains(entry.id)) {
+                    iterator.remove();
+                }
+            }
+        }
+
+        @Override
+        public void truncateBufferedLogs(int maxRecords) {
+            Iterator<Entry> iterator = entries.iterator();
+            while (iterator.hasNext() && entries.size() > maxRecords) {
+                iterator.remove();
+            }
+        }
+
+        @Override
+        public void clear() {
+            entries.clear();
+        }
+
+        @Override
+        public boolean lock() {
+            return true;
+        }
+
+        @Override
+        public void unlock() {
+
+        }
+    }
 
     @ParametersAreNonnullByDefault
     static abstract class BufferedOutputBase extends PureeBufferedOutput {
@@ -167,11 +255,16 @@ public class PureeBufferedOutputTest {
     }
 
     class BufferedOutputPurge extends BufferedOutput{
+        private final long purgeAgeMillis;
+
+        public BufferedOutputPurge(long purgeAgeMillis) {
+            this.purgeAgeMillis = purgeAgeMillis;
+        }
 
         @Nonnull
         @Override
         public OutputConfiguration configure(OutputConfiguration conf) {
-            conf.setPurgeAgeMillis(1000);
+            conf.setPurgeAgeMillis(purgeAgeMillis);
             return conf;
         }
     }
@@ -374,7 +467,45 @@ public class PureeBufferedOutputTest {
 
     @Test
     public void testPureeBufferedOutput_purge() throws Exception {
-        initializeLogger(new BufferedOutputPurge());
+        initializeLogger(new BufferedOutputPurge(1000));
+
+        logger.send(new PvLog("foo"));
+        Thread.sleep(1000);
+        logger.send(new PvLog("bar"));
+        Thread.sleep(900);
+        logger.send(new PvLog("baz"));
+
+        logger.flush();
+
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
+    }
+
+    @Test
+    public void testPureeBufferedOutput_purgeInvalidAge() throws Exception {
+        initializeLogger(new BufferedOutputPurge(-1));
+
+        logger.send(new PvLog("foo"));
+        Thread.sleep(1000);
+        logger.send(new PvLog("bar"));
+        Thread.sleep(900);
+        logger.send(new PvLog("baz"));
+
+        logger.flush();
+
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"foo\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
+    }
+
+    @Test
+    public void testPureeBufferedOutput_purgeNotSupported() throws Exception {
+        logger = new PureeConfiguration.Builder(context)
+                .register(PvLog.class, new BufferedOutputPurge(1000))
+                .pureeSerializer(pureeSerializer)
+                .storage(new InMemoryPureeStorage())
+                .build()
+                .createPureeLogger();
         logger.discardBufferedLogs();
 
         logger.send(new PvLog("foo"));
@@ -385,6 +516,7 @@ public class PureeBufferedOutputTest {
 
         logger.flush();
 
+        assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"foo\"}"));
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"bar\"}"));
         assertThat(logs.poll(100, TimeUnit.MILLISECONDS), is("{\"name\":\"baz\"}"));
     }
