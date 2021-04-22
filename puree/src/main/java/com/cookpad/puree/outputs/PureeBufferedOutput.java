@@ -98,7 +98,7 @@ public abstract class PureeBufferedOutput extends PureeOutput {
     public abstract void emit(List<String> jsonLogs, final AsyncResult result);
 
     private void purgeRecordsFromStorage() {
-        if (!(storage instanceof EnhancedPureeStorage) || conf.getPurgeAgeMillis() == -1) {
+        if (!(storage instanceof EnhancedPureeStorage) || conf.getPurgeAgeMillis() < 0) {
             return;
         }
 
