@@ -18,17 +18,21 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper;
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory;
 
 @ParametersAreNonnullByDefault
-public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback implements PureeStorage {
+public class PureeSQLiteStorage extends EnhancedPureeStorage {
 
     private static final String DATABASE_NAME = "puree.db";
 
     private static final String TABLE_NAME = "logs";
 
+    private static final String COLUMN_NAME_ID = "id";
+
     private static final String COLUMN_NAME_TYPE = "type";
 
     private static final String COLUMN_NAME_LOG = "log";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final String COLUMN_NAME_CREATED_AT = "created_at";
+
+    private static final int DATABASE_VERSION = 2;
 
     private final SupportSQLiteOpenHelper openHelper;
 
@@ -51,14 +55,23 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
     }
 
     public PureeSQLiteStorage(Context context, boolean isOrderByDesc) {
-        super(DATABASE_VERSION);
         this.isOrderByDesc = isOrderByDesc;
         openHelper = new FrameworkSQLiteOpenHelperFactory()
                 .create(
                         SupportSQLiteOpenHelper.Configuration
                                 .builder(context)
                                 .name(databaseName(context))
-                                .callback(this)
+                                .callback(new SupportSQLiteOpenHelper.Callback(DATABASE_VERSION) {
+                                    @Override
+                                    public void onCreate(SupportSQLiteDatabase db) {
+                                        onCreateDb(db);
+                                    }
+
+                                    @Override
+                                    public void onUpgrade(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
+                                        onUpgradeDb(db, oldVersion, newVersion);
+                                    }
+                                })
                                 .build()
                 );
     }
@@ -67,6 +80,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME_TYPE, type);
         contentValues.put(COLUMN_NAME_LOG, jsonLog);
+        contentValues.put(COLUMN_NAME_CREATED_AT, System.currentTimeMillis());
         openHelper.getWritableDatabase().insert(TABLE_NAME, SQLiteDatabase.CONFLICT_NONE, contentValues);
     }
 
@@ -83,7 +97,7 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
     public Records select(String type, int logsPerRequest) {
         String query = "SELECT * FROM " + TABLE_NAME +
                 " WHERE " + COLUMN_NAME_TYPE + " = ?" +
-                " ORDER BY id " + getOrderType() +
+                " ORDER BY " + COLUMN_NAME_ID + " " + getOrderType() +
                 " LIMIT " + logsPerRequest;
         Cursor cursor = openHelper.getReadableDatabase().query(query, new String[]{type});
 
@@ -137,16 +151,27 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
 
     @Override
     public void delete(Records records) {
-        String where = "id IN (" + records.getIdsAsString() + ")";
+        String where = COLUMN_NAME_ID + " IN (" + records.getIdsAsString() + ")";
         openHelper.getWritableDatabase().delete(TABLE_NAME, where, null);
+    }
+
+    @Override
+    public void delete(String type, long ageMillis) {
+        String where = COLUMN_NAME_TYPE + " = ? AND "
+                + COLUMN_NAME_CREATED_AT + " <= ?";
+        Object[] whereArgs = new Object[]{
+                type,
+                System.currentTimeMillis() - ageMillis
+        };
+        openHelper.getWritableDatabase().delete(TABLE_NAME, where, whereArgs);
     }
 
     @Override
     public void truncateBufferedLogs(int maxRecords) {
         int recordSize = getRecordCount();
         if (recordSize > maxRecords) {
-            String where = "id IN ( SELECT id FROM " + TABLE_NAME +
-                    " ORDER BY id ASC LIMIT " + (recordSize - maxRecords) + ")";
+            String where = COLUMN_NAME_ID + " IN ( SELECT id FROM " + TABLE_NAME +
+                    " ORDER BY " + COLUMN_NAME_ID + " ASC LIMIT " + (recordSize - maxRecords) + ")";
             openHelper.getWritableDatabase().delete(TABLE_NAME, where, null);
         }
     }
@@ -156,19 +181,30 @@ public class PureeSQLiteStorage extends SupportSQLiteOpenHelper.Callback impleme
         openHelper.getWritableDatabase().delete(TABLE_NAME, null, null);
     }
 
-    @Override
-    public void onCreate(SupportSQLiteDatabase db) {
+    private void onCreateDb(SupportSQLiteDatabase db) {
         String query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_NAME_TYPE + " TEXT," +
-                COLUMN_NAME_LOG + " TEXT" +
+                COLUMN_NAME_LOG + " TEXT," +
+                COLUMN_NAME_CREATED_AT + " INTEGER" +
                 ")";
         db.execSQL(query);
     }
 
-    @Override
-    public void onUpgrade(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.e("PureeDbHelper", "unexpected onUpgrade(db, " + oldVersion + ", " + newVersion + ")");
+    public void onUpgradeDb(SupportSQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME_CREATED_AT + " INTEGER;");
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COLUMN_NAME_CREATED_AT, System.currentTimeMillis());
+            db.update(
+                    TABLE_NAME,
+                    SQLiteDatabase.CONFLICT_NONE,
+                    contentValues,
+                    COLUMN_NAME_CREATED_AT + " IS NULL",
+                    null
+            );
+        }
     }
 
     @Override
