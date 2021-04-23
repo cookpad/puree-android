@@ -1,3 +1,9 @@
+# v5.1.0 2021/04/23
+* Allow purging of old buffered logs in the storage
+
+# v5.0.0 2020/12/21
+* We have made a major upgrade, because the changes in v4.1.7 are so disruptive.
+
 # v4.1.9 2020/12/17
 
 * Revert publishing dsl

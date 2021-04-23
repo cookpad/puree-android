@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 
 def GROUP_ID = 'com.cookpad.puree'
 def ARTIFACT_ID = 'puree'
-def VERSION = "4.1.9"
+def VERSION = "5.1.0"
 project.version = VERSION
 
 android {
