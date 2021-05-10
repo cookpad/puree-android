@@ -122,8 +122,8 @@ public class OutLogcat extends PureeOutput {
     }
 
     @Override
-    public void emit(JsonObject jsonLog) {
-        Log.d(TYPE, jsonLog.toString());
+    public void emit(String jsonLog) {
+        Log.d(TYPE, jsonLog);
     }
 }
 ```
@@ -154,10 +154,10 @@ public class OutFakeApi extends PureeBufferedOutput {
     }
 
     @Override
-    public void emit(JsonArray jsonArray, final AsyncResult result) {
+    public void emit(List<String> jsonLogs, final AsyncResult result) {
         // you have to call result.success or result.fail()
         // to notify whether if puree can clear logs from buffer
-        CLIENT.sendLog(jsonArray, new FakeApiClient.Callback() {
+        CLIENT.sendLog(jsonLogs, new FakeApiClient.Callback() {
             @Override
             public void success() {
                 result.success();
@@ -178,9 +178,10 @@ If you need to add common params to each logs, you can use `PureeFilter`:
 
 ```java
 public class AddEventTimeFilter implements PureeFilter {
-    public JsonObject apply(JsonObject jsonLog) {
-        jsonLog.addProperty("event_time", System.currentTimeMillis());
-        return jsonLog;
+    public JsonObject apply(String jsonLog) {
+        JsonObject jsonObject = new JsonParser().parse(jsonLog).getAsJsonObject();
+        jsonObject.addProperty("event_time", System.currentTimeMillis());
+        return jsonOabject.toString();
     }
 }
 ```
@@ -196,7 +197,7 @@ public class SamplingFilter implements PureeFilter {
     }
 
     @Override
-    public JsonObject apply(JsonObject jsonLog) {
+    public JsonObject apply(String jsonLog) {
         return (samplingRate < Math.random() ? null : jsonLog);
     }
 }
